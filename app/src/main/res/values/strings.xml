@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Dyanate Driver</string>
+    <string name="english" translatable="false">ENGLISH</string>
+    <string name="arabic" translatable="false">عربي</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="item_image_contentDescription" translatable="false">Country flag</string>
+    <string name="item_preview_country" translatable="false">Saudi Arabia (‫المملكة العربية السعودية‬‎)</string>
+    <string name="item_preview_dialCode" translatable="false">+966</string>
+
+    <string-array name="city_array">
+        <item>Riyadh</item>
+        <item>Jeddah</item>
+        <item>Mecca</item>
+        <item>Medina</item>
+        <item>Dammam</item>
+        <item>Taif</item>
+        <item>Tabuk</item>
+        <item>Buraidah</item>
+        <item>Khamis Mushait</item>
+    </string-array>
+
+    <string-array name="city_location_array" translatable="false">
+        <item>24.688,46.722</item>
+        <item>21.542,39.198</item>
+        <item>21.427,39.826</item>
+        <item>24.469,39.614</item>
+        <item>26.434,50.103</item>
+        <item>21.27,40.416</item>
+        <item>28.4,36.572</item>
+        <item>26.326,43.975</item>
+        <item>18.3,42.733</item>
+    </string-array>
+
+    <string name="forgot_password">Forgot Password</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="map_location_picker">Pick My Location</string>
+    <string name="pick_location">Pick Location</string>
+    <string name="reply">Reply To Order</string>
+    <string name="ok">OK</string>
+    <string name="internet_connection_error">Unable to connect to internet, please check your network settings.</string>
+    <string name="warning">Warning</string>
+    <string name="please_switchon_gps">Please enable GPS from settings.</string>
+    <string name="settings">Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="message">Message</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="update_available">Version update available, please update.</string>
+    <string name="network_error">Network error, please try again later!</string>
+    <string name="allow_location">You need to allow access to location.</string>
+    <string name="allow_external_storage">You need to allow access external storage.</string>
+    <string name="allow_sms">You need to allow access to SMS.</string>
+    <string name="select_location_from_map">Select location from Map</string>
+    <string name="type_your_location">Type your location</string>
+    <string name="you_are_here">You are here</string>
+    <string name="select_location">Select this location</string>
+    <string name="log_in">LOGIN</string>
+    <string name="register">REGISTER</string>
+    <string name="send">Send</string>
+    <string name="username_or_mobile">Username or Mobile Number :</string>
+    <string name="password">Password :</string>
+    <string name="mobile">Mobile :</string>
+    <string name="forgot">Forgot Password</string>
+    <string name="remember">Remember Me</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="exit">Exit</string>
+    <string name="name">Name :</string>
+    <string name="name_english">Name in English</string>
+    <string name="name_arabic">Name in Arabic</string>
+    <string name="email">Email :</string>
+    <string name="username">Username :</string>
+    <string name="address">Address :</string>
+    <string name="i_agree">I agree to</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="please_verify_your_mobile_number">Please verify your mobile number.</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="submit">Submit</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="back">Back</string>
+    <string name="are_you_sure">Are you sure ?</string>
+    <string name="logged_out">Logout successful.</string>
+    <string name="password_send">OTP send, please verify to continue.</string>
+    <string name="otp">OTP</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="invalid_username">Invalid username</string>
+    <string name="use_pin_location">User Location.</string>
+    <string name="i_live_here">My Location</string>
+    <string name="do_you_want_to_exit">Do you want to exit ?</string>
+    <string name="required">Required field</string>
+    <string name="we_have_sent_an_otp_via_sms">We have sent an OTP via SMS to</string>
+    <string name="password_reset_success">Password reset successful</string>
+    <string name="invalid_otp">Invalid OTP entered.</string>
+    <string name="registration_succesfull">Registration successful.</string>
+    <string name="password_resend">OTP resend.</string>
+    <string name="vehicle_model">Model :</string>
+    <string name="vehicle_type">Type :</string>
+    <string name="license_english">License No. in English</string>
+    <string name="license_arabic">License No. in Arabic</string>
+    <string name="start_place">Start Place</string>
+    <string name="subject">Subject :</string>
+    <string name="shipment">Shipment :</string>
+    <string name="date">Date :</string>
+    <string name="time">Time :</string>
+    <string name="to_address">Receiver Details</string>
+    <string name="sender">From :</string>
+    <string name="receiver">To :</string>
+    <string name="from_address">Sender Details</string>
+    <string name="show_route">Show Route</string>
+    <string name="negotiable">Negotiable</string>
+    <string name="price">Rate</string>
+    <string name="enter_price">Enter your Price</string>
+    <string name="stop_place">End Place</string>
+    <string name="distance">Driving distance</string>
+    <string name="duration">Duration</string>
+    <string name="invalid_price">Invalid price!</string>
+    <string name="priced_succesfully">Your reply updated successfully.</string>
+    <string name="new_orders">New Orders</string>
+    <string name="previous_orders">Previous Orders</string>
+    <string name="all_new_orders">Show All</string>
+    <string name="view">View</string>
+    <string name="show_map">Map</string>
+    <string name="agree">Agree</string>
+    <string name="not_agree">Not Agree</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="make_online">Make Online</string>
+    <string name="make_offline">Make Offline</string>
+    <string name="new_trip_request">New Trip</string>
+    <string name="sender_is">Sender is :</string>
+    <string name="receiver_is">Receiver is :</string>
+    <string name="save_continue">Save/Continue</string>
+    <string name="str_continue">Continue</string>
+    <string name="save_details">Save Details</string>
+    <string name="driver_login">Driver Login</string>
+    <string name="agent_login">Agent Login</string>
+    <string name="sender_and_recipient">Sender and Receiver Details</string>
+    <string name="enter_sender_no">Enter correct sender number.</string>
+    <string name="enter_receiver_no">Enter correct receiver number.</string>
+    <string name="select">Select</string>
+    <string name="self">Self</string>
+    <string name="other">Friend</string>
+    <string name="do_you_want_to_continue_without_locations">Do you want to send message to sender and receiver for location or pick location from map ?</string>
+    <string name="messages_send">Location request messages send to sender and receiver.</string>
+    <string name="pick_map">Pick From Map</string>
+    <string name="send_location_message">Send Message</string>
+    <string name="message_send_to_sender_and_receiver">Recently send location request to %1$s and %2$s, Proceed ?</string>
+    <string name="message_send_to_sender">Recently send location request to %1$s, Proceed ?</string>
+    <string name="message_send_to_receiver">Recently send location request to %1$s, Proceed ?</string>
+    <string name="sender_updated_waiting_receiver">Sender updated location, Waiting Receiver</string>
+    <string name="sender_receiver_updated">Receiver and Sender updated location</string>
+    <string name="receiver_updated_waiting_sender">Receiver updated location, Waiting Sender</string>
+    <string name="maximum_three">Maximum three drivers.</string>
+    <string name="wrong_trip_date">Please check your trip booking date / time.</string>
+    <string name="my_orders">My Orders</string>
+    <string name="make_agent">Convert to Agent</string>
+    <string name="other_customers">Trips From Others</string>
+    <string name="glass_factory">Trips From Glass</string>
+    <string name="my_booked_trips">My Booked Trips</string>
+    <string name="add_new_trip">Add A Trip</string>
+    <string name="share_app">Share App</string>
+    <string name="download_dynate">Download Dyanate Application</string>
+    <string name="select_start_place">Select Pick-Up Location</string>
+    <string name="select_stop_place">Select Drop-Off Location</string>
+    <string name="select_continue">Select / Continue</string>
+    <string name="distance_within_a_km">Distance from start location within one KM, Do you want to continue ?</string>
+    <string name="shipment_details">Shipment Details</string>
+    <string name="trip_details">Shipment Detail</string>
+    <string name="confirm_trip">Confirm Trip</string>
+    <string name="edit_order">Edit Order</string>
+    <string name="sending_site">Confirm Trip</string>
+    <string name="no_drivers_available">No drivers available.</string>
+    <string name="are_you_ready_to_accept_this_trip">This trip will be assigned to you, Continue ?</string>
+    <string name="order_no">Order No :</string>
+    <string name="vehicle">Vehicle :</string>
+    <string name="status">Status :</string>
+    <string name="show_in_map">Show in Map</string>
+    <string name="show_replies">Show Replies</string>
+    <string name="show_details">Show Details</string>
+    <string name="order_detail">Order Details</string>
+    <string name="driver">Driver</string>
+    <string name="distance_in_km">Distance in KM to Drivers :</string>
+    <string name="approve">Approve</string>
+    <string name="approved_succesfully">This trip will be assigned to you, Continue ?</string>
+    <string name="canceled_succesfully">Canceled successfully.</string>
+    <string name="approval_failed">Approval failed!</string>
+    <string name="canceling_failed">Canceling failed!</string>
+    <string name="trip_no">Trip No :</string>
+    <string name="schedule_date">Scheduled Date</string>
+    <string name="notes">Shipment/Subject</string>
+    <string name="cancel_trip">Cancel Trip</string>
+    <string name="show_trip">Trip By </string>
+    <string name="new_trips">New Trip Requests</string>
+    <string name="rejected_by_me">Trips Rejected By Me</string>
+    <string name="accepted_by_me">Trips Accepted By Me</string>
+    <string name="customer_cancelled">Cancelled By Customer</string>
+    <string name="customer_accepted">Accepted By Customer</string>
+    <string name="completed">Completed Trips</string>
+    <string name="sender_and_receiver_no_same">Sender and Receiver phone number same. Can not continue.</string>
+    <string name="customer_rejected">Rejected By Customer</string>
+    <string name="are_you_sure_new">Are you sure to change status ?</string>
+    <string name="next">Continue</string>
+    <string name="no_app_pdf">No default application to open this file.</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="attach_document">Attach Documents</string>
+    <string name="enter_name">Enter name</string>
+    <string name="remove">Remove</string>
+    <string name="item_exist">Document Name Exist!</string>
+    <string name="registration_successful_please_contact_office">Registration successful, Please contact office to activate your account.</string>
+    <string name="register_new_user">Register new user</string>
+    <string name="now_offline_change_to_online">You are not online. You must be online. Are you sure ?</string>
+    <string name="no_mobile_number">Mobile number empty!</string>
+    <string name="confirm_detail">Sender and Receiver Details</string>
+    <string name="work_with_glass">Would you like work with Glass factory ?</string>
+    <string name="upload_files">You must upload license file!</string>
+    <string name="invalid_mobile">Invalid Mobile number!</string>
+    <string name="you_must_enter_price">You must enter price!</string>
+    <string name="change_language">Language</string>
+    <string name="register_title">Register</string>
+    <string name="enter_file_name">Enter Filename</string>
+    <string name="username_4_char">Username must have at least 4 characters!</string>
+    <string name="username_10_char">Username must be with in 10 characters!</string>
+    <string name="alphanumeric_username">Username must have alphabets and numbers!</string>
+    <string name="password_min_6_char">Password minimum 6 characters!</string>
+    <string name="filled_data_will_be_lost">Filled data will be lost, Are you sure ?</string>
+    <string name="invalid_email">Invalid Email!</string>
+    <string name="driver_replies">Driver Replies</string>
+    <string name="duplicate_mobile">Mobile Number already registered</string>
+    <string name="duplicate_username">Username already registered</string>
+    <string name="support">Contact Us</string>
+    <string name="support_no" translatable="false">+ 966 5577 69868</string>
+    <string name="support_email" translatable="false">info@fast-prog.com</string>
+    <string name="new_registration">New Registration</string>
+    <string name="send_mail">Send mail…</string>
+    <string name="there_are_no_email_clients">There are no email clients installed.</string>
+    <string name="invalid_login">Invalid login!</string>
+
+</resources>

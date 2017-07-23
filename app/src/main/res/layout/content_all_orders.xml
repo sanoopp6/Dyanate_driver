@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/content_cart"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBG"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.AllOrdersActivity">
+
+    <LinearLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/layout_search_back2"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="250dp">
+
+        <TextView
+            android:id="@+id/enter_port_priority_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@drawable/layout_sub_background"
+            android:gravity="center"
+            android:text="@string/previous_orders"
+            android:textColor="#FFF"
+            android:textSize="16sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_home"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginTop="5dp"
+            android:scrollbars="vertical" />
+
+        <Button
+            android:id="@+id/all_orders_button"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/btn_all_orders"
+            android:gravity="center"
+            android:text="@string/all_new_orders"
+            android:textAllCaps="true"
+            android:textColor="#fff"
+            android:textSize="14sp" />
+
+</LinearLayout>
+
+<!--<ScrollView-->
+        <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<TextView-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:id="@+id/sub_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/subject"-->
+                <!--android:layout_height="25dp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/ship_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:text="@string/shipment"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:layout_height="25dp" />-->
+
+            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/model_title"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:gravity="center_vertical"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="@string/vehicle_type"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="25dp" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/type_title"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:gravity="center_vertical"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="@string/vehicle_model"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="25dp" />&ndash;&gt;-->
+
+            <!--<View-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:background="@color/light_gray"-->
+                <!--android:layout_height="2dp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/sender_det_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="@string/from_address"-->
+                <!--android:layout_height="25dp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/text_from_name"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:text="@string/name"-->
+                <!--android:gravity="center_vertical" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:text="@string/mobile"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:id="@+id/text_from_mobile" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/date_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/date"-->
+                <!--android:layout_height="25dp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/time_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/time"-->
+                <!--android:layout_height="25dp" />-->
+
+            <!--<LinearLayout-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="25dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/from_addr"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="@string/sender"-->
+                    <!--android:layout_height="25dp" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/from_loc"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="0.2"-->
+                    <!--android:textColor="#9571d8"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="@string/show_map"-->
+                    <!--android:layout_height="25dp" />-->
+
+            <!--</LinearLayout>-->
+
+            <!--<View-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:background="@color/light_gray"-->
+                <!--android:layout_height="2dp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/receiver_det_title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/to_address"-->
+                <!--android:textStyle="bold"-->
+                <!--android:layout_height="25dp" />-->
+
+            <!--<TextView-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/name"-->
+                <!--android:id="@+id/text_to_name"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="25dp"/>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/mobile"-->
+                <!--android:id="@+id/text_to_mobile" />-->
+
+            <!--<LinearLayout-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="25dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/to_addr"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="@string/sender"-->
+                    <!--android:layout_height="25dp" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/to_loc"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="0.2"-->
+                    <!--android:textColor="#9571d8"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="@string/show_map"-->
+                    <!--android:layout_height="25dp" />-->
+
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/reply_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:visibility="visible"-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_height="wrap_content">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/price_title"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="@string/enter_price"/>-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:layout_marginBottom="5dp"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:gravity="center_vertical">-->
+
+                    <!--<EditText-->
+                        <!--android:id="@+id/edit_price"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_weight="4"-->
+                        <!--android:layout_height="35dp"-->
+                        <!--android:background="@drawable/layout_thick_bordered_rounded_squre"-->
+                        <!--android:gravity="center"-->
+                        <!--android:maxLines="1"-->
+                        <!--android:hint="@string/price"-->
+                        <!--android:inputType="numberDecimal"-->
+                        <!--android:textSize="14sp" />-->
+
+                    <!--<CheckBox-->
+                        <!--android:id="@+id/chk_negotiable"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_weight="3"-->
+                        <!--android:layout_height="35dp"-->
+                        <!--android:gravity="center"-->
+                        <!--android:text="@string/negotiable" />-->
+
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_marginTop="5dp"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<Button-->
+                        <!--android:id="@+id/btn_agree"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:layout_height="33dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginEnd="2dp"-->
+                        <!--android:text="@string/agree"-->
+                        <!--android:background="@drawable/btn_agree_order"-->
+                        <!--android:textColor="@color/whiteColorText"-->
+                        <!--android:textSize="14sp" />-->
+
+                    <!--<Button-->
+                        <!--android:id="@+id/btn_disagree"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:layout_height="33dp"-->
+                        <!--android:layout_marginStart="2dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:text="@string/not_agree"-->
+                        <!--android:background="@drawable/btn_not_agree_order"-->
+                        <!--android:textColor="@color/whiteColorText"-->
+                        <!--android:textSize="14sp" />-->
+
+                <!--</LinearLayout>-->
+
+            <!--</LinearLayout>-->
+
+        <!--</LinearLayout>-->
+
+    <!--</ScrollView>-->
+
+</LinearLayout>

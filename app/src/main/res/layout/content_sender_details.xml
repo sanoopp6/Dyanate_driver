@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBG"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.SenderDetailsActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:background="@drawable/layout_txt_gradient_background"
+                android:layout_height="25dp">
+
+                <TextView
+                    android:id="@+id/sender_det_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/sender_is"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/edit_from_name"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:gravity="center"
+                android:hint="@string/name"
+                android:background="@drawable/layout_bordered_rounded_squre"
+                android:inputType="text"
+                android:singleLine="true"
+                android:padding="5dp"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:background="@drawable/layout_bordered_rounded_squre" >
+
+                <EditText
+                    android:gravity="center"
+                    android:id="@+id/edit_from_mobile"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/mobile"
+                    android:textDirection="ltr"
+                    android:singleLine="true"
+                    android:paddingStart="30dp"
+                    android:inputType="phone"
+                    android:background="@android:color/transparent"
+                    android:layout_height="match_parent"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/img_from_mobile"
+                    android:layout_width="wrap_content"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/address_book"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <!--<com.fast_prog.dynate.intlphoneinput.IntlPhoneInput-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_height="36dp"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:background="@drawable/layout_bordered_rounded_squre"-->
+                <!--android:gravity="center"-->
+                <!--android:singleLine="true"-->
+                <!--app:textSize="14sp"-->
+                <!--app:textColor="#000000"-->
+                <!--android:id="@+id/edit_from_mobile" />-->
+
+            <TextView
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/date_title"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/date"
+                android:layout_height="25dp" />
+
+            <LinearLayout
+                android:id="@+id/date_layout"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:layoutDirection="ltr"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="33dp">
+
+                <Button
+                    android:id="@+id/txt_datepicker1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_bordered_rounded_squre"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:drawableEnd="@drawable/des_11"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/txt_datepicker2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/layout_bordered_rounded_squre"
+                    android:layout_height="match_parent"
+                    android:padding="5dp"
+                    android:layout_marginStart="5dp"
+                    android:drawableEnd="@drawable/des_11"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/time_title"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/time"
+                android:layout_height="25dp" />
+
+            <LinearLayout
+                android:id="@+id/time_layout"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_height="33dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/layout_bordered_rounded_squre"
+                    android:layout_height="33dp">
+
+                    <Button
+                        android:id="@+id/txt_timepicker"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/transparent"
+                        android:layout_height="match_parent"
+                        android:padding="5dp"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:padding="7dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/spinner_arrow"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:background="@drawable/layout_txt_gradient_background"
+                android:layout_width="match_parent"
+                android:layout_height="25dp">
+
+                <TextView
+                    android:id="@+id/receiver_det_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/receiver_is"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="5dp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <EditText
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/edit_to_name"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:gravity="center"
+                android:hint="@string/name"
+                android:background="@drawable/layout_bordered_rounded_squre"
+                android:inputType="text"
+                android:singleLine="true"
+                android:padding="5dp"
+                android:textSize="14sp" />
+
+            <!--<com.fast_prog.dynate.intlphoneinput.IntlPhoneInput-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="36dp"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:background="@drawable/layout_bordered_rounded_squre"-->
+                <!--android:gravity="center"-->
+                <!--android:singleLine="true"-->
+                <!--app:textSize="14sp"-->
+                <!--app:textColor="#000000"-->
+                <!--android:id="@+id/edit_to_mobile" />-->
+
+            <!--<EditText-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginRight="15dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:id="@+id/edit_to_mobile"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="33dp"-->
+                <!--android:gravity="center"-->
+                <!--android:hint="051 234 5678"-->
+                <!--android:background="@drawable/layout_bordered_rounded_squre"-->
+                <!--android:inputType="number"-->
+                <!--android:singleLine="true"-->
+                <!--android:padding="5dp"-->
+                <!--android:textSize="14sp" />-->
+
+            <LinearLayout
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:background="@drawable/layout_bordered_rounded_squre" >
+
+                <EditText
+                    android:gravity="center"
+                    android:id="@+id/edit_to_mobile"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/mobile"
+                    android:textDirection="ltr"
+                    android:singleLine="true"
+                    android:inputType="phone"
+                    android:background="@android:color/transparent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="30dp"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/img_to_mobile"
+                    android:layout_width="wrap_content"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/address_book"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <Button
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/btn_book_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:background="@drawable/btn_gradient_submit2"
+                android:text="@string/str_continue"
+                android:textColor="#FFF"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimaryDark">#FF1E7A2D</color>
+    <color name="blackColorText">#000000</color>
+    <color name="whiteColorText">#FFFFFF</color>
+    <color name="whiteColorBackground">#FFFFFF</color>
+    <color name="blackColorBackground">#000000</color>
+    <color name="edit_text_focused_color">#2E3191</color>
+    <color name="darkest_gray">#6e6e6e</color>
+    <color name="darker_gray">#FF9E9D9D</color>
+    <color name="lighter_gray">#DEE3E6</color>
+    <color name="light_gray">#b5bcc1</color>
+    <color name="white10">#1Affffff</color>
+    <color name="colorPrimary">#404041</color>
+    <color name="colorAccent">#FF27AB3D</color>
+    <color name="colorBG">#F7F7F8</color>
+    <color name="tableItemBackgroundColor">#dfddd6</color>
+    <color name="tableItemButtonBackgroundColor">#b0c2c9</color>
+    <color name="white50">#80ffffff</color>
+    <color name="progressDialogColor">#0bc5ef</color>
+    <color name="yellowColorBackground">#FFCC33</color>
+    <color name="blueBackground">#009999</color>
+    <color name="colorBGMenu">#6ACDCB</color>
+    <color name="contentDividerLine">#FF9E9D9D</color>
+    <color name="supportBack">#FFCAF2F1</color>
+
+</resources>

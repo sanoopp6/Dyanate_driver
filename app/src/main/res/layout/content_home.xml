@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorBG"
+    android:gravity="center"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.HomeActivity" >
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_height="35dp"
+        android:textColor="@color/whiteColorText"
+        android:visibility="visible"
+        android:text="@string/add_new_trip"
+        android:textAllCaps="true"
+        android:textSize="17sp"
+        android:background="@drawable/btn_gradient_submit2"
+        android:id="@+id/add_new_button"/>
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:visibility="visible"-->
+        <!--android:textColor="@color/whiteColorText"-->
+        <!--android:text="@string/my_booked_trips"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:textSize="17sp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:background="@drawable/btn_language"-->
+        <!--android:id="@+id/my_booked_button"/>-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_language"
+        android:clipChildren="false">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/whiteColorText"
+            android:text="@string/my_booked_trips"
+            android:background="@android:color/transparent"
+            android:textAllCaps="true"
+            android:textSize="17sp"
+            android:id="@+id/my_booked_button"/>
+
+        <TextView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="end|center_vertical"
+            android:id="@+id/my_booked_count"
+            android:gravity="center"
+            android:textColor="@color/blackColorText"
+            android:visibility="gone"
+            android:background="@drawable/layout_round_marker_white"
+            android:layout_marginEnd="25dp"/>
+
+    </FrameLayout>
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:textColor="@color/whiteColorText"-->
+        <!--android:text="@string/glass_factory"-->
+        <!--android:textSize="17sp"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:background="@drawable/btn_agree_order"-->
+        <!--android:id="@+id/glass_fact_button"/>-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/glass_fact_frame"
+        android:layout_height="35dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_agree_order"
+        android:clipChildren="false">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/whiteColorText"
+            android:text="@string/glass_factory"
+            android:background="@android:color/transparent"
+            android:textAllCaps="true"
+            android:textSize="17sp"
+            android:id="@+id/glass_fact_button"/>
+
+        <TextView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="end|center_vertical"
+            android:id="@+id/glass_fact_count"
+            android:gravity="center"
+            android:textColor="@color/blackColorText"
+            android:visibility="gone"
+            android:background="@drawable/layout_round_marker_white"
+            android:layout_marginEnd="25dp"/>
+
+    </FrameLayout>
+
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginRight="30dp"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:textColor="@color/whiteColorText"-->
+        <!--android:text="@string/other_customers"-->
+        <!--android:textAllCaps="true"-->
+        <!--android:textSize="17sp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:background="@drawable/btn_all_orders"-->
+        <!--android:id="@+id/other_cus_button"/>-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_all_orders"
+        android:clipChildren="false">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/whiteColorText"
+            android:text="@string/other_customers"
+            android:background="@android:color/transparent"
+            android:textAllCaps="true"
+            android:textSize="17sp"
+            android:id="@+id/other_cus_button"/>
+
+        <TextView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="end|center_vertical"
+            android:id="@+id/other_cus_count"
+            android:gravity="center"
+            android:textColor="@color/blackColorText"
+            android:visibility="gone"
+            android:background="@drawable/layout_round_marker_white"
+            android:layout_marginEnd="25dp"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:textColor="@color/whiteColorText"
+        android:text="@string/make_online"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:textAllCaps="true"
+        android:textSize="17sp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_not_agree_order"
+        android:id="@+id/make_online_button"/>
+
+</LinearLayout>

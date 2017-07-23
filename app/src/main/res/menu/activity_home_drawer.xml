@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_dark_24"
+            android:title="@string/home" />
+        <!--<item-->
+            <!--android:id="@+id/nav_orders"-->
+            <!--android:icon="@drawable/ic_gift_24"-->
+            <!--android:title="@string/my_orders" />-->
+            <!--android:visible="false" />-->
+        <!--<item-->
+            <!--android:id="@+id/nav_agent"-->
+            <!--android:icon="@drawable/ic_login"-->
+            <!--android:title="@string/make_agent" />-->
+        <item
+            android:id="@+id/nav_language"
+            android:visible="false"
+            android:icon="@drawable/ic_language_24"
+            android:title="@string/change_language" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_share_24"
+            android:title="@string/share_app" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_power_off"
+            android:title="@string/logout" />
+        <!--<item-->
+            <!--android:id="@+id/nav_exit"-->
+            <!--android:icon="@drawable/ic_exit"-->
+            <!--android:title="@string/exit" />-->
+    </group>
+
+</menu>

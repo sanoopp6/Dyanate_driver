@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBG"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.VerifyOTPActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/txt_otp1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:text="@string/please_verify_your_mobile_number"/>
+
+            <TextView
+                android:id="@+id/txt_otp2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/txt_otp1"
+                android:layout_marginTop="15dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:gravity="center"
+                android:text="@string/please_verify_your_mobile_number"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/edit_otp_layout"
+                android:layout_below="@+id/txt_otp2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white10"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="80dp"
+                android:layout_marginLeft="80dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/edit_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textAlignment="center"
+                    android:padding="5dp"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:typeface="sans" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edit_otp_layout"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:id="@+id/txt_timer"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/txt_timer"
+                android:textAlignment="center"
+                android:id="@+id/btn_resend_otp"
+                android:enabled="false"
+                android:textSize="14sp"
+                android:text="@string/resend_otp" />
+
+            <Button
+                android:id="@+id/btn_update"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_below="@+id/btn_resend_otp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_ok"
+                android:text="@string/submit"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/whiteColorText"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</LinearLayout>
