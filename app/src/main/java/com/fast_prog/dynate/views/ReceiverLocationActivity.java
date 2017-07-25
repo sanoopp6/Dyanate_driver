@@ -539,6 +539,21 @@ public class ReceiverLocationActivity extends AppCompatActivity implements OnMap
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (gpsTracker != null && mMap != null) {
+            if (!gpsTracker.canGetLocation()) {
+                gpsTracker.getLocation();
+
+                latLng = new LatLng(gpsTracker.getLatitude(), gpsTracker.getLongitude());
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(17f).build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        }
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 

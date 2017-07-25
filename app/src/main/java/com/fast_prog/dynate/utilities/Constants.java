@@ -10,8 +10,8 @@ public class Constants {
     public static final String PREFS_IS_LOGIN               = "dynate_is_login";
     public static final String PREFS_USER_ID                = "dynate_user_id";
     public static final String PREFS_CUST_ID                = "dynate_cust_id";
-    public static final String PREFS_VMO_ID                 = "dynadriver_vmo_id";
-    public static final String PREFS_VMS_ID                 = "dynadriver_vms_id";
+    public static final String PREFS_VMO_ID                 = "dynate_vmo_id";
+    public static final String PREFS_VMS_ID                 = "dynate_vms_id";
     public static final String PREFS_USER_NAME              = "dynate_user_name";
     public static final String PREFS_USER_MOBILE            = "dynate_user_mobile";
     public static final String PREFS_LATITUDE               = "dynate_latitude";
@@ -28,7 +28,7 @@ public class Constants {
     public static final String BASE_URL_AR                  = "https://dyanate.fast-prog.com/ServiceAr.asmx/";
 
     public static final String APP_NAME                     = "dynadriver";
-    public static final String APP_VERSION                  = "1.3";
+    public static final String APP_VERSION                  = "1.4";
 
     public static final String SMS_ORIGIN                   = "DyanateApp";
     public static final String OTP_DELIMITER                = ":";
