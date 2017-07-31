@@ -23,7 +23,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,12 +48,13 @@ import com.fast_prog.dynate.utilities.DatabaseHandler;
 import com.fast_prog.dynate.utilities.GPSTracker;
 import com.fast_prog.dynate.utilities.JsonParser;
 import com.fast_prog.dynate.utilities.SetOffline;
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
-import net.alhazmy13.hijridatepicker.HijriCalendarDialog;
-import net.alhazmy13.hijridatepicker.HijriCalendarView;
+import net.alhazmy13.hijridatepicker.date.gregorian.GregorianDatePickerDialog;
+import net.alhazmy13.hijridatepicker.date.hijri.HijriDatePickerDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +66,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class SenderDetailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class SenderDetailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GregorianDatePickerDialog.OnDateSetListener, HijriDatePickerDialog.OnDateSetListener {
 
     Ride ride;
 
@@ -550,29 +550,41 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                     return;
                 }
 
-                new HijriCalendarDialog.Builder(SenderDetailsActivity.this)
-                    .setOnDateSetListener(new HijriCalendarView.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(int year, int month, int day) {
-                            String dateString;
+                Calendar now = Calendar.getInstance();
+                GregorianDatePickerDialog gregorianDatePickerDialog =
+                        GregorianDatePickerDialog.newInstance(SenderDetailsActivity.this,
+                                now.get(Calendar.YEAR),
+                                now.get(Calendar.MONTH),
+                                now.get(Calendar.DAY_OF_MONTH));
+                gregorianDatePickerDialog.setMinDate(now);
+                gregorianDatePickerDialog.setVersion(GregorianDatePickerDialog.Version.VERSION_2);
+                //now.add(Calendar.YEAR, 100);
+                //gregorianDatePickerDialog.setMaxDate(now);
+                gregorianDatePickerDialog.show(getFragmentManager(), "GregorianDatePickerDialog");
 
-                            if(month < 10)
-                                dateString = year+"/0"+month;
-                            else
-                                dateString = year+"/"+month;
-
-                            if(day < 10)
-                                dateString += "/0"+day;
-                            else
-                                dateString += "/"+day;
-
-                            new GetDate(true, dateString).execute();
-                        }
-                    })
-                    .setMinMaxGregorianYear(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.YEAR) + 100)
-                    .setMode(HijriCalendarDialog.Mode.Gregorian)
-                    .setEnableScrolling(false)
-                    .show();
+//                new HijriCalendarDialog.Builder(SenderDetailsActivity.this)
+//                    .setOnDateSetListener(new HijriCalendarView.OnDateSetListener() {
+//                        @Override
+//                        public void onDateSet(int year, int month, int day) {
+//                            String dateString;
+//
+//                            if(month < 10)
+//                                dateString = year+"/0"+month;
+//                            else
+//                                dateString = year+"/"+month;
+//
+//                            if(day < 10)
+//                                dateString += "/0"+day;
+//                            else
+//                                dateString += "/"+day;
+//
+//                            new GetDate(true, dateString).execute();
+//                        }
+//                    })
+//                    .setMinMaxGregorianYear(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.YEAR) + 100)
+//                    .setMode(HijriCalendarDialog.Mode.Gregorian)
+//                    .setEnableScrolling(false)
+//                    .show();
             }
         });
 
@@ -616,30 +628,40 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                     return;
                 }
 
-                new HijriCalendarDialog.Builder(SenderDetailsActivity.this)
-                    .setOnDateSetListener(new HijriCalendarView.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(int year, int month, int day) {
-                            month+=1;
-                            String dateString;
+                UmmalquraCalendar now = new UmmalquraCalendar();
+                HijriDatePickerDialog hijriDatePickerDialog =
+                        HijriDatePickerDialog.newInstance(SenderDetailsActivity.this,
+                                now.get(UmmalquraCalendar.YEAR),
+                                now.get(UmmalquraCalendar.MONTH),
+                                now.get(UmmalquraCalendar.DAY_OF_MONTH));
+                hijriDatePickerDialog.setMinDate(now);
+                hijriDatePickerDialog.setVersion(HijriDatePickerDialog.Version.VERSION_2);
+                hijriDatePickerDialog.show(getFragmentManager(), "HijriDatePickerDialog");
 
-                            if(month < 10)
-                                dateString = year+"/0"+month;
-                            else
-                                dateString = year+"/"+month;
-
-                            if(day < 10)
-                                dateString += "/0"+day;
-                            else
-                                dateString += "/"+day;
-
-                            new GetDate(false, dateString).execute();
-                        }
-                    })
-                    .setMinMaxGregorianYear(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.YEAR) + 100)
-                    .setMode(HijriCalendarDialog.Mode.Hijri)
-                    .setEnableScrolling(false)
-                    .show();
+//                new HijriCalendarDialog.Builder(SenderDetailsActivity.this)
+//                    .setOnDateSetListener(new HijriCalendarView.OnDateSetListener() {
+//                        @Override
+//                        public void onDateSet(int year, int month, int day) {
+//                            month+=1;
+//                            String dateString;
+//
+//                            if(month < 10)
+//                                dateString = year+"/0"+month;
+//                            else
+//                                dateString = year+"/"+month;
+//
+//                            if(day < 10)
+//                                dateString += "/0"+day;
+//                            else
+//                                dateString += "/"+day;
+//
+//                            new GetDate(false, dateString).execute();
+//                        }
+//                    })
+//                    .setMinMaxGregorianYear(newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.YEAR) + 100)
+//                    .setMode(HijriCalendarDialog.Mode.Hijri)
+//                    .setEnableScrolling(false)
+//                    .show();
             }
         });
 
@@ -814,6 +836,44 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             }
         };
         dateTimeUpdate.start();
+    }
+
+    @Override
+    public void onDateSet(HijriDatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        //String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
+        monthOfYear+=1;
+        String dateString;
+
+        if(monthOfYear < 10)
+            dateString = year+"/0"+monthOfYear;
+        else
+            dateString = year+"/"+monthOfYear;
+
+        if(dayOfMonth < 10)
+            dateString += "/0"+dayOfMonth;
+        else
+            dateString += "/"+dayOfMonth;
+
+        new GetDate(false, dateString).execute();
+    }
+
+    @Override
+    public void onDateSet(GregorianDatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        //String date = "You picked the following date: "+dayOfMonth+"/"+(++monthOfYear)+"/"+year;
+        monthOfYear+=1;
+        String dateString;
+
+        if(monthOfYear < 10)
+            dateString = year+"/0"+monthOfYear;
+        else
+            dateString = year+"/"+monthOfYear;
+
+        if(dayOfMonth < 10)
+            dateString += "/0"+dayOfMonth;
+        else
+            dateString += "/"+dayOfMonth;
+
+        new GetDate(true, dateString).execute();
     }
 
     public boolean isValidMobile(String mobile) {
