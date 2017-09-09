@@ -17,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -266,6 +267,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
             params.put("ArgDmLicenseNoAr", registerUserExtra.getLicenseNoArabic());
             params.put("ArgDmIsFactory", registerUserExtra.isWithGlass()+"");
             params.put("ArgDmLoginType", registerUserExtra.getLoginMethod());
+            params.put("ArgVcId", registerUserExtra.getvCompId());
 
             SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 

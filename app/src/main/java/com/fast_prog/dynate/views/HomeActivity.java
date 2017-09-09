@@ -256,6 +256,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         makeOnlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                gpsTracker.getLocation();
+
                 if(!gpsTracker.canGetLocation()) {
                     gpsTracker.showSettingsAlert();
                     //}
@@ -491,6 +494,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         new TripDetailsMasterListCountCust().execute();
 
         if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "offline").equalsIgnoreCase("online")) {
+
+            gpsTracker.getLocation();
+
             if(!gpsTracker.canGetLocation()) {
                 gpsTracker.showSettingsAlert();
 

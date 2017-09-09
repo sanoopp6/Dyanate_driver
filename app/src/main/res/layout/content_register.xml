@@ -299,6 +299,61 @@
                 android:layout_marginTop="10dp">
 
                 <TextView
+                    android:id="@+id/with_company_label"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/registering_under_company"
+                    android:textSize="14sp" />
+
+                <ToggleButton
+                    android:id="@+id/with_company_switch"
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:checked="false"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/whiteColorText"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:background="@drawable/toggle_button_background"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/company_spinner_layout"
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@drawable/layout_bordered_rounded_squre">
+
+                <Spinner
+                    android:id="@+id/spnr_veh_company"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinner_bg"
+                    android:padding="5dp"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1"
+                    android:padding="7dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/spinner_arrow" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="15dp">
+
+                <TextView
                     android:id="@+id/with_glass_label"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -307,14 +362,27 @@
                     android:text="@string/work_with_glass"
                     android:textSize="14sp" />
 
-                <ImageView
+                <ToggleButton
                     android:id="@+id/with_glass_switch"
                     android:layout_width="80dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginBottom="3dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/on_big"
-                    android:scaleType="fitXY"/>
+                    android:layout_height="25dp"
+                    android:checked="true"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/whiteColorText"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:background="@drawable/toggle_button_background"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes" />
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/with_glass_switch"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_marginTop="3dp"-->
+                    <!--android:layout_marginBottom="3dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:src="@drawable/on_big"-->
+                    <!--android:scaleType="fitXY"/>-->
 
                 <!--<Switch-->
                 <!--android:layout_width="wrap_content"-->

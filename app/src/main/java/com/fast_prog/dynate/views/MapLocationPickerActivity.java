@@ -59,7 +59,7 @@ public class MapLocationPickerActivity extends AppCompatActivity implements OnMa
     private View searchLocationImageView;
 
     private static Location userLocation;
-    private static Location currentLocation;
+    //private static Location currentLocation;
 
     private ImageView changeMapView;
     private ImageView currentLocationView;
@@ -273,7 +273,7 @@ public class MapLocationPickerActivity extends AppCompatActivity implements OnMa
         Location mLocation = new Location("");
         mLocation.setLatitude(latLng.latitude);
         mLocation.setLongitude(latLng.longitude);
-        currentLocation = mLocation;
+        //currentLocation = mLocation;
         userLocation = mLocation;
 
         if (ActivityCompat.checkSelfPermission(MapLocationPickerActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED

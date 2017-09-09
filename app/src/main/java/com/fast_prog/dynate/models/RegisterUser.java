@@ -22,6 +22,8 @@ public class RegisterUser implements Serializable {
     private String vModelName;
     private String vTypeId;
     private String vTypeName;
+    private String vCompId;
+    private String vCompName;
     private String licenseNo;
     private String licenseNoArabic;
     private boolean withGlass;
@@ -144,6 +146,22 @@ public class RegisterUser implements Serializable {
 
     public void setvTypeName(String vTypeName) {
         this.vTypeName = vTypeName;
+    }
+
+    public String getvCompId() {
+        return vCompId;
+    }
+
+    public void setvCompId(String vCompId) {
+        this.vCompId = vCompId;
+    }
+
+    public String getvCompName() {
+        return vCompName;
+    }
+
+    public void setvCompName(String vCompName) {
+        this.vCompName = vCompName;
     }
 
     public String getLicenseNo() {

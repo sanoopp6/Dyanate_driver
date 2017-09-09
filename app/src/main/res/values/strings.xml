@@ -239,5 +239,8 @@
     <string name="yes">YES</string>
     <string name="you_are_here">You are here</string>
     <string name="you_must_enter_price">You must enter price!</string>
+    <string name="registering_under_company">Are you registering under a company ?</string>
+    <string name="select_company">Select Company</string>
+    <string name="you_must_select_company">You must select a company.</string>
 
 </resources>

@@ -17,8 +17,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -43,11 +41,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.fast_prog.dynate.R;
 import com.fast_prog.dynate.models.RegisterUser;
@@ -73,7 +74,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,42 +81,33 @@ import java.util.List;
 public class RegisterActivity extends AppCompatActivity {
 
     EditText nameEditText;
-    //EditText nameArEditText;
     EditText mailEditText;
     EditText usernameEditText;
     EditText passwordEditText;
-    //EditText licenseEditText;
-    //EditText licenseArEditText;
     EditText mobileEditText;
 
     CheckBox iAgreeCheckBox;
 
     Button addressEditText;
 
-    //RadioButton radioButtonYes;
-    //RadioButton radioButtonNo;
-    //RadioGroup radioGroupWorkWithGlass;
-    ImageView imgWorkWithGlass;
+    ToggleButton toggleWithGlass;
+    ToggleButton toggleWithCompany;
 
     Spinner vehicleModelSpinner;
     Spinner vehicleTypeSpinner;
+    Spinner vehicleCompanySpinner;
 
     TextView termsConditionsTextView;
-    //TextView titleText;
     TextView nameTitleText;
-    //TextView nameArTitleText;
     TextView mobileTitleText;
     TextView emailTitleText;
     TextView usernameTitleText;
     TextView passwordTitleText;
     TextView vModelTitleText;
     TextView vTypeTitleText;
-    //TextView licenseTitleText;
-    //TextView licenseArTitleText;
     TextView withGlassText;
+    TextView withCompanyText;
     TextView pickAddressButton;
-
-    //IntlPhoneInput phoneInputView;
 
     Button registerButton;
     Button attachPicButton;
@@ -124,33 +115,52 @@ public class RegisterActivity extends AppCompatActivity {
     RegisterUser registerUser;
 
     String name;
-    //String nameAr;
     String mobile;
     String mail;
     String address;
     String username;
     String password;
-    //String license;
-    //String licenseAr;
     String vModelName;
     String vTypeName;
+    String vCompName;
+
+//    ImageView imgWorkWithGlass;
+//    String nameAr;
+//    EditText nameArEditText;
+//    EditText licenseEditText;
+//    EditText licenseArEditText;
+//    RadioButton radioButtonYes;
+//    RadioButton radioButtonNo;
+//    RadioGroup radioGroupWorkWithGlass;
+//    TextView titleText;
+//    TextView nameArTitleText;
+//    TextView licenseTitleText;
+//    TextView licenseArTitleText;
+//    IntlPhoneInput phoneInputView;
+//    String license;
+//    String licenseAr;
 
     boolean withGlass;
+    boolean withCompany;
 
     int vModelId;
-
-    Integer vTypeId;
+    int vTypeId;
+    int vCompId;
 
     JSONArray vehicleModelArray;
     JSONArray vehicleTypeArray;
+    JSONArray vehicleCompanyArray;
 
     List<String> vehicleModelDataList;
     List<String> vehicleModelIdList;
     List<String> vehicleTypeDataList;
     List<String> vehicleTypeIdList;
+    List<String> vehicleCompanyDataList;
+    List<String> vehicleCompanyIdList;
 
     ArrayAdapter<String> vehicleModelAdapter;
     ArrayAdapter<String> vehicleTypeAdapter;
+    ArrayAdapter<String> vehicleCompanyAdapter;
 
     double longitude;
     double latitude;
@@ -173,6 +183,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     LinearLayoutManager filesLayoutManager;
 
+    LinearLayout companySpinnerLayout;
+
     RecyclerView.Adapter mFilesAdapter;
 
     private PhoneNumberUtil mPhoneUtil = PhoneNumberUtil.getInstance();
@@ -191,9 +203,6 @@ public class RegisterActivity extends AppCompatActivity {
         nameEditText = (EditText) findViewById(R.id.edit_name);
         nameEditText.setTypeface(face);
 
-        //nameArEditText = (EditText) findViewById(R.id.edit_name_ar);
-        //nameArEditText.setTypeface(face);
-
         mailEditText = (EditText) findViewById(R.id.edit_mail);
         mailEditText.setTypeface(face);
 
@@ -206,25 +215,14 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.edit_password);
         passwordEditText.setTypeface(face);
 
-        //licenseEditText = (EditText) findViewById(R.id.edit_license);
-        //licenseEditText.setTypeface(face);
-        //licenseArEditText = (EditText) findViewById(R.id.edit_license_ar);
-        //licenseArEditText.setTypeface(face);
-
         iAgreeCheckBox = (CheckBox) findViewById(R.id.chk_i_agree);
         iAgreeCheckBox.setTypeface(face);
 
         TextView t1 = (TextView) findViewById(R.id.txt_i_agree);
         t1.setTypeface(face);
 
-        //titleText = (TextView) findViewById(R.id.txt_title);
-        //titleText.setTypeface(face);
-
         nameTitleText = (TextView) findViewById(R.id.name_title);
         nameTitleText.setTypeface(face);
-
-        //nameArTitleText = (TextView) findViewById(R.id.name_ar_title);
-        //nameArTitleText.setTypeface(face);
 
         mobileTitleText = (TextView) findViewById(R.id.mobile_title);
         mobileTitleText.setTypeface(face);
@@ -244,13 +242,11 @@ public class RegisterActivity extends AppCompatActivity {
         vTypeTitleText = (TextView) findViewById(R.id.type_title);
         vTypeTitleText.setTypeface(face);
 
-        //licenseTitleText = (TextView) findViewById(R.id.license_title);
-        //licenseTitleText.setTypeface(face);
-        //licenseArTitleText = (TextView) findViewById(R.id.license_ar_title);
-        //licenseArTitleText.setTypeface(face);
-
         withGlassText = (TextView) findViewById(R.id.with_glass_label);
         withGlassText.setTypeface(face);
+
+        withCompanyText = (TextView) findViewById(R.id.with_company_label);
+        withCompanyText.setTypeface(face);
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
@@ -260,7 +256,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         gpsTracker = new GPSTracker(RegisterActivity.this);
 
-        //phoneInputView = (IntlPhoneInput) findViewById(R.id.edit_mobile);
         mobileEditText = (EditText) findViewById(R.id.edit_mobile);
         mobileEditText.setTypeface(face);
 
@@ -275,37 +270,21 @@ public class RegisterActivity extends AppCompatActivity {
 
         vehicleModelSpinner = (Spinner) findViewById(R.id.spnr_veh_model);
         vehicleTypeSpinner = (Spinner) findViewById(R.id.spnr_veh_type);
+        vehicleCompanySpinner = (Spinner) findViewById(R.id.spnr_veh_company);
 
         filesRecyclerView = (RecyclerView) findViewById(R.id.recycler_upload_files);
 
-        //radioButtonYes = (RadioButton) findViewById(R.id.radio_yes);
-        //radioButtonYes.setTypeface(face);
-        //radioButtonNo = (RadioButton) findViewById(R.id.radio_no);
-        //radioButtonNo.setTypeface(face);
-        //radioGroupWorkWithGlass = (RadioGroup) findViewById(R.id.with_glass_switch);
-        imgWorkWithGlass = (ImageView) findViewById(R.id.with_glass_switch);
+        toggleWithCompany = (ToggleButton) findViewById(R.id.with_company_switch);
+        toggleWithCompany.setTypeface(face);
+
+        toggleWithGlass = (ToggleButton) findViewById(R.id.with_glass_switch);
+        toggleWithGlass.setTypeface(face);
+
+        companySpinnerLayout = (LinearLayout) findViewById(R.id.company_spinner_layout);
 
         withGlass = true;
-
-        imgWorkWithGlass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (withGlass) {
-                    withGlass = false;
-                    imgWorkWithGlass.setImageResource(R.drawable.off_big);
-
-                } else {
-                    withGlass = true;
-                    imgWorkWithGlass.setImageResource(R.drawable.on_big);
-                }
-            }
-        });
-        //imgWorkWithGlass.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View v) {
-        //        withGlass = false;
-        //    }
-        //});
+        withCompany = false;
+        companySpinnerLayout.setVisibility(View.GONE);
 
         filesRecyclerView.setHasFixedSize(true);
         filesLayoutManager = new LinearLayoutManager(RegisterActivity.this, LinearLayoutManager.HORIZONTAL, false);
@@ -335,14 +314,12 @@ public class RegisterActivity extends AppCompatActivity {
                 if (gpsTracker.canGetLocation()) {
                     latitude = gpsTracker.getLatitude();
                     longitude = gpsTracker.getLongitude();
-                }
 
-                if (latitude == 0 && longitude == 0) {
-                    gpsTracker.showSettingsAlert();
-
-                } else {
                     Intent intent = new Intent(RegisterActivity.this, MapLocationPickerActivity.class);
                     startActivityForResult(intent, REQUEST_CODE);
+
+                } else {
+                    gpsTracker.showSettingsAlert();
                 }
             }
         });
@@ -357,19 +334,12 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (latitude == 0 && longitude == 0) {
-                    gpsTracker.getLocation();
+                gpsTracker.getLocation();
 
-                    if (gpsTracker.canGetLocation()) {
-                        latitude = gpsTracker.getLatitude();
-                        longitude = gpsTracker.getLongitude();
-                    }
+                if (gpsTracker.canGetLocation()) {
+                    latitude = gpsTracker.getLatitude();
+                    longitude = gpsTracker.getLongitude();
 
-                    if (latitude == 0 && longitude == 0) {
-                        gpsTracker.showSettingsAlert();
-                    }
-
-                } else {
                     if (validate()) {
                         if (ConnectionDetector.isConnected(RegisterActivity.this)) {
                             new CheckUserIDOrMobileNoExist(true).execute();
@@ -378,6 +348,9 @@ public class RegisterActivity extends AppCompatActivity {
                             ConnectionDetector.errorSnackbar(coordinatorLayout);
                         }
                     }
+
+                } else {
+                    gpsTracker.showSettingsAlert();
                 }
             }
         });
@@ -420,8 +393,26 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        vehicleCompanySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int index = parent.getSelectedItemPosition();
+
+                vCompId = Integer.parseInt(vehicleCompanyIdList.get(index));
+                vCompName = vehicleCompanyDataList.get(index);
+
+                if (vCompId > 0) {
+                    isFilled = true;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         if (ConnectionDetector.isConnected(getApplicationContext())) {
-            new GetVehicleModel().execute();
+            new GetVehicleModelVehicleCompany().execute();
         } else {
             ConnectionDetector.errorSnackbar(coordinatorLayout);
         }
@@ -468,10 +459,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } else if (username.matches(pattern)) {
                         usernameEditText.setError(RegisterActivity.this.getResources().getText(R.string.alphanumeric_username));
-                    //} else {
-                    //    if (ConnectionDetector.isConnected(RegisterActivity.this)) {
-                    //        new CheckUserIDOrMobileNoExist(true).execute();
-                    //    }
                     }
                 }
             }
@@ -499,15 +486,71 @@ public class RegisterActivity extends AppCompatActivity {
                     mobile = mobileEditText.getText().toString().trim().replaceFirst("^0+(?!$)", "");
 
                     if (!isValidMobile(mobile)) {
-                    //    if (ConnectionDetector.isConnected(RegisterActivity.this)) {
-                    //        new CheckUserIDOrMobileNoExist(false).execute();
-                    //    }
-                    //} else {
                         mobileEditText.setError(RegisterActivity.this.getResources().getText(R.string.invalid_mobile));
                     }
                 }
             }
         });
+
+        toggleWithCompany.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                withCompany = isChecked;
+
+                if (isChecked) {
+                    companySpinnerLayout.setVisibility(View.VISIBLE);
+                } else {
+                    companySpinnerLayout.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        toggleWithGlass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                withGlass = isChecked;
+            }
+        });
+//        nameArEditText = (EditText) findViewById(R.id.edit_name_ar);
+//        nameArEditText.setTypeface(face);
+//        licenseEditText = (EditText) findViewById(R.id.edit_license);
+//        licenseEditText.setTypeface(face);
+//        licenseArEditText = (EditText) findViewById(R.id.edit_license_ar);
+//        licenseArEditText.setTypeface(face);
+//        titleText = (TextView) findViewById(R.id.txt_title);
+//        titleText.setTypeface(face);
+//        nameArTitleText = (TextView) findViewById(R.id.name_ar_title);
+//        nameArTitleText.setTypeface(face);
+//        licenseTitleText = (TextView) findViewById(R.id.license_title);
+//        licenseTitleText.setTypeface(face);
+//        licenseArTitleText = (TextView) findViewById(R.id.license_ar_title);
+//        licenseArTitleText.setTypeface(face);
+//        phoneInputView = (IntlPhoneInput) findViewById(R.id.edit_mobile);
+//        radioButtonYes = (RadioButton) findViewById(R.id.radio_yes);
+//        radioButtonYes.setTypeface(face);
+//        radioButtonNo = (RadioButton) findViewById(R.id.radio_no);
+//        radioButtonNo.setTypeface(face);
+//        radioGroupWorkWithGlass = (RadioGroup) findViewById(R.id.with_glass_switch);
+//        imgWorkWithGlass.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                withGlass = false;
+//            }
+//        });
+//        imgWorkWithGlass = (ImageView) findViewById(R.id.with_glass_switch);
+//        imgWorkWithGlass.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (withGlass) {
+//                    withGlass = false;
+//                    imgWorkWithGlass.setImageResource(R.drawable.off_big);
+//
+//                } else {
+//                    withGlass = true;
+//                    imgWorkWithGlass.setImageResource(R.drawable.on_big);
+//                }
+//            }
+//        });
     }
 
     class UploadFilesAdapter extends RecyclerView.Adapter<UploadFilesAdapter.ViewHolder> {
@@ -532,8 +575,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public UploadFilesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             // create a new view
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_upload_file, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_upload_file, parent, false);
             // set the view's size, margins, paddings and layout parameters
             return new ViewHolder(v);
         }
@@ -1024,24 +1066,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     boolean validate() {
         name = nameEditText.getText().toString().trim();
-        //nameAr = nameArEditText.getText().toString().trim();
         mail = mailEditText.getText().toString().trim();
         address = addressEditText.getText().toString().trim();
         username = usernameEditText.getText().toString().trim();
         password = passwordEditText.getText().toString().trim();
-        //license = licenseEditText.getText().toString().trim();
-        //licenseAr = licenseArEditText.getText().toString().trim();
         mobile = mobileEditText.getText().toString().trim().replaceFirst("^0+(?!$)", "");
 
         String pattern= "^[0-9]*$";
-
-        //if (nameAr.length() == 0) {
-        //    nameArEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
-        //    nameArEditText.requestFocus();
-        //    return  false;
-        //} else {
-        //    nameArEditText.setError(null);
-        //}
 
         if (name.length() == 0) {
             nameEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
@@ -1051,18 +1082,7 @@ public class RegisterActivity extends AppCompatActivity {
             nameEditText.setError(null);
         }
 
-        //if(phoneInputView.isValid()) {
-        //    mobile = phoneInputView.getNumber();
-        //} else {
-        //    phoneInputView.setDefault();
-        //    phoneInputView.requestFocus();
-        //    return  false;
-        //}
-
         if (isValidMobile(mobile)) {
-            //if (ConnectionDetector.isConnected(RegisterActivity.this)) {
-            //    new CheckUserIDOrMobileNoExist(false).execute();
-            //}
             mobileEditText.setError(null);
         } else {
             mobileEditText.setError(RegisterActivity.this.getResources().getText(R.string.invalid_mobile));
@@ -1103,9 +1123,6 @@ public class RegisterActivity extends AppCompatActivity {
             usernameEditText.requestFocus();
             return false;
         } else {
-            //if (ConnectionDetector.isConnected(RegisterActivity.this)) {
-            //    new CheckUserIDOrMobileNoExist(true).execute();
-            //}
             usernameEditText.setError(null);
         }
 
@@ -1120,22 +1137,6 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             passwordEditText.setError(null);
         }
-
-        //if (license.length() == 0){
-        //    licenseEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
-        //    licenseEditText.requestFocus();
-        //    return  false;
-        //} else {
-        //    licenseEditText.setError(null);
-        //}
-        //
-        //if (licenseAr.length() == 0){
-        //    licenseArEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
-        //    licenseArEditText.requestFocus();
-        //    return  false;
-        //} else {
-        //    licenseArEditText.setError(null);
-        //}
 
         if(vModelId == 0) {
             ((TextView)vehicleModelSpinner.getChildAt(0)).setError(RegisterActivity.this.getResources().getText(R.string.required));
@@ -1173,6 +1174,33 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
+        if (withCompany && vCompId <= 1) {
+            vehicleCompanySpinner.requestFocus();
+
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+            LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+            final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+            builder1.setView(view1);
+            TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+            txtAlert1.setText(getResources().getString(R.string.you_must_select_company));
+            final AlertDialog dialog1 = builder1.create();
+            dialog1.setCancelable(false);
+            view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+            Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+            btnOk.setText(R.string.ok);
+            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog1.dismiss();
+                }
+            });
+            btnOk.setTypeface(face);
+            txtAlert1.setTypeface(face);
+            dialog1.show();
+
+            return false;
+        }
+
         if (!iAgreeCheckBox.isChecked()) {
             iAgreeCheckBox.setError("");
             iAgreeCheckBox.requestFocus();
@@ -1180,6 +1208,39 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             iAgreeCheckBox.setError(null);
         }
+
+        //nameAr = nameArEditText.getText().toString().trim();
+        //license = licenseEditText.getText().toString().trim();
+        //licenseAr = licenseArEditText.getText().toString().trim();
+        //if (nameAr.length() == 0) {
+        //    nameArEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
+        //    nameArEditText.requestFocus();
+        //    return  false;
+        //} else {
+        //    nameArEditText.setError(null);
+        //}
+        //if(phoneInputView.isValid()) {
+        //    mobile = phoneInputView.getNumber();
+        //} else {
+        //    phoneInputView.setDefault();
+        //    phoneInputView.requestFocus();
+        //    return  false;
+        //}
+        //if (license.length() == 0){
+        //    licenseEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
+        //    licenseEditText.requestFocus();
+        //    return  false;
+        //} else {
+        //    licenseEditText.setError(null);
+        //}
+        //
+        //if (licenseAr.length() == 0){
+        //    licenseArEditText.setError(RegisterActivity.this.getResources().getText(R.string.required));
+        //    licenseArEditText.requestFocus();
+        //    return  false;
+        //} else {
+        //    licenseArEditText.setError(null);
+        //}
 
         return true;
     }
@@ -1218,7 +1279,6 @@ public class RegisterActivity extends AppCompatActivity {
             return json;
         }
 
-
         protected void onPostExecute(final JSONObject response) {
             progressDialog.dismiss();
 
@@ -1255,8 +1315,15 @@ public class RegisterActivity extends AppCompatActivity {
                                 registerUser.setLatitide(latitude+"");
                                 registerUser.setLongitude(longitude+"");
                                 registerUser.setLoginMethod("normal");
-                                registerUser.setvModelId(vTypeId.toString().trim());
+                                registerUser.setvModelId(String.valueOf(vTypeId));
                                 registerUser.setvModelName(vTypeName);
+                                if (withCompany) {
+                                    registerUser.setvCompId(String.valueOf(vCompId));
+                                    registerUser.setvCompName(vCompName);
+                                } else {
+                                    registerUser.setvCompId("1");
+                                    registerUser.setvCompName(getResources().getString(R.string.select_company));
+                                }
                                 registerUser.setLicenseNo("");
                                 registerUser.setLicenseNoArabic("");
                                 registerUser.setWithGlass(withGlass);
@@ -1264,16 +1331,6 @@ public class RegisterActivity extends AppCompatActivity {
                                 for (UploadFiles file : uploadFiles) {
                                     file.setBm(null);
                                 }
-
-                                //intent.putExtra("registerUser", registerUser);
-                                //intent.putExtra("uploadFiles", (Serializable) uploadFiles);
-                                //
-                                //try {
-                                //    intent.putExtra("OTP", response.getJSONArray("data").getJSONObject(0).getString("OTP"));
-                                //
-                                //} catch (JSONException e) {
-                                //    e.printStackTrace();
-                                //}
 
                                 try {
                                     VerifyOTPActivity.otpExtra = response.getJSONArray("data").getJSONObject(0).getString("OTP");
@@ -1328,41 +1385,50 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private class GetVehicleModel extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class GetVehicleModelVehicleCompany extends AsyncTask<Void, Void, JSONObject> {
+        JsonParser jsonParserVehicleModel;
+        JSONObject jsonObjectVehicleModel;
+        JsonParser jsonParserVehicleCompany;
+        JSONObject jsonObjectVehicleCompany;
+        MyCircularProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            progressDialog = new MyCircularProgressDialog(RegisterActivity.this);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
-
-            HashMap<String, String> params = new HashMap<>();
+            jsonParserVehicleModel = new JsonParser();
+            jsonParserVehicleCompany = new JsonParser();
 
             SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
-            JSONObject json;
+            HashMap<String, String> params = new HashMap<>();
 
             if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleMake", "POST", params);
+                jsonObjectVehicleModel = jsonParserVehicleModel.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleMake", "POST", params);
+                jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleCompany", "POST", params);
 
             } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleMake", "POST", params);
+                jsonObjectVehicleModel = jsonParserVehicleModel.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleMake", "POST", params);
+                jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleCompany", "POST", params);
             }
 
-            return json;
+            return jsonObjectVehicleCompany;
         }
 
+        protected void onPostExecute(JSONObject jsonObject) {
+            progressDialog.dismiss();
 
-        protected void onPostExecute(JSONObject response) {
-            if (response != null) {
+            if (jsonObjectVehicleModel != null) {
                 try {
                     // Parsing json object response
                     // response will be a json object
-                    if (response.getBoolean("status")) {
-                        vehicleModelArray = response.getJSONArray("data");
+                    if (jsonObjectVehicleModel.getBoolean("status")) {
+                        vehicleModelArray = jsonObjectVehicleModel.getJSONArray("data");
 
                         if (vehicleModelArray.length() > 0) {
                             vehicleModelIdList = new ArrayList<>();
@@ -1383,13 +1449,42 @@ public class RegisterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+
+            if (jsonObjectVehicleCompany != null) {
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    if (jsonObjectVehicleCompany.getBoolean("status")) {
+                        vehicleCompanyArray = jsonObjectVehicleCompany.getJSONArray("data");
+
+                        if (vehicleCompanyArray.length() > 0) {
+                            vehicleCompanyIdList = new ArrayList<>();
+                            vehicleCompanyDataList = new ArrayList<>();
+
+                            vehicleCompanyIdList.add("0");
+                            vehicleCompanyDataList.add(getResources().getString(R.string.select_company));
+
+                            for (int i = 0; i < vehicleCompanyArray.length(); i++) {
+                                if (Integer.parseInt(vehicleCompanyArray.getJSONObject(i).getString("VcId").trim()) > 1) {
+                                    vehicleCompanyIdList.add(vehicleCompanyArray.getJSONObject(i).getString("VcId"));
+                                    vehicleCompanyDataList.add(vehicleCompanyArray.getJSONObject(i).getString("VcName"));
+                                }
+                            }
+                            vehicleCompanyAdapter = new MySpinnerAdapter(RegisterActivity.this, android.R.layout.select_dialog_item, vehicleCompanyDataList);
+                            vehicleCompanySpinner.setAdapter(vehicleCompanyAdapter);
+                        }
+
+                        vCompId = 0;
+                        vCompName = "";
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     private static class MySpinnerAdapter extends ArrayAdapter<String> {
-
-        // (In reality I used a manager which caches the Typeface objects)
-        // Typeface font = FontManager.getInstance().getFont(getContext(), BLAMBOT);
 
         private MySpinnerAdapter(Context context, int resource, List<String> items) {
             super(context, resource, items);
@@ -1448,9 +1543,7 @@ public class RegisterActivity extends AppCompatActivity {
             return json;
         }
 
-
         protected void onPostExecute(JSONObject response) {
-
             progressDialog.dismiss();
 
             if (response != null) {
@@ -1483,9 +1576,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void selectImage(final Context context) {
-        final CharSequence[] options = {context.getResources().getString(R.string.take_photo),
-                context.getResources().getString(R.string.choose_from_gallery),
-                context.getResources().getString(R.string.cancel)};
+        final CharSequence[] options = {context.getResources().getString(R.string.take_photo), context.getResources().getString(R.string.choose_from_gallery), context.getResources().getString(R.string.cancel)};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("");

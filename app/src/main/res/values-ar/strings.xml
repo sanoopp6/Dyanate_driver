@@ -220,5 +220,8 @@
     <string name="yes">موافق</string>
     <string name="you_are_here">أنت هنا</string>
     <string name="you_must_enter_price">السعر غير صالح!</string>
+    <string name="registering_under_company">هل تقوم بالتسجيل تحت شركة؟</string>
+    <string name="select_company">حدد الشركة</string>
+    <string name="you_must_select_company">يجب تحديد شركة.</string>
 
 </resources>
