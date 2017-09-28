@@ -42,7 +42,7 @@
                 android:id="@+id/image_view_map_change_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/layout_transparent_squre"
+                android:background="@drawable/layout_transparent_squre_rounded"
                 android:padding="8dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_earth1" />

@@ -75,21 +75,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(FROM_SELF, rideTemp.getIsFromself());
-        values.put(FROM_NAME, rideTemp.getFromName());
-        values.put(FROM_MOB, rideTemp.getFromMobile());
-        values.put(FROM_ISO, rideTemp.getFromISO());
-        values.put(FROM_MOB_NO_ISO, rideTemp.getFromMobWithoutISO());
-        values.put(TO_SELF, rideTemp.getIsToself());
-        values.put(TO_NAME, rideTemp.getToName());
-        values.put(TO_MOB, rideTemp.getToMobile());
-        values.put(TO_ISO, rideTemp.getToISO());
-        values.put(TO_MOB_NO_ISO, rideTemp.getToMobWithoutISO());
-        values.put(GRE_DATE, rideTemp.getDate());
-        values.put(HIJ_DATE, rideTemp.getHijriDate());
-        values.put(TIME, rideTemp.getTime());
-        values.put(TIME_STR, rideTemp.getTimeString());
-        values.put(MESSAGE, rideTemp.getIsMessage());
+        values.put(FROM_SELF, rideTemp.isFromSelf);
+        values.put(FROM_NAME, rideTemp.fromName);
+        values.put(FROM_MOB, rideTemp.fromMobile);
+        values.put(FROM_ISO, rideTemp.fromISO);
+        values.put(FROM_MOB_NO_ISO, rideTemp.fromMobWithoutISO);
+        values.put(TO_SELF, rideTemp.isToSelf);
+        values.put(TO_NAME, rideTemp.toName);
+        values.put(TO_MOB, rideTemp.toMobile);
+        values.put(TO_ISO, rideTemp.toISO);
+        values.put(TO_MOB_NO_ISO, rideTemp.toMobWithoutISO);
+        values.put(GRE_DATE, rideTemp.date);
+        values.put(HIJ_DATE, rideTemp.hijriDate);
+        values.put(TIME, rideTemp.time);
+        values.put(TIME_STR, rideTemp.timeString);
+        values.put(MESSAGE, rideTemp.isMessage);
 
         // Inserting Row
         db.insert(TABLE_RIDE, null, values);
@@ -183,7 +183,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteRideTemp(RideTemp rideTemp) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_RIDE, KEY_ID + " = ?",
-                new String[] { String.valueOf(rideTemp.getId()) });
+                new String[] { String.valueOf(rideTemp.id) });
         db.close();
     }
 

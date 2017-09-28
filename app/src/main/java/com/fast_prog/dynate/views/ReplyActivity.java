@@ -5,27 +5,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -39,25 +32,26 @@ import com.fast_prog.dynate.models.Order;
 import com.fast_prog.dynate.utilities.AlarmController;
 import com.fast_prog.dynate.utilities.ConnectionDetector;
 import com.fast_prog.dynate.utilities.Constants;
-import com.fast_prog.dynate.utilities.CustomTypefaceSpan;
 import com.fast_prog.dynate.utilities.JsonParser;
 import com.fast_prog.dynate.utilities.MyCircularProgressDialog;
-import com.fast_prog.dynate.utilities.SetOffline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class ReplyActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class ReplyActivity extends AppCompatActivity {
+        //implements NavigationView.OnNavigationItemSelectedListener {
+        //TextView usernameTextView;
 
     Typeface face;
+
     CoordinatorLayout coordinatorLayout;
+
     Snackbar snackbar;
 
     Order order;
@@ -65,7 +59,6 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
     private Button agreeButton;
     private Button disagreeButton;
 
-    TextView usernameTextView;
     TextView subTitleTextView;
     TextView shipTitleTextView;
     TextView vehModelTextView;
@@ -87,26 +80,30 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
     ImageView toLocTextView;
 
     EditText priceEditText;
+
     CheckBox negotiableCheckbox;
 
     String tripDId;
-    double price;
-    Boolean negotiable;
-    double rate;
 
-    AlertDialog alertDialog;
-    private AlarmController alarmController;
+    Boolean negotiable;
+
+    double price;
+    double rate;
     boolean alarmOn;
     boolean fromTripAdd;
 
+    AlertDialog alertDialog;
+
+    private AlarmController alarmController;
+
     MyCircularProgressDialog myCircularProgressDialog;
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reply);
-
-        face = Typeface.createFromAsset(ReplyActivity.this.getAssets(), Constants.FONT_URL);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,13 +119,8 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         titleTextView.setTextColor(Color.WHITE);
         getSupportActionBar().setCustomView(titleTextView);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        final SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        face = Typeface.createFromAsset(ReplyActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         order = (Order) getIntent().getSerializableExtra("order");
         if(order == null) finish();
@@ -137,19 +129,19 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         fromTripAdd = getIntent().getBooleanExtra("fromTripAdd", false);
 
         if (fromTripAdd) {
-            if(preferences.getBoolean(Constants.PREFS_IS_LOGIN, false)) {
+            if(sharedPreferences.getBoolean(Constants.PREFS_IS_LOGIN, false)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ReplyActivity.this);
                 LayoutInflater inflater = ReplyActivity.this.getLayoutInflater();
                 final View view = inflater.inflate(R.layout.alert_dialog, null);
                 builder.setView(view);
                 TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
                 txtAlert.setText(R.string.now_offline_change_to_online);
-                final AlertDialog dialog = builder.create();
-                dialog.setCancelable(false);
+                alertDialog = builder.create();
+                alertDialog.setCancelable(false);
                 view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        alertDialog.dismiss();
 
                         startActivity(new Intent(ReplyActivity.this, HomeActivity.class));
                         finish();
@@ -158,12 +150,12 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                 view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        alertDialog.dismiss();
 
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
                         Date date = new Date();
 
-                        SharedPreferences.Editor editor = preferences.edit();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(Constants.PREFS_STATUS_TIME, simpleDateFormat.format(date));
                         editor.putString(Constants.PREFS_ONLINE_STATUS, "online");
                         editor.commit();
@@ -174,8 +166,19 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                 Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
                 btnCancel.setTypeface(face);
                 txtAlert.setTypeface(face);
-                dialog.show();
+                alertDialog.show();
             }
+
+        } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
         }
 
         if(alarmOn) {
@@ -185,20 +188,25 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        Menu menu = navigationView.getMenu();
-        usernameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
-        usernameTextView.setText(preferences.getString(Constants.PREFS_USER_NAME, ""));
-
-        for (int i=0;i<menu.size();i++) {
-            MenuItem mi = menu.getItem(i);
-            SpannableString s = new SpannableString(mi.getTitle());
-            s.setSpan(new CustomTypefaceSpan("", face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            mi.setTitle(s);
-        }
-
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//
+//        Menu menu = navigationView.getMenu();
+//        usernameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
+//        usernameTextView.setText(sharedPreferences.getString(Constants.PREFS_USER_NAME, ""));
+//
+//        for (int i=0;i<menu.size();i++) {
+//            MenuItem mi = menu.getItem(i);
+//            SpannableString s = new SpannableString(mi.getTitle());
+//            s.setSpan(new CustomTypefaceSpan("", face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            mi.setTitle(s);
+//        }
         //if(preferences.getBoolean(Constants.PREFS_USER_AGENT, false)) {
         //    menu.findItem (R.id.nav_orders).setVisible(true);
         //    menu.findItem (R.id.nav_agent).setVisible(false);
@@ -274,24 +282,24 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
 
         String sourceString;
 
-        sourceString = getResources().getString(R.string.subject) + " " + order.getTripSubject();
+        sourceString = getResources().getString(R.string.subject) + " " + order.tripSubject;
         subTitleTextView.setText(Html.fromHtml(sourceString));
 
-        sourceString = getResources().getString(R.string.shipment) + " " + order.getTripNotes();
+        sourceString = getResources().getString(R.string.shipment) + " " + order.tripNotes;
         shipTitleTextView.setText(Html.fromHtml(sourceString));
 
         //sourceString = "<b>" + getResources().getString(R.string.vehicle_type) + "</b> " + order.getVehicleModel();
-        sourceString = getResources().getString(R.string.vehicle_type) + " " + order.getVehicleModel();
+        sourceString = getResources().getString(R.string.vehicle_type) + " " + order.vehicleModel;
         vehModelTextView.setText(Html.fromHtml(sourceString));
 
-        sourceString = getResources().getString(R.string.vehicle_model) + " " + order.getVehicleType();
+        sourceString = getResources().getString(R.string.vehicle_model) + " " + order.vehicleType;
         vehTypeTextView.setText(Html.fromHtml(sourceString));
 
-        if (order.getDistance() != null) {
-            sourceString = order.getDistance();
+        if (order.distance != null) {
+            sourceString = order.distance;
             distanceTextView.setText(Html.fromHtml(sourceString));
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
                 distanceTextView.setTextDirection(View.TEXT_DIRECTION_RTL);
             } else {
                 distanceTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
@@ -301,34 +309,34 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
             distanceTextView.setVisibility(View.GONE);
         }
 
-        sourceString = getResources().getString(R.string.name) + " " + order.getTripFromName();
+        sourceString = getResources().getString(R.string.name) + " " + order.tripFromName;
         fromNameTextView.setText(Html.fromHtml(sourceString));
 
-        sourceString = getResources().getString(R.string.date) + " " + order.getScheduleDate();
+        sourceString = getResources().getString(R.string.date) + " " + order.scheduleDate;
         dateTitleTextView.setText(Html.fromHtml(sourceString));
 
-        sourceString = getResources().getString(R.string.time) + " " + order.getScheduleTime();
+        sourceString = getResources().getString(R.string.time) + " " + order.scheduleTime;
         timeTitleTextView.setText(Html.fromHtml(sourceString));
 
-        sourceString = getResources().getString(R.string.name) + " " + order.getTripToName();
+        sourceString = getResources().getString(R.string.name) + " " + order.tripToName;
         toNameTextView.setText(Html.fromHtml(sourceString));
 
-        if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-            sourceString = getResources().getString(R.string.mobile) + " " + order.getTripFromMob().replace("+", "") + "+";
+        if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+            sourceString = getResources().getString(R.string.mobile) + " " + order.tripFromMob.replace("+", "") + "+";
             fromMobileTextView.setText(Html.fromHtml(sourceString));
 
-            sourceString = getResources().getString(R.string.mobile) + " " + order.getTripToMob().replace("+", "") + "+";
+            sourceString = getResources().getString(R.string.mobile) + " " + order.tripToMob.replace("+", "") + "+";
             toMobileTextView.setText(Html.fromHtml(sourceString));
 
         } else {
-            sourceString = getResources().getString(R.string.mobile) + " " + order.getTripFromMob();
+            sourceString = getResources().getString(R.string.mobile) + " " + order.tripFromMob;
             fromMobileTextView.setText(Html.fromHtml(sourceString));
 
-            sourceString = getResources().getString(R.string.mobile) + " " + order.getTripToMob();
+            sourceString = getResources().getString(R.string.mobile) + " " + order.tripToMob;
             toMobileTextView.setText(Html.fromHtml(sourceString));
         }
 
-        sourceString = getResources().getString(R.string.sender) + " " + order.getTripFromAddress();
+        sourceString = getResources().getString(R.string.sender) + " " + order.tripFromAddress;
         fromAddrTextView.setText(Html.fromHtml(sourceString));
 
         fromLocTextView.setOnClickListener(new View.OnClickListener() {
@@ -340,7 +348,7 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
             }
         });
 
-        sourceString = getResources().getString(R.string.receiver) + " " + order.getTripToAddress();
+        sourceString = getResources().getString(R.string.receiver) + " " + order.tripToAddress;
         toAddrTextView.setText(Html.fromHtml(sourceString));
 
         toLocTextView.setOnClickListener(new View.OnClickListener() {
@@ -353,7 +361,7 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         });
 
         if (ConnectionDetector.isConnected(getApplicationContext())) {
-            new GetOrderDetails().execute();
+            new TripDetailsListUpdateTripNotifiedStatusBackground().execute();
 
         } else {
             ConnectionDetector.errorSnackbar(coordinatorLayout);
@@ -379,10 +387,7 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         agreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (alarmOn) {
-                    if (alarmController != null) alarmController.stopSound();
-                }
-
+                if (alarmOn && alarmController != null) { alarmController.stopSound(); }
                 String priceStr = priceEditText.getText().toString().trim();
                 price = 0;
 
@@ -395,20 +400,20 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                     builder1.setView(view1);
                     TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                     txtAlert1.setText(R.string.you_must_enter_price);
-                    final AlertDialog dialog1 = builder1.create();
-                    dialog1.setCancelable(false);
+                    alertDialog = builder1.create();
+                    alertDialog.setCancelable(false);
                     Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                     btnOk.setText(getResources().getString(R.string.ok));
                     view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            dialog1.dismiss();
+                            alertDialog.dismiss();
                         }
                     });
                     view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                     btnOk.setTypeface(face);
                     txtAlert1.setTypeface(face);
-                    dialog1.show();
+                    alertDialog.show();
                 }
 
                 if (rate != price) {
@@ -424,17 +429,17 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(R.string.are_you_sure);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         Button btnCancel = (Button) view1.findViewById(R.id.btn_cancel);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
 
                                 if (tripDId != null)
-                                    new UpdateTripDetails().execute();
+                                    new TripDetailsUpdateBackground().execute();
                                 //else
                                 //new AddTripDetails(true).execute();
                             }
@@ -442,13 +447,13 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                         view1.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnCancel.setTypeface(face);
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
                 }
             }
@@ -457,9 +462,7 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         disagreeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(alarmOn) {
-                    if (alarmController != null) alarmController.stopSound();
-                }
+                if(alarmOn && alarmController != null) { alarmController.stopSound(); }
 
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(ReplyActivity.this);
                 LayoutInflater inflater1 = ReplyActivity.this.getLayoutInflater();
@@ -467,17 +470,16 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                 builder1.setView(view1);
                 TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                 txtAlert1.setText(R.string.are_you_sure);
-                final AlertDialog dialog1 = builder1.create();
-                dialog1.setCancelable(false);
+                alertDialog = builder1.create();
+                alertDialog.setCancelable(false);
                 Button btnCancel = (Button) view1.findViewById(R.id.btn_cancel);
                 Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                 view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog1.dismiss();
+                        alertDialog.dismiss();
 
-                        if(tripDId != null)
-                            new UpdateTripDetailStatus(true).execute();
+                        if(tripDId != null) new TripDetailsStatusUpdateBackground(true).execute();
                         //else
                         //new AddTripDetails(false).execute();
                     }
@@ -485,13 +487,13 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                 view1.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog1.dismiss();
+                        alertDialog.dismiss();
                     }
                 });
                 btnCancel.setTypeface(face);
                 btnOk.setTypeface(face);
                 txtAlert1.setTypeface(face);
-                dialog1.show();
+                alertDialog.show();
             }
         });
 
@@ -523,6 +525,10 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         if (alarmOn) {
             if (alarmController != null) alarmController.stopSound();
         }
+
+        if (myCircularProgressDialog != null && myCircularProgressDialog.isShowing()) {
+            myCircularProgressDialog.cancel();
+        }
     }
 
     @Override
@@ -534,200 +540,201 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.home, menu);
-
-        if (fromTripAdd) {
-            MenuItem menuBack = menu.findItem(R.id.back_option);
-            menuBack.setVisible(false);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            finish();
-        }
-
-        if (id == R.id.exit_option) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ReplyActivity.this);
-            LayoutInflater inflater = ReplyActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_CUST_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    Intent intent = new Intent(ReplyActivity.this, LoginActivity.class);
-                    ActivityCompat.finishAffinity(ReplyActivity.this);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            startActivity(new Intent(ReplyActivity.this, HomeActivity.class));
-        }
-
-        //if (id == R.id.nav_orders) {
-        //    startActivity(new Intent(ReplyActivity.this, MyOrdersActivity.class));
-        //}
-        //if (id == R.id.nav_agent) {
-        //    final MyCircularProgressDialog progressDialog;
-        //    progressDialog = new MyCircularProgressDialog(ReplyActivity.this);
-        //    progressDialog.setCancelable(false);
-        //    progressDialog.show();
-        //
-        //    Handler handler = new Handler();
-        //    handler.postDelayed(new Runnable() {
-        //        public void run() {
-        //            progressDialog.dismiss();
-        //
-        //            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        //
-        //            SharedPreferences.Editor editor = preferences.edit();
-        //            editor.putBoolean(Constants.PREFS_USER_AGENT, true);
-        //            editor.commit();
-        //
-        //            startActivity(new Intent(ReplyActivity.this, HomeActivity.class));
-        //            finish();
-        //        }
-        //    }, 2000);
-        //}
-
-        if (id == R.id.nav_language) {
-            startActivity(new Intent(ReplyActivity.this, ChangeLanguageActivity.class));
-        }
-
-        if (id == R.id.nav_share) {
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.download_dynate) + " " + preferences.getString(Constants.PREFS_SHARE_URL, ""));
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-        }
-
-        if (id == R.id.nav_logout) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ReplyActivity.this);
-            LayoutInflater inflater = ReplyActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    Intent intent = new Intent(ReplyActivity.this, LoginActivity.class);
-                    ActivityCompat.finishAffinity(ReplyActivity.this);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        //if (id == R.id.nav_exit) {
-        //    SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        //
-        //    if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-        //        SharedPreferences.Editor editor = preferences.edit();
-        //        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-        //        editor.commit();
-        //
-        //        new SetOffline(preferences.getString(Constants.PREFS_USER_ID, "")).execute();
-        //    }
-        //
-        //    ActivityCompat.finishAffinity(ReplyActivity.this);
-        //    finish();
-        //}
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+////        if (fromTripAdd) {
+////            MenuItem menuBack = menu.findItem(R.id.back_option);
+////            menuBack.setVisible(false);
+////        }
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+////        if (id == R.id.back_option) {
+////            finish();
+////        }
+//
+//        if (id == R.id.exit_option) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(ReplyActivity.this);
+//            LayoutInflater inflater = ReplyActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_CUST_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
+//                    editor.commit();
+//
+//                    Intent intent = new Intent(ReplyActivity.this, LoginActivity.class);
+//                    ActivityCompat.finishAffinity(ReplyActivity.this);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_home) {
+//            startActivity(new Intent(ReplyActivity.this, HomeActivity.class));
+//        }
+//
+//        //if (id == R.id.nav_orders) {
+//        //    startActivity(new Intent(ReplyActivity.this, MyOrdersActivity.class));
+//        //}
+//        //if (id == R.id.nav_agent) {
+//        //    final MyCircularProgressDialog progressDialog;
+//        //    progressDialog = new MyCircularProgressDialog(ReplyActivity.this);
+//        //    progressDialog.setCancelable(false);
+//        //    progressDialog.show();
+//        //
+//        //    Handler handler = new Handler();
+//        //    handler.postDelayed(new Runnable() {
+//        //        public void run() {
+//        //            progressDialog.dismiss();
+//        //
+//        //            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+//        //
+//        //            SharedPreferences.Editor editor = preferences.edit();
+//        //            editor.putBoolean(Constants.PREFS_USER_AGENT, true);
+//        //            editor.commit();
+//        //
+//        //            startActivity(new Intent(ReplyActivity.this, HomeActivity.class));
+//        //            finish();
+//        //        }
+//        //    }, 2000);
+//        //}
+//
+//        if (id == R.id.nav_settings) {
+//            startActivity(new Intent(ReplyActivity.this, ChangeLanguageActivity.class));
+//        }
+//
+//        if (id == R.id.nav_share) {
+//            Intent sendIntent = new Intent();
+//            sendIntent.setAction(Intent.ACTION_SEND);
+//            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.download_dynate) + " " + sharedPreferences.getString(Constants.PREFS_SHARE_URL, ""));
+//            sendIntent.setType("text/plain");
+//            startActivity(sendIntent);
+//        }
+//
+//        if (id == R.id.nav_logout) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(ReplyActivity.this);
+//            LayoutInflater inflater = ReplyActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
+//                    editor.commit();
+//
+//                    Intent intent = new Intent(ReplyActivity.this, LoginActivity.class);
+//                    ActivityCompat.finishAffinity(ReplyActivity.this);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        //if (id == R.id.nav_exit) {
+//        //    SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+//        //
+//        //    if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//        //        SharedPreferences.Editor editor = preferences.edit();
+//        //        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//        //        editor.commit();
+//        //
+//        //        new SetOffline(preferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//        //    }
+//        //
+//        //    ActivityCompat.finishAffinity(ReplyActivity.this);
+//        //    finish();
+//        //}
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
+//
 //    private class AddTripDetails extends AsyncTask<Void, Void, JSONObject> {
 //        JsonParser jsonParser;
 //        boolean isAgree;
@@ -786,33 +793,32 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
 //        }
 //    }
 
-    private class GetOrderDetails extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParserOne;
-        JsonParser jsonParserTwo;
+    private class TripDetailsListUpdateTripNotifiedStatusBackground extends AsyncTask<Void, Void, JSONObject> {
         JSONObject jsonObjectOne;
         JSONObject jsonObjectTwo;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            myCircularProgressDialog = new MyCircularProgressDialog(ReplyActivity.this);
-            myCircularProgressDialog.setCancelable(false);
-            myCircularProgressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(ReplyActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParserOne = new JsonParser();
-            jsonParserTwo = new JsonParser();
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            JsonParser jsonParserOne = new JsonParser();
+            JsonParser jsonParserTwo = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
             params.put("ArgTripDID", "0");
-            params.put("ArgTripDMID", order.getTripId()+"");
-            params.put("ArgTripDDmId", preferences.getString(Constants.PREFS_USER_ID, "0"));
+            params.put("ArgTripDMID", order.tripId);
+            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"));
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
                 jsonObjectOne = jsonParserOne.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsList", "POST", params);
 
             } else {
@@ -821,10 +827,10 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
 
             params = new HashMap<>();
 
-            params.put("ArgTripDId", order.getTripdId()+"");
+            params.put("ArgTripDId", order.tripDId);
             params.put("ArgTripDIsNotified", "true");
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
                 jsonObjectTwo = jsonParserTwo.makeHttpRequest(Constants.BASE_URL_AR + "UpdateTripNotifiedStatus", "POST", params);
 
             } else {
@@ -890,38 +896,35 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    private class UpdateTripDetails extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class TripDetailsUpdateBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            myCircularProgressDialog = new MyCircularProgressDialog(ReplyActivity.this);
-            myCircularProgressDialog.setCancelable(false);
-            myCircularProgressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(ReplyActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
             params.put("ArgTripDID", tripDId);
             params.put("ArgTripDRate", price+"");
             params.put("ArgTripDIsNegotiable", negotiable+"");
 
-            JSONObject json;
+            String BASE_URL = Constants.BASE_URL_EN + "TripDetailsUpdate";
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsUpdate", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "TripDetailsUpdate", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "TripDetailsUpdate";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(final JSONObject response) {
@@ -938,15 +941,15 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(getResources().getString(R.string.priced_succesfully));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                                 //Intent intent = new Intent(ReplyActivity.this, HomeActivity.class);
                                 //ActivityCompat.finishAffinity(ReplyActivity.this);
                                 //startActivity(intent);
@@ -962,7 +965,8 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
+
                     }  else {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(ReplyActivity.this);
                         LayoutInflater inflater1 = ReplyActivity.this.getLayoutInflater();
@@ -970,20 +974,20 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(response.getString("message"));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {
@@ -1001,44 +1005,40 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
         }
     }
 
-    private class UpdateTripDetailStatus extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class TripDetailsStatusUpdateBackground extends AsyncTask<Void, Void, JSONObject> {
         boolean showDialog;
 
-        UpdateTripDetailStatus(boolean showDialog) {
+        TripDetailsStatusUpdateBackground(boolean showDialog) {
             this.showDialog = showDialog;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            myCircularProgressDialog = new MyCircularProgressDialog(ReplyActivity.this);
-            myCircularProgressDialog.setCancelable(false);
-            myCircularProgressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(ReplyActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
             params.put("ArgTripDID", tripDId);
             params.put("ArgTripDStatus", "5");
 
-            JSONObject json;
+            String BASE_URL = Constants.BASE_URL_EN + "TripDetailsStatusUpdate";
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsStatusUpdate", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "TripDetailsStatusUpdate", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "TripDetailsStatusUpdate";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
-
 
         protected void onPostExecute(final JSONObject response) {
             myCircularProgressDialog.dismiss();
@@ -1095,19 +1095,19 @@ public class ReplyActivity extends AppCompatActivity implements NavigationView.O
                         builder.setView(view);
                         TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
                         txtAlert.setText(response.getString("message"));
-                        final AlertDialog dialog = builder.create();
-                        dialog.setCancelable(false);
+                        alertDialog = builder.create();
+                        alertDialog.setCancelable(false);
                         view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         Button btnOK = (Button) view.findViewById(R.id.btn_ok);
                         btnOK.setTypeface(face);
                         txtAlert.setTypeface(face);
-                        dialog.show();
+                        alertDialog.show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

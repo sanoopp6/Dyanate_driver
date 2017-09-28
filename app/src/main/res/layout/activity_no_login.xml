@@ -29,7 +29,7 @@
             android:textSize="20sp"
             android:textAllCaps="true"
             android:layout_marginTop="5dp"
-            android:background="@drawable/btn_login"
+            android:background="@drawable/btn_lightgrey_rounded"
             android:id="@+id/loginButton"/>
 
         <Button
@@ -43,7 +43,7 @@
             android:textAllCaps="true"
             android:textSize="20sp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/btn_register"
+            android:background="@drawable/btn_whitesmoke_rounded"
             android:id="@+id/registerButton"/>
 
     </LinearLayout>

@@ -5,17 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,9 +36,7 @@ import java.util.HashMap;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
 
-    //IntlPhoneInput phoneInputView;
     EditText mobile;
-    //ImageView mobileSelect;
 
     Button sendButton;
 
@@ -50,9 +47,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     Snackbar snackbar;
 
     Typeface face;
-    //static final int PICK_CONTACT = 101;
 
     private PhoneNumberUtil mPhoneUtil = PhoneNumberUtil.getInstance();
+
+    MyCircularProgressDialog myCircularProgressDialog;
+
+    SharedPreferences sharedPreferences;
+
+    AlertDialog alertDialog;
+
+    //static final int PICK_CONTACT = 101;
+    //IntlPhoneInput phoneInputView;
+    //ImageView mobileSelect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +67,38 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
 
         face = Typeface.createFromAsset(ForgotPasswordActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        String title = getResources().getString(R.string.forgot_password);
+        TextView titleTextView = new TextView(getApplicationContext());
+        titleTextView.setText(title);
+        titleTextView.setTextSize(16);
+        titleTextView.setAllCaps(true);
+        titleTextView.setTypeface(face, Typeface.BOLD);
+        titleTextView.setTextColor(Color.WHITE);
+        getSupportActionBar().setCustomView(titleTextView);
 
         sendButton = (Button) findViewById(R.id.btn_send);
         sendButton.setTypeface(face);
 
-        //phoneInputView = (IntlPhoneInput) findViewById(R.id.edt_mobile);
-        //phoneInputView.setEmptyDefault("sa");
-
         mobile = (EditText) findViewById(R.id.edt_mobile);
         mobile.setTypeface(face);
 
+        //phoneInputView = (IntlPhoneInput) findViewById(R.id.edt_mobile);
+        //phoneInputView.setEmptyDefault("sa");
         //mobileSelect = (ImageView) findViewById(R.id.img_mobile);
         //mobileSelect.setOnClickListener(new View.OnClickListener() {
         //    @Override
@@ -90,7 +116,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
                     if (number.length() != 0 && android.util.Patterns.PHONE.matcher(number).matches()) {
                         if (ConnectionDetector.isConnectedOrConnecting(getApplicationContext())) {
-                            new ForgotPasswordBackground().execute();
+                            new SendOTPDMBackground().execute();
                         } else {
                             ConnectionDetector.errorSnackbar(coordinatorLayout);
                         }
@@ -101,17 +127,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        String title = getResources().getString(R.string.forgot_password);
-        TextView titleTextView = new TextView(getApplicationContext());
-        titleTextView.setText(title);
-        titleTextView.setTextSize(16);
-        titleTextView.setAllCaps(true);
-        titleTextView.setTypeface(face, Typeface.BOLD);
-        titleTextView.setTextColor(Color.WHITE);
-        getSupportActionBar().setCustomView(titleTextView);
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
+        }
+
+        if (myCircularProgressDialog != null && myCircularProgressDialog.isShowing()) {
+            myCircularProgressDialog.cancel();
+        }
     }
 
     public boolean isValidMobile(String mobile) {
@@ -158,13 +186,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     //                final AlertDialog dialog = builder.create();
     //                dialog.setCancelable(false);
     //                view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-    //                view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+    //                view.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
     //                    @Override
     //                    public void onClick(View v) {
     //                        dialog.dismiss();
     //                    }
     //                });
-    //                Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+    //                Button btnOK = (Button) view.findViewById(R.id.btn_green_rounded);
     //                btnOK.setText(R.string.ok);
     //                btnOK.setTypeface(face);
     //                txtAlert.setTypeface(face);
@@ -174,103 +202,94 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     //    }
     //}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        MenuItem menuLogout = menu.findItem(R.id.exit_option);
+//        menuLogout.setVisible(false);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.back_option) {
+//            finish();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-        MenuItem menuLogout = menu.findItem(R.id.exit_option);
-        menuLogout.setVisible(false);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            finish();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private class ForgotPasswordBackground extends AsyncTask<Void, Void, JSONObject> {
-        MyCircularProgressDialog progressDialog;
-        JsonParser jsonParser;
+    private class SendOTPDMBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(ForgotPasswordActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(ForgotPasswordActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
             params.put("ArgMobNo", "966"+number);
             params.put("ArgIsDB", "true");
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            String BASE_URL = Constants.BASE_URL_EN + "SendOTPDM";
 
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "SendOTPDM", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "SendOTPDM", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "SendOTPDM";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
-
         protected void onPostExecute(final JSONObject response) {
-            progressDialog.dismiss();
+            myCircularProgressDialog.dismiss();
 
             if (response != null) {
                 try {
                     // Parsing json object response
                     // response will be a json object
                     if (response.getBoolean("status")) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(ForgotPasswordActivity.this);
-                        LayoutInflater inflater1 = ForgotPasswordActivity.this.getLayoutInflater();
-                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-                        builder1.setView(view1);
-                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-                        txtAlert1.setText(R.string.password_send);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
-                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                        btnOk.setText(R.string.ok);
-                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog1.dismiss();
+                        Intent intent = new Intent(ForgotPasswordActivity.this, ResetPasswordActivity.class);
+                        intent.putExtra("MobNo", number);
+                        intent.putExtra("OTP", response.getJSONArray("data").getJSONObject(0).getString("OTP"));
+                        intent.putExtra("UserId", response.getJSONArray("data").getJSONObject(0).getString("DmId"));
+                        ActivityCompat.finishAffinity(ForgotPasswordActivity.this);
+                        startActivity(intent);
+                        finish();
 
-                                Intent intent = new Intent(ForgotPasswordActivity.this, ResetPasswordActivity.class);
-                                try {
-                                    intent.putExtra("MobNo", number);
-                                    intent.putExtra("OTP", response.getJSONArray("data").getJSONObject(0).getString("OTP"));
-                                    intent.putExtra("UserId", response.getJSONArray("data").getJSONObject(0).getString("DmId"));
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                ActivityCompat.finishAffinity(ForgotPasswordActivity.this);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                        btnOk.setTypeface(face);
-                        txtAlert1.setTypeface(face);
-                        dialog1.show();
+//                        AlertDialog.Builder builder1 = new AlertDialog.Builder(ForgotPasswordActivity.this);
+//                        LayoutInflater inflater1 = ForgotPasswordActivity.this.getLayoutInflater();
+//                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//                        builder1.setView(view1);
+//                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+//                        txtAlert1.setText(R.string.password_send);
+//                        alertDialog = builder1.create();
+//                        alertDialog.setCancelable(false);
+//                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//                        btnOk.setText(R.string.ok);
+//                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                alertDialog.dismiss();
+//                            }
+//                        });
+//                        btnOk.setTypeface(face);
+//                        txtAlert1.setTypeface(face);
+//                        alertDialog.show();
 
                     } else {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(ForgotPasswordActivity.this);
@@ -279,20 +298,20 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(response.getString("message"));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {

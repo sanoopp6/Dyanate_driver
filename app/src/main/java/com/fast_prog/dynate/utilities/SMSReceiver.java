@@ -65,10 +65,9 @@ public class SMSReceiver extends BroadcastReceiver {
         int index = message.indexOf(Constants.OTP_DELIMITER);
 
         if (index != -1) {
-            int start = index + 2;
-            int length = 6;
-            code = message.substring(start, start + length);
-            return code;
+            int start = index + 1;
+            code = message.substring(start, message.length());
+            return code.trim();
         }
 
         return null;

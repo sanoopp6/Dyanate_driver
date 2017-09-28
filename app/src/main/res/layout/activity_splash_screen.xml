@@ -62,7 +62,7 @@
                     <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
                     <!--&lt;!&ndash;android:layout_marginTop="5dp"&ndash;&gt;-->
                     <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:background="@drawable/btn_language"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="@drawabtn_black_roundeduage"&ndash;&gt;-->
                     <!--&lt;!&ndash;android:id="@+id/arabicButton"/>&ndash;&gt;-->
 
                 <!--&lt;!&ndash;<Button&ndash;&gt;-->
@@ -79,7 +79,7 @@
                     <!--&lt;!&ndash;android:textStyle="bold"&ndash;&gt;-->
                     <!--&lt;!&ndash;android:layout_marginTop="7dp"&ndash;&gt;-->
                     <!--&lt;!&ndash;android:layout_centerHorizontal="true"&ndash;&gt;-->
-                    <!--&lt;!&ndash;android:background="@drawable/btn_language"&ndash;&gt;-->
+                    <!--&lt;!&ndash;android:background="@drawabtn_black_roundeduage"&ndash;&gt;-->
                     <!--&lt;!&ndash;android:id="@+id/englishButton"/>&ndash;&gt;-->
 
             <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->

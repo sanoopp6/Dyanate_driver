@@ -13,6 +13,7 @@
         <item>خميس مشيط</item>
     </string-array>
 
+    <string name="app_name">سائق دينا</string>
     <string name="navigation_drawer_close">درج إغلاق الملاحة</string>
     <string name="navigation_drawer_open">درج الملاحة المفتوحة</string>
 
@@ -223,5 +224,26 @@
     <string name="registering_under_company">هل تقوم بالتسجيل تحت شركة؟</string>
     <string name="select_company">حدد الشركة</string>
     <string name="you_must_select_company">يجب تحديد شركة.</string>
+    <string name="do_you_want_remove_bookmark">هل تريد حذف الموقع المحفوظ؟</string>
+    <string name="do_you_want_add_bookmark">هل تريد حفظ هذا الموقع؟</string>
+    <string name="switch_lang">تبديل اللغة إلى English</string>
+    <string name="password_does_not_match">كلمات المرور لا تتطابق!</string>
+    <string name="image_id">صورة الهوية</string>
+    <string name="car_form">استمارة السيارة</string>
+    <string name="card">صورة من كرت التشغيل</string>
+    <string name="other_doc">اخري</string>
+    <string name="id_not_selected">لم يتم تحديد معرف الصورة</string>
+    <string name="carform_not_selected">حدد صورة السيارة</string>
+    <string name="card_not_selected">لم يتم تحديد صورة بطاقة اللاعب</string>
+    <string name="other_not_selected">يرجى تحميل أخرى</string>
+    <string name="name_reg">الاسم (مطلوب):</string>
+    <string name="mobile_reg">الجوال (مطلوب):</string>
+    <string name="username_reg">اسم المستخدم (مطلوب):</string>
+    <string name="password_reg">(مطلوب) كلمه السر:</string>
+    <string name="conf_password_no_colon">تأكيد كلمة المرور</string>
+    <string name="conf_password">تأكيد كلمة المرور :</string>
+    <string name="vehicle_size">بحجم</string>
+    <string name="work_with_glass1">هل تريد العمل مع</string>
+    <string name="work_with_glass2">مصنع الزجاج؟</string>
 
 </resources>

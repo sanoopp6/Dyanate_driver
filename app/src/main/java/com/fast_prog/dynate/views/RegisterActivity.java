@@ -3,36 +3,24 @@ package com.fast_prog.dynate.views;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +31,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -52,7 +39,6 @@ import android.widget.ToggleButton;
 
 import com.fast_prog.dynate.R;
 import com.fast_prog.dynate.models.RegisterUser;
-import com.fast_prog.dynate.models.UploadFiles;
 import com.fast_prog.dynate.utilities.ConnectionDetector;
 import com.fast_prog.dynate.utilities.Constants;
 import com.fast_prog.dynate.utilities.GPSTracker;
@@ -66,11 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -84,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText mailEditText;
     EditText usernameEditText;
     EditText passwordEditText;
+    EditText confPasswordEditText;
     EditText mobileEditText;
 
     CheckBox iAgreeCheckBox;
@@ -93,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
     ToggleButton toggleWithGlass;
     ToggleButton toggleWithCompany;
 
+    Spinner vehicleSizeSpinner;
     Spinner vehicleModelSpinner;
     Spinner vehicleTypeSpinner;
     Spinner vehicleCompanySpinner;
@@ -103,14 +87,17 @@ public class RegisterActivity extends AppCompatActivity {
     TextView emailTitleText;
     TextView usernameTitleText;
     TextView passwordTitleText;
+    TextView confPasswordTitleText;
+    TextView vSizeTitleText;
     TextView vModelTitleText;
     TextView vTypeTitleText;
-    TextView withGlassText;
+    TextView withGlassText1;
+    TextView withGlassText2;
     TextView withCompanyText;
     TextView pickAddressButton;
 
     Button registerButton;
-    Button attachPicButton;
+    //Button attachPicButton;
 
     RegisterUser registerUser;
 
@@ -120,9 +107,70 @@ public class RegisterActivity extends AppCompatActivity {
     String address;
     String username;
     String password;
+    String vSizeName;
     String vModelName;
     String vTypeName;
     String vCompName;
+
+    boolean withGlass;
+    boolean withCompany;
+
+    int vModelId;
+    int vTypeId;
+    int vCompId;
+    int vSizeId;
+
+    JSONArray vehicleSizeArray;
+    JSONArray vehicleModelArray;
+    JSONArray vehicleTypeArray;
+    JSONArray vehicleCompanyArray;
+
+    List<String> vehicleSizeDataList;
+    List<String> vehicleSizeIdList;
+    List<String> vehicleModelDataList;
+    List<String> vehicleModelIdList;
+    List<String> vehicleTypeDataList;
+    List<String> vehicleTypeIdList;
+    List<String> vehicleCompanyDataList;
+    List<String> vehicleCompanyIdList;
+
+    ArrayAdapter<String> vehicleSizeAdapter;
+    ArrayAdapter<String> vehicleModelAdapter;
+    ArrayAdapter<String> vehicleTypeAdapter;
+    ArrayAdapter<String> vehicleCompanyAdapter;
+
+    double longitude;
+    double latitude;
+
+    GPSTracker gpsTracker;
+
+    int REQUEST_CODE = 1122;
+
+//    private static int RESULT_LOAD_IMAGE = 101;
+//    private static int TAKE_PHOTO_CODE = 102;
+
+    CoordinatorLayout coordinatorLayout;
+
+    Snackbar snackbar;
+
+    static Typeface face;
+
+//    List<UploadFiles> uploadFiles;
+//    RecyclerView filesRecyclerView;
+//    LinearLayoutManager filesLayoutManager;
+//    RecyclerView.Adapter mFilesAdapter;
+
+    LinearLayout companySpinnerLayout;
+
+    private PhoneNumberUtil mPhoneUtil = PhoneNumberUtil.getInstance();
+
+    boolean isFilled = false;
+
+    MyCircularProgressDialog myCircularProgressDialog;
+
+    SharedPreferences sharedPreferences;
+
+    AlertDialog alertDialog;
 
 //    ImageView imgWorkWithGlass;
 //    String nameAr;
@@ -140,65 +188,79 @@ public class RegisterActivity extends AppCompatActivity {
 //    String license;
 //    String licenseAr;
 
-    boolean withGlass;
-    boolean withCompany;
-
-    int vModelId;
-    int vTypeId;
-    int vCompId;
-
-    JSONArray vehicleModelArray;
-    JSONArray vehicleTypeArray;
-    JSONArray vehicleCompanyArray;
-
-    List<String> vehicleModelDataList;
-    List<String> vehicleModelIdList;
-    List<String> vehicleTypeDataList;
-    List<String> vehicleTypeIdList;
-    List<String> vehicleCompanyDataList;
-    List<String> vehicleCompanyIdList;
-
-    ArrayAdapter<String> vehicleModelAdapter;
-    ArrayAdapter<String> vehicleTypeAdapter;
-    ArrayAdapter<String> vehicleCompanyAdapter;
-
-    double longitude;
-    double latitude;
-
-    GPSTracker gpsTracker;
-
-    int REQUEST_CODE = 1122;
-
-    private static int RESULT_LOAD_IMAGE = 101;
-    private static int TAKE_PHOTO_CODE = 102;
-
-    CoordinatorLayout coordinatorLayout;
-    Snackbar snackbar;
-
-    static Typeface face;
-
-    List<UploadFiles> uploadFiles;
-
-    RecyclerView filesRecyclerView;
-
-    LinearLayoutManager filesLayoutManager;
-
-    LinearLayout companySpinnerLayout;
-
-    RecyclerView.Adapter mFilesAdapter;
-
-    private PhoneNumberUtil mPhoneUtil = PhoneNumberUtil.getInstance();
-
-    boolean isFilled = false;
-
-    MyCircularProgressDialog myCircularProgressDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
+
         face = Typeface.createFromAsset(RegisterActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                name = nameEditText.getText().toString().trim();
+                mail = mailEditText.getText().toString().trim();
+                address = addressEditText.getText().toString().trim();
+                username = usernameEditText.getText().toString().trim();
+                password = passwordEditText.getText().toString().trim();
+                mobile = mobileEditText.getText().toString().trim();
+                String conf = confPasswordEditText.getText().toString().trim();
+
+                isFilled = isFilled || name.length() != 0 || mobile.length() != 0 || mail.length() != 0 ||
+                        address.length() != 0 || username.length() != 0 || password.length() != 0 ||
+                        iAgreeCheckBox.isChecked() || conf.length() != 0;
+
+                if (isFilled) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                    LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
+                    final View view = inflater.inflate(R.layout.alert_dialog, null);
+                    builder.setView(view);
+                    TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+                    txtAlert.setText(R.string.filled_data_will_be_lost);
+                    alertDialog = builder.create();
+                    alertDialog.setCancelable(false);
+                    view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                        }
+                    });
+                    view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            alertDialog.dismiss();
+                            finish();
+                        }
+                    });
+                    Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+                    btnOK.setTypeface(face);
+                    Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+                    btnCancel.setTypeface(face);
+                    txtAlert.setTypeface(face);
+                    alertDialog.show();
+
+                } else {
+                    finish();
+                }
+            }
+        });
+
+        String title = getResources().getString(R.string.register_title);
+        TextView titleTextView = new TextView(getApplicationContext());
+        titleTextView.setText(title);
+        titleTextView.setTextSize(16);
+        titleTextView.setAllCaps(true);
+        titleTextView.setTypeface(face, Typeface.BOLD);
+        titleTextView.setTextColor(Color.WHITE);
+        getSupportActionBar().setCustomView(titleTextView);
 
         nameEditText = (EditText) findViewById(R.id.edit_name);
         nameEditText.setTypeface(face);
@@ -214,6 +276,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         passwordEditText = (EditText) findViewById(R.id.edit_password);
         passwordEditText.setTypeface(face);
+
+        confPasswordEditText = (EditText) findViewById(R.id.edit_conf_password);
+        confPasswordEditText.setTypeface(face);
 
         iAgreeCheckBox = (CheckBox) findViewById(R.id.chk_i_agree);
         iAgreeCheckBox.setTypeface(face);
@@ -233,8 +298,14 @@ public class RegisterActivity extends AppCompatActivity {
         usernameTitleText = (TextView) findViewById(R.id.username_title);
         usernameTitleText.setTypeface(face);
 
+        confPasswordTitleText = (TextView) findViewById(R.id.conf_password_title);
+        confPasswordTitleText.setTypeface(face);
+
         passwordTitleText = (TextView) findViewById(R.id.password_title);
         passwordTitleText.setTypeface(face);
+
+        vSizeTitleText = (TextView) findViewById(R.id.size_title);
+        vSizeTitleText.setTypeface(face);
 
         vModelTitleText = (TextView) findViewById(R.id.model_title);
         vModelTitleText.setTypeface(face);
@@ -242,8 +313,12 @@ public class RegisterActivity extends AppCompatActivity {
         vTypeTitleText = (TextView) findViewById(R.id.type_title);
         vTypeTitleText.setTypeface(face);
 
-        withGlassText = (TextView) findViewById(R.id.with_glass_label);
-        withGlassText.setTypeface(face);
+        withGlassText1 = (TextView) findViewById(R.id.with_glass_label1);
+        withGlassText1.setTypeface(face);
+
+        withGlassText2 = (TextView) findViewById(R.id.with_glass_label2);
+        withGlassText2.setTypeface(face);
+        withGlassText2.setPaintFlags(withGlassText2.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         withCompanyText = (TextView) findViewById(R.id.with_company_label);
         withCompanyText.setTypeface(face);
@@ -265,14 +340,15 @@ public class RegisterActivity extends AppCompatActivity {
         pickAddressButton = (TextView) findViewById(R.id.btn_pick_address);
         pickAddressButton.setTypeface(face);
 
-        attachPicButton = (Button) findViewById(R.id.btn_attach_pic);
-        attachPicButton.setTypeface(face);
+//        attachPicButton = (Button) findViewById(R.id.btn_attach_pic);
+//        attachPicButton.setTypeface(face);
 
+        vehicleSizeSpinner = (Spinner) findViewById(R.id.spnr_veh_size);
         vehicleModelSpinner = (Spinner) findViewById(R.id.spnr_veh_model);
         vehicleTypeSpinner = (Spinner) findViewById(R.id.spnr_veh_type);
         vehicleCompanySpinner = (Spinner) findViewById(R.id.spnr_veh_company);
 
-        filesRecyclerView = (RecyclerView) findViewById(R.id.recycler_upload_files);
+//        filesRecyclerView = (RecyclerView) findViewById(R.id.recycler_upload_files);
 
         toggleWithCompany = (ToggleButton) findViewById(R.id.with_company_switch);
         toggleWithCompany.setTypeface(face);
@@ -286,25 +362,11 @@ public class RegisterActivity extends AppCompatActivity {
         withCompany = false;
         companySpinnerLayout.setVisibility(View.GONE);
 
-        filesRecyclerView.setHasFixedSize(true);
-        filesLayoutManager = new LinearLayoutManager(RegisterActivity.this, LinearLayoutManager.HORIZONTAL, false);
-        filesRecyclerView.setLayoutManager(filesLayoutManager);
-        mFilesAdapter = new UploadFilesAdapter();
-        filesRecyclerView.setAdapter(mFilesAdapter);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-
-        String title = getResources().getString(R.string.register_title);
-        TextView titleTextView = new TextView(getApplicationContext());
-        titleTextView.setText(title);
-        titleTextView.setTextSize(16);
-        titleTextView.setAllCaps(true);
-        titleTextView.setTypeface(face, Typeface.BOLD);
-        titleTextView.setTextColor(Color.WHITE);
-        getSupportActionBar().setCustomView(titleTextView);
+//        filesRecyclerView.setHasFixedSize(true);
+//        filesLayoutManager = new LinearLayoutManager(RegisterActivity.this, LinearLayoutManager.HORIZONTAL, false);
+//        filesRecyclerView.setLayoutManager(filesLayoutManager);
+//        mFilesAdapter = new UploadFilesAdapter();
+//        filesRecyclerView.setAdapter(mFilesAdapter);
 
         addressEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,7 +389,43 @@ public class RegisterActivity extends AppCompatActivity {
         termsConditionsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getTermsAndConditions();
+                getTermsAndConditions(true);
+            }
+        });
+
+        withGlassText2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
+                final View view = inflater.inflate(R.layout.alert_dialog, null);
+                builder.setView(view);
+                TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+                txtAlert.setText(R.string.about_glass1);
+                TextView txtAlert2 = (TextView) view.findViewById(R.id.txt_alert2);
+                txtAlert2.setText(R.string.about_glass2);
+                txtAlert2.setVisibility(View.VISIBLE);
+                TextView txtAlert3 = (TextView) view.findViewById(R.id.txt_alert3);
+                txtAlert3.setText(R.string.about_glass3);
+                txtAlert3.setVisibility(View.VISIBLE);
+                alertDialog = builder.create();
+                alertDialog.setCancelable(false);
+                view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+                view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+                Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+                btnOK.setTypeface(face);
+                btnOK.setText(getResources().getString(R.string.ok));
+                Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+                btnCancel.setTypeface(face);
+                txtAlert.setTypeface(face);
+                alertDialog.show();
+
+                //getTermsAndConditions(false);
             }
         });
 
@@ -342,8 +440,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     if (validate()) {
                         if (ConnectionDetector.isConnected(RegisterActivity.this)) {
-                            new CheckUserIDOrMobileNoExist(true).execute();
-
+                            new CheckUserIDOrMobileNoExistBackground(true).execute();
                         } else {
                             ConnectionDetector.errorSnackbar(coordinatorLayout);
                         }
@@ -352,6 +449,26 @@ public class RegisterActivity extends AppCompatActivity {
                 } else {
                     gpsTracker.showSettingsAlert();
                 }
+            }
+        });
+
+        vehicleSizeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                int index = parent.getSelectedItemPosition();
+
+                vSizeId = Integer.parseInt(vehicleSizeIdList.get(index));
+                vSizeName = vehicleSizeDataList.get(index);
+
+                if (vSizeId > 0) {
+                    isFilled = true;
+                }
+
+                new ListVehicleModelBackground().execute();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -367,7 +484,7 @@ public class RegisterActivity extends AppCompatActivity {
                     isFilled = true;
                 }
 
-                new GetVehicleType().execute();
+                new ListVehicleModelBackground().execute();
             }
 
             @Override
@@ -412,10 +529,26 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         if (ConnectionDetector.isConnected(getApplicationContext())) {
-            new GetVehicleModelVehicleCompany().execute();
+            new ListVehicleMakeListVehicleCompanyBackground().execute();
         } else {
             ConnectionDetector.errorSnackbar(coordinatorLayout);
         }
+
+        vehicleSizeSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideSoftKeyboard();
+                return false;
+            }
+        });
+
+        vehicleCompanySpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideSoftKeyboard();
+                return false;
+            }
+        });
 
         vehicleTypeSpinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -433,14 +566,14 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        attachPicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectImage(RegisterActivity.this);
-            }
-        });
-
-        uploadFiles = new ArrayList<>();
+//        attachPicButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                selectImage(RegisterActivity.this);
+//            }
+//        });
+//
+//        uploadFiles = new ArrayList<>();
 
         usernameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
@@ -474,6 +607,17 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } else if (password.length() < 6) {
                         passwordEditText.setError(RegisterActivity.this.getResources().getText(R.string.password_min_6_char));
+                    }
+                }
+            }
+        });
+
+        confPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (password != null && !password.equals(confPasswordEditText.getText().toString().trim())) {
+                        confPasswordEditText.setError(RegisterActivity.this.getResources().getText(R.string.password_does_not_match));
                     }
                 }
             }
@@ -553,105 +697,118 @@ public class RegisterActivity extends AppCompatActivity {
 //        });
     }
 
-    class UploadFilesAdapter extends RecyclerView.Adapter<UploadFilesAdapter.ViewHolder> {
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            // each data item is just a string in this case
-            ImageView uploadImageFile;
-            TextView textPicNo;
-            TextView textPicName;
-            TextView textRemovePic;
-
-            ViewHolder(View v) {
-                super(v);
-                uploadImageFile = (ImageView) v.findViewById(R.id.img_upload_file);
-                textPicNo = (TextView) v.findViewById(R.id.txt_pic_no);
-                textPicName = (TextView) v.findViewById(R.id.txt_pic_name);
-                textRemovePic = (TextView) v.findViewById(R.id.txt_remove_pic);
-            }
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
         }
 
-        // Create new views (invoked by the layout manager)
-        @Override
-        public UploadFilesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            // create a new view
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_upload_file, parent, false);
-            // set the view's size, margins, paddings and layout parameters
-            return new ViewHolder(v);
+        if (myCircularProgressDialog != null && myCircularProgressDialog.isShowing()) {
+            myCircularProgressDialog.cancel();
         }
-
-        // Replace the contents of a view (invoked by the layout manager)
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            // - get element from your dataset at this position
-            // - replace the contents of the view with that element
-            //View view = holder.itemView;
-            final int positionPlace = position;
-            holder.setIsRecyclable(false);
-
-            holder.textPicNo.setTypeface(face);
-            holder.textPicName.setTypeface(face);
-            holder.textRemovePic.setTypeface(face);
-
-            holder.textPicNo.setText(String.format("%s", positionPlace + 1));
-            holder.textPicName.setText(uploadFiles.get(positionPlace).getImageName());
-            holder.uploadImageFile.setImageBitmap(uploadFiles.get(positionPlace).getBm());
-
-            holder.textRemovePic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
-                    LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
-                    final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-                    builder1.setView(view1);
-                    TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-                    txtAlert1.setText(getResources().getString(R.string.are_you_sure));
-                    final AlertDialog dialog1 = builder1.create();
-                    dialog1.setCancelable(false);
-                    view1.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
-                        }
-                    });
-                    view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
-
-                            uploadFiles.remove(positionPlace);
-                            mFilesAdapter.notifyDataSetChanged();
-                        }
-                    });
-                    Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                    Button btnCancel = (Button) view1.findViewById(R.id.btn_cancel);
-                    btnCancel.setTypeface(face);
-                    btnOk.setTypeface(face);
-                    txtAlert1.setTypeface(face);
-                    dialog1.show();
-                }
-            });
-        }
-
-        // Return the size of your dataset (invoked by the layout manager)
-        @Override
-        public int getItemCount() {
-            if (uploadFiles != null)
-                return uploadFiles.size();
-            else
-                return 0;
-        }
-
     }
 
-    private void getTermsAndConditions() {
+//    class UploadFilesAdapter extends RecyclerView.Adapter<UploadFilesAdapter.ViewHolder> {
+//
+//        class ViewHolder extends RecyclerView.ViewHolder {
+//            // each data item is just a string in this case
+//            ImageView uploadImageFile;
+//            TextView textPicNo;
+//            TextView textPicName;
+//            TextView textRemovePic;
+//
+//            ViewHolder(View v) {
+//                super(v);
+//                uploadImageFile = (ImageView) v.findViewById(R.id.img_upload_file);
+//                textPicNo = (TextView) v.findViewById(R.id.txt_pic_no);
+//                textPicName = (TextView) v.findViewById(R.id.txt_pic_name);
+//                textRemovePic = (TextView) v.findViewById(R.id.txt_remove_pic);
+//            }
+//        }
+//
+//        // Create new views (invoked by the layout manager)
+//        @Override
+//        public UploadFilesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+//            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_upload_file, parent, false);
+//            return new ViewHolder(v);
+//        }
+//
+//        @Override
+//        public void onBindViewHolder(final ViewHolder holder, int position) {
+//            // - get element from your dataset at this position
+//            // - replace the contents of the view with that element
+//            //View view = holder.itemView;
+//            final int positionPlace = position;
+//            holder.setIsRecyclable(false);
+//
+//            holder.textPicNo.setTypeface(face);
+//            holder.textPicName.setTypeface(face);
+//            holder.textRemovePic.setTypeface(face);
+//
+//            holder.textPicNo.setText(String.format("%s", positionPlace + 1));
+//            holder.textPicName.setText(uploadFiles.get(positionPlace).imageName);
+//            holder.uploadImageFile.setImageBitmap(uploadFiles.get(positionPlace).bm);
+//
+//            holder.textRemovePic.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+//                    LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+//                    final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//                    builder1.setView(view1);
+//                    TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+//                    txtAlert1.setText(getResources().getString(R.string.are_you_sure));
+//                    alertDialog = builder1.create();
+//                    alertDialog.setCancelable(false);
+//                    view1.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            alertDialog.dismiss();
+//                        }
+//                    });
+//                    view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            alertDialog.dismiss();
+//                            uploadFiles.remove(positionPlace);
+//                            mFilesAdapter.notifyDataSetChanged();
+//                        }
+//                    });
+//                    Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//                    Button btnCancel = (Button) view1.findViewById(R.id.btn_cancel);
+//                    btnCancel.setTypeface(face);
+//                    btnOk.setTypeface(face);
+//                    txtAlert1.setTypeface(face);
+//                    alertDialog.show();
+//                }
+//            });
+//        }
+//
+//        // Return the size of your dataset (invoked by the layout manager)
+//        @Override
+//        public int getItemCount() {
+//            if (uploadFiles != null)
+//                return uploadFiles.size();
+//            else
+//                return 0;
+//        }
+//
+//    }
+
+    private void getTermsAndConditions(boolean isTermCond) {
         AssetManager assetManager = getAssets();
         InputStream in = null;
         OutputStream out = null;
         File file = new File(getFilesDir(), "terms_conditions.pdf");
 
         try {
-            in = assetManager.open("terms_conditions.pdf");
+            if (isTermCond) {
+                in = assetManager.open("terms_conditions.pdf");
+            } else {
+                in = assetManager.open("terms_conditions.pdf");
+            }
             out = openFileOutput (file.getName(), MODE_PRIVATE);
             copyFile(in, out);
             in.close();
@@ -692,68 +849,70 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-
-        MenuItem menuLogout = menu.findItem(R.id.exit_option);
-        menuLogout.setVisible(false);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            name = nameEditText.getText().toString().trim();
-            mail = mailEditText.getText().toString().trim();
-            address = addressEditText.getText().toString().trim();
-            username = usernameEditText.getText().toString().trim();
-            password = passwordEditText.getText().toString().trim();
-            mobile = mobileEditText.getText().toString().trim();
-
-            isFilled = isFilled || name.length() != 0 || mobile.length() != 0 || mail.length() != 0 || address.length() != 0 || username.length() != 0 || password.length() != 0 || iAgreeCheckBox.isChecked();
-
-            if (isFilled) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
-                final View view = inflater.inflate(R.layout.alert_dialog, null);
-                builder.setView(view);
-                TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-                txtAlert.setText(R.string.filled_data_will_be_lost);
-                final AlertDialog dialog = builder.create();
-                dialog.setCancelable(false);
-                view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-                view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-
-                        finish();
-                    }
-                });
-                Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-                btnOK.setTypeface(face);
-                Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-                btnCancel.setTypeface(face);
-                txtAlert.setTypeface(face);
-                dialog.show();
-
-            } else {
-                finish();
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        MenuItem menuLogout = menu.findItem(R.id.exit_option);
+//        menuLogout.setVisible(false);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.back_option) {
+//            name = nameEditText.getText().toString().trim();
+//            mail = mailEditText.getText().toString().trim();
+//            address = addressEditText.getText().toString().trim();
+//            username = usernameEditText.getText().toString().trim();
+//            password = passwordEditText.getText().toString().trim();
+//            mobile = mobileEditText.getText().toString().trim();
+//            String conf = confPasswordEditText.getText().toString().trim();
+//
+//            isFilled = isFilled || name.length() != 0 || mobile.length() != 0 || mail.length() != 0 ||
+//                    address.length() != 0 || username.length() != 0 || password.length() != 0 ||
+//                    iAgreeCheckBox.isChecked() || conf.length() != 0;
+//
+//            if (isFilled) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+//                LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
+//                final View view = inflater.inflate(R.layout.alert_dialog, null);
+//                builder.setView(view);
+//                TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//                txtAlert.setText(R.string.filled_data_will_be_lost);
+//                alertDialog = builder.create();
+//                alertDialog.setCancelable(false);
+//                view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        alertDialog.dismiss();
+//                    }
+//                });
+//                view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        alertDialog.dismiss();
+//                        finish();
+//                    }
+//                });
+//                Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//                btnOK.setTypeface(face);
+//                Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//                btnCancel.setTypeface(face);
+//                txtAlert.setTypeface(face);
+//                alertDialog.show();
+//
+//            } else {
+//                finish();
+//            }
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onBackPressed() {
@@ -763,8 +922,11 @@ public class RegisterActivity extends AppCompatActivity {
         username = usernameEditText.getText().toString().trim();
         password = passwordEditText.getText().toString().trim();
         mobile = mobileEditText.getText().toString().trim();
+        String conf = confPasswordEditText.getText().toString().trim();
 
-        isFilled = isFilled || name.length() != 0 || mobile.length() != 0 || mail.length() != 0 || address.length() != 0 || username.length() != 0 || password.length() != 0 || iAgreeCheckBox.isChecked();
+        isFilled = isFilled || name.length() != 0 || mobile.length() != 0 || mail.length() != 0 ||
+                address.length() != 0 || username.length() != 0 || password.length() != 0 ||
+                iAgreeCheckBox.isChecked() || conf.length() != 0;
 
         if (isFilled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
@@ -773,19 +935,18 @@ public class RegisterActivity extends AppCompatActivity {
             builder.setView(view);
             TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
             txtAlert.setText(R.string.filled_data_will_be_lost);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
+            alertDialog = builder.create();
+            alertDialog.setCancelable(false);
             view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    alertDialog.dismiss();
                 }
             });
             view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
-
+                    alertDialog.dismiss();
                     finish();
                 }
             });
@@ -794,7 +955,7 @@ public class RegisterActivity extends AppCompatActivity {
             Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
             btnCancel.setTypeface(face);
             txtAlert.setTypeface(face);
-            dialog.show();
+            alertDialog.show();
 
         } else {
             finish();
@@ -809,247 +970,256 @@ public class RegisterActivity extends AppCompatActivity {
             isFilled = true;
 
             addressEditText.setText(data.getStringExtra("location"));
-            latitude = data.getDoubleExtra("latitude",0);
-            longitude = data.getDoubleExtra("longitude",0);
-
-        } else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
-            Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            //Bitmap bm = BitmapFactory.decodeFile(picturePath);
-            //bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            File f = new File(picturePath);
-            Bitmap bm = decodeFile(f);
-            bm = scaleDownBitmap(bm, 400);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] byteImage_photo = baos.toByteArray();
-
-            final UploadFiles uploadFile = new UploadFiles();
-            uploadFile.setBm(bm);
-            uploadFile.setBase64Encoded(Base64.encodeToString(byteImage_photo, Base64.DEFAULT));
-
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
-            LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
-            final View view1 = inflater1.inflate(R.layout.alert_dialog_text, null);
-            builder1.setView(view1);
-            final EditText timeInput = (EditText) view1.findViewById(R.id.text_input);
-            final AlertDialog dialog1 = builder1.create();
-            dialog1.setCancelable(false);
-            final Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-            btnOk.setEnabled(false);
-            timeInput.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if(s.toString().trim().length() > 0) {
-                        btnOk.setEnabled(true);
-                    }
-                }
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog1.dismiss();
-                    uploadFile.setImageName(timeInput.getText().toString().trim());
-
-                    boolean itemAdded = false;
-                    isFilled = true;
-
-                    for (UploadFiles item: uploadFiles ){
-                        if (uploadFile.getImageName().equals(item.getImageName())) {
-                            itemAdded = true;
-                        }
-                    }
-
-                    if (itemAdded) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                        LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
-                        final View view = inflater.inflate(R.layout.alert_dialog, null);
-                        builder.setView(view);
-                        TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-                        txtAlert.setText(getResources().getString(R.string.item_exist));
-                        final AlertDialog dialog = builder.create();
-                        dialog.setCancelable(false);
-                        view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-                        btnOK.setText(R.string.ok);
-                        view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog.dismiss();
-                            }
-                        });
-                        btnOK.setTypeface(face);
-                        txtAlert.setTypeface(face);
-                        dialog.show();
-                    } else {
-                        uploadFiles.add(uploadFile);
-                        mFilesAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
-            TextView t1 = (TextView) view1.findViewById(R.id.txt_query);
-            t1.setTypeface(face);
-            btnOk.setTypeface(face);
-            timeInput.setTypeface(face);
-            dialog1.show();
-
-        } else if(requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK && null != data) {
-            Bitmap bm = (Bitmap) data.getExtras().get("data");
-            //ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //assert bm != null;
-            //bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            //byte[] byteImage_photo = baos.toByteArray();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            File f = new File(Environment.getExternalStorageDirectory() + File.separator + "dynate.jpg");
-
-            try {
-                f.createNewFile();
-                FileOutputStream fo = new FileOutputStream(f);
-                fo.write(baos.toByteArray());
-
-                Bitmap bm1 = decodeFile(f);
-                bm1 = scaleDownBitmap(bm1, 400);
-                bm1.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] byteImage_photo = baos.toByteArray();
-
-                final UploadFiles uploadFile = new UploadFiles();
-                uploadFile.setBm(bm1);
-                uploadFile.setBase64Encoded(Base64.encodeToString(byteImage_photo,Base64.DEFAULT));
-
-                fo.flush();
-                fo.close();
-
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
-                LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
-                final View view1 = inflater1.inflate(R.layout.alert_dialog_text, null);
-                builder1.setView(view1);
-                final EditText timeInput = (EditText) view1.findViewById(R.id.text_input);
-                final AlertDialog dialog1 = builder1.create();
-                dialog1.setCancelable(false);
-                final Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                btnOk.setEnabled(false);
-                timeInput.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    }
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if(s.toString().trim().length() > 0) {
-                            btnOk.setEnabled(true);
-                        }
-                    }
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                    }
-                });
-                view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog1.dismiss();
-                        uploadFile.setImageName(timeInput.getText().toString().trim());
-
-                        boolean itemAdded = false;
-                        isFilled = true;
-
-                        for (UploadFiles item: uploadFiles ){
-                            if (uploadFile.getImageName().equals(item.getImageName())) {
-                                itemAdded = true;
-                            }
-                        }
-
-                        if (itemAdded) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                            LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
-                            final View view = inflater.inflate(R.layout.alert_dialog, null);
-                            builder.setView(view);
-                            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-                            txtAlert.setText(getResources().getString(R.string.item_exist));
-                            final AlertDialog dialog = builder.create();
-                            dialog.setCancelable(false);
-                            view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-                            btnOK.setText(R.string.ok);
-                            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            btnOK.setTypeface(face);
-                            txtAlert.setTypeface(face);
-                            dialog.show();
-                        } else {
-                            uploadFiles.add(uploadFile);
-                            mFilesAdapter.notifyDataSetChanged();
-                        }
-                    }
-                });
-                TextView t1 = (TextView) view1.findViewById(R.id.txt_query);
-                t1.setTypeface(face);
-                btnOk.setTypeface(face);
-                timeInput.setTypeface(face);
-                dialog1.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            latitude = data.getDoubleExtra("latitude", 0);
+            longitude = data.getDoubleExtra("longitude", 0);
         }
+
+//        } else if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
+//            Uri selectedImage = data.getData();
+//            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+//
+//            Cursor cursor = getContentResolver().query(selectedImage,
+//                    filePathColumn, null, null, null);
+//
+//            cursor.moveToFirst();
+//
+//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//            String picturePath = cursor.getString(columnIndex);
+//            cursor.close();
+//            //Bitmap bm = BitmapFactory.decodeFile(picturePath);
+//            //bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            File f = new File(picturePath);
+//            Bitmap bm = decodeFile(f);
+//            bm = scaleDownBitmap(bm, 400);
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//
+//            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            byte[] byteImage_photo = baos.toByteArray();
+//
+//            final UploadFiles uploadFile = new UploadFiles();
+//            uploadFile.bm = bm;
+//            uploadFile.base64Encoded = Base64.encodeToString(byteImage_photo, Base64.DEFAULT);
+//
+//            AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+//            LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+//            final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//            builder1.setView(view1);
+//            final EditText timeInput = (EditText) view1.findViewById(R.id.text_input);
+//            timeInput.setVisibility(View.VISIBLE);
+//            alertDialog = builder1.create();
+//            alertDialog.setCancelable(false);
+//            final Button btnCancel = (Button) view1.findViewById(R.id.btn_cancel);
+//            btnCancel.setVisibility(View.GONE);
+//            final Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//            btnOk.setEnabled(false);
+//            timeInput.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    if(s.toString().trim().length() > 0) {
+//                        btnOk.setEnabled(true);
+//                    }
+//                }
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                }
+//            });
+//            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    uploadFile.imageName = timeInput.getText().toString().trim();
+//
+//                    boolean itemAdded = false;
+//                    isFilled = true;
+//
+//                    for (UploadFiles item: uploadFiles ){
+//                        if (uploadFile.imageName.equals(item.imageName)) {
+//                            itemAdded = true;
+//                        }
+//                    }
+//
+//                    if (itemAdded) {
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+//                        LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
+//                        final View view = inflater.inflate(R.layout.alert_dialog, null);
+//                        builder.setView(view);
+//                        TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//                        txtAlert.setText(getResources().getString(R.string.item_exist));
+//                        alertDialog = builder.create();
+//                        alertDialog.setCancelable(false);
+//                        view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//                        Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//                        btnOK.setText(R.string.ok);
+//                        view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                alertDialog.dismiss();
+//                            }
+//                        });
+//                        btnOK.setTypeface(face);
+//                        txtAlert.setTypeface(face);
+//                        alertDialog.show();
+//                    } else {
+//                        uploadFiles.add(uploadFile);
+//                        mFilesAdapter.notifyDataSetChanged();
+//                    }
+//                }
+//            });
+//            TextView t1 = (TextView) view1.findViewById(R.id.txt_alert);
+//            t1.setText(getResources().getString(R.string.enter_file_name));
+//            t1.setTypeface(face);
+//            btnOk.setTypeface(face);
+//            timeInput.setTypeface(face);
+//            alertDialog.show();
+//
+//        } else if(requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK && null != data) {
+//            Bitmap bm = (Bitmap) data.getExtras().get("data");
+//            //ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            //assert bm != null;
+//            //bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            //byte[] byteImage_photo = baos.toByteArray();
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//            bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//            File f = new File(Environment.getExternalStorageDirectory() + File.separator + "dynate.jpg");
+//
+//            try {
+//                f.createNewFile();
+//                FileOutputStream fo = new FileOutputStream(f);
+//                fo.write(baos.toByteArray());
+//
+//                Bitmap bm1 = decodeFile(f);
+//                bm1 = scaleDownBitmap(bm1, 400);
+//                bm1.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//                byte[] byteImage_photo = baos.toByteArray();
+//
+//                final UploadFiles uploadFile = new UploadFiles();
+//                uploadFile.bm = bm1;
+//                uploadFile.base64Encoded = Base64.encodeToString(byteImage_photo,Base64.DEFAULT);
+//
+//                fo.flush();
+//                fo.close();
+//
+//                AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+//                LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+//                final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//                builder1.setView(view1);
+//                final EditText timeInput = (EditText) view1.findViewById(R.id.text_input);
+//                timeInput.setVisibility(View.VISIBLE);
+//                alertDialog = builder1.create();
+//                alertDialog.setCancelable(false);
+//                final Button btnCancel = (Button) view1.findViewById(R.id.btn_cancel);
+//                btnCancel.setVisibility(View.GONE);
+//                final Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//                btnOk.setEnabled(false);
+//                timeInput.addTextChangedListener(new TextWatcher() {
+//                    @Override
+//                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                    }
+//                    @Override
+//                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                        if(s.toString().trim().length() > 0) {
+//                            btnOk.setEnabled(true);
+//                        }
+//                    }
+//                    @Override
+//                    public void afterTextChanged(Editable s) {
+//                    }
+//                });
+//                view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        alertDialog.dismiss();
+//                        uploadFile.imageName = timeInput.getText().toString().trim();
+//
+//                        boolean itemAdded = false;
+//                        isFilled = true;
+//
+//                        for (UploadFiles item: uploadFiles ){
+//                            if (uploadFile.imageName.equals(item.imageName)) {
+//                                itemAdded = true;
+//                            }
+//                        }
+//
+//                        if (itemAdded) {
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+//                            LayoutInflater inflater = RegisterActivity.this.getLayoutInflater();
+//                            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//                            builder.setView(view);
+//                            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//                            txtAlert.setText(getResources().getString(R.string.item_exist));
+//                            alertDialog = builder.create();
+//                            alertDialog.setCancelable(false);
+//                            view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//                            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//                            btnOK.setText(R.string.ok);
+//                            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//                                    alertDialog.dismiss();
+//                                }
+//                            });
+//                            btnOK.setTypeface(face);
+//                            txtAlert.setTypeface(face);
+//                            alertDialog.show();
+//                        } else {
+//                            uploadFiles.add(uploadFile);
+//                            mFilesAdapter.notifyDataSetChanged();
+//                        }
+//                    }
+//                });
+//                TextView t1 = (TextView) view1.findViewById(R.id.txt_alert);
+//                t1.setText(getResources().getString(R.string.enter_file_name));
+//                t1.setTypeface(face);
+//                btnOk.setTypeface(face);
+//                timeInput.setTypeface(face);
+//                alertDialog.show();
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
-    public Bitmap scaleDownBitmap(Bitmap photo, int newHeight) {
-        final float densityMultiplier = getResources().getDisplayMetrics().density;
-        int h = (int) (newHeight*densityMultiplier);
-        int w = (int) (h * photo.getWidth()/((double) photo.getHeight()));
-        photo = Bitmap.createScaledBitmap(photo, w, h, true);
-        return photo;
-    }
-
-    private Bitmap decodeFile(File f) {
-        try {
-            // decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
-
-            // Find the correct scale value. It should be the power of 2.
-            final int REQUIRED_SIZE = 500;
-            int width_tmp = o.outWidth, height_tmp = o.outHeight;
-            int scale = 1;
-            while (true) {
-                if (width_tmp / 2 < REQUIRED_SIZE
-                        || height_tmp / 2 < REQUIRED_SIZE)
-                    break;
-                width_tmp /= 2;
-                height_tmp /= 2;
-                scale *= 2;
-            }
-
-            // decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-
-        } catch (FileNotFoundException ignored) {
-        }
-        return null;
-    }
+//    public Bitmap scaleDownBitmap(Bitmap photo, int newHeight) {
+//        final float densityMultiplier = getResources().getDisplayMetrics().density;
+//        int h = (int) (newHeight*densityMultiplier);
+//        int w = (int) (h * photo.getWidth()/((double) photo.getHeight()));
+//        photo = Bitmap.createScaledBitmap(photo, w, h, true);
+//        return photo;
+//    }
+//
+//    private Bitmap decodeFile(File f) {
+//        try {
+//            // decode image size
+//            BitmapFactory.Options o = new BitmapFactory.Options();
+//            o.inJustDecodeBounds = true;
+//            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
+//
+//            // Find the correct scale value. It should be the power of 2.
+//            final int REQUIRED_SIZE = 500;
+//            int width_tmp = o.outWidth, height_tmp = o.outHeight;
+//            int scale = 1;
+//            while (true) {
+//                if (width_tmp / 2 < REQUIRED_SIZE
+//                        || height_tmp / 2 < REQUIRED_SIZE)
+//                    break;
+//                width_tmp /= 2;
+//                height_tmp /= 2;
+//                scale *= 2;
+//            }
+//
+//            // decode with inSampleSize
+//            BitmapFactory.Options o2 = new BitmapFactory.Options();
+//            o2.inSampleSize = scale;
+//            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
+//
+//        } catch (FileNotFoundException ignored) {
+//        }
+//        return null;
+//    }
 
     public boolean isValidMobile(String mobile) {
         String iso = "SA";
@@ -1071,6 +1241,7 @@ public class RegisterActivity extends AppCompatActivity {
         username = usernameEditText.getText().toString().trim();
         password = passwordEditText.getText().toString().trim();
         mobile = mobileEditText.getText().toString().trim().replaceFirst("^0+(?!$)", "");
+        String conf = confPasswordEditText.getText().toString().trim();
 
         String pattern= "^[0-9]*$";
 
@@ -1134,8 +1305,18 @@ public class RegisterActivity extends AppCompatActivity {
             passwordEditText.setError(RegisterActivity.this.getResources().getText(R.string.password_min_6_char));
             passwordEditText.requestFocus();
             return false;
+        } else if (!conf.equals(password)) {
+            confPasswordEditText.setError(RegisterActivity.this.getResources().getString(R.string.password_does_not_match));
+            return false;
         } else {
+            confPasswordEditText.setError(null);
             passwordEditText.setError(null);
+        }
+
+        if (vSizeId == 0) {
+            ((TextView)vehicleSizeSpinner.getChildAt(0)).setError(RegisterActivity.this.getResources().getText(R.string.required));
+            vehicleSizeSpinner.requestFocus();
+            return false;
         }
 
         if(vModelId == 0) {
@@ -1150,29 +1331,29 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (uploadFiles == null || uploadFiles.size() == 0) {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
-            LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
-            final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-            builder1.setView(view1);
-            TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-            txtAlert1.setText(getResources().getString(R.string.upload_files));
-            final AlertDialog dialog1 = builder1.create();
-            dialog1.setCancelable(false);
-            view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-            Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-            btnOk.setText(R.string.ok);
-            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog1.dismiss();
-                }
-            });
-            btnOk.setTypeface(face);
-            txtAlert1.setTypeface(face);
-            dialog1.show();
-            return false;
-        }
+//        if (uploadFiles == null || uploadFiles.size() == 0) {
+//            AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+//            LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+//            final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//            builder1.setView(view1);
+//            TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+//            txtAlert1.setText(getResources().getString(R.string.upload_files));
+//            alertDialog = builder1.create();
+//            alertDialog.setCancelable(false);
+//            view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//            Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//            btnOk.setText(R.string.ok);
+//            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            btnOk.setTypeface(face);
+//            txtAlert1.setTypeface(face);
+//            alertDialog.show();
+//            return false;
+//        }
 
         if (withCompany && vCompId <= 1) {
             vehicleCompanySpinner.requestFocus();
@@ -1183,20 +1364,20 @@ public class RegisterActivity extends AppCompatActivity {
             builder1.setView(view1);
             TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
             txtAlert1.setText(getResources().getString(R.string.you_must_select_company));
-            final AlertDialog dialog1 = builder1.create();
-            dialog1.setCancelable(false);
+            alertDialog = builder1.create();
+            alertDialog.setCancelable(false);
             view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
             Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
             btnOk.setText(R.string.ok);
             view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog1.dismiss();
+                    alertDialog.dismiss();
                 }
             });
             btnOk.setTypeface(face);
             txtAlert1.setTypeface(face);
-            dialog1.show();
+            alertDialog.show();
 
             return false;
         }
@@ -1245,174 +1426,174 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    private class GetOTP extends AsyncTask<Void, Void, JSONObject> {
-        MyCircularProgressDialog progressDialog;
-        JsonParser jsonParser;
+//    private class SendOTPDMBackground extends AsyncTask<Void, Void, JSONObject> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+//                myCircularProgressDialog = new MyCircularProgressDialog(RegisterActivity.this);
+//                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//                myCircularProgressDialog.setCancelable(false);
+//                myCircularProgressDialog.show();
+//            }
+//        }
+//
+//        protected JSONObject doInBackground(Void... param) {
+//            JsonParser jsonParser = new JsonParser();
+//
+//            HashMap<String, String> params = new HashMap<>();
+//
+//            params.put("ArgMobNo", "966"+mobile);
+//            params.put("ArgIsDB", "false");
+//
+//            String BASE_URL = Constants.BASE_URL_EN + "SendOTPDM";
+//
+//            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+//                BASE_URL = Constants.BASE_URL_AR + "SendOTPDM";
+//            }
+//
+//            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
+//        }
+//
+//        protected void onPostExecute(final JSONObject response) {
+//            myCircularProgressDialog.dismiss();
+//
+//            if (response != null) {
+//                try {
+//                    // Parsing json object response
+//                    // response will be a json object
+//                    if (response.getBoolean("status")) {
+//                        Intent intent = new Intent(RegisterActivity.this, VerifyOTPActivity.class);
+//                        registerUser = new RegisterUser();
+//                        registerUser.name = name;
+//                        registerUser.nameArabic = name;
+//                        registerUser.mobile = mobile;
+//                        registerUser.mail = mail;
+//                        registerUser.address = address;
+//                        registerUser.username = username;
+//                        registerUser.password = password;
+//                        registerUser.latitude = String.valueOf(latitude);
+//                        registerUser.longitude = String.valueOf(longitude);
+//                        registerUser.loginMethod = Constants.LOG_CONST_NORMAL;
+//                        registerUser.vModelId = String.valueOf(vTypeId);
+//                        registerUser.vModelName = vTypeName;
+//
+//                        if (withCompany) {
+//                            registerUser.vCompId = String.valueOf(vCompId);
+//                            registerUser.vCompName = vCompName;
+//                        } else {
+//                            registerUser.vCompId = "1";
+//                            registerUser.vCompName = getResources().getString(R.string.select_company);
+//                        }
+//
+//                        registerUser.licenseNo = "";
+//                        registerUser.licenseNoArabic = "";
+//                        registerUser.withGlass = withGlass;
+//
+////                        for (UploadFiles file : uploadFiles) {
+////                            file.bm = null;
+////                        }
+////
+////                        try {
+////                            VerifyOTPActivity.otpExtra = response.getJSONArray("data").getJSONObject(0).getString("OTP");
+////                        } catch (JSONException e) {
+////                            e.printStackTrace();
+////                        }
+////                        VerifyOTPActivity.registerUserExtra = registerUser;
+////                        VerifyOTPActivity.uploadFiles = uploadFiles;
+////
+////                        startActivity(intent);
+//
+////                        AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+////                        final LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+////                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+////                        builder1.setView(view1);
+////                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+////                        txtAlert1.setText(R.string.password_send);
+////                        alertDialog = builder1.create();
+////                        alertDialog.setCancelable(false);
+////                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+////                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+////                        btnOk.setText(R.string.ok);
+////                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+////                            @Override
+////                            public void onClick(View v) {
+////                                alertDialog.dismiss();
+////                            }
+////                        });
+////                        btnOk.setTypeface(face);
+////                        txtAlert1.setTypeface(face);
+////                        alertDialog.show();
+//
+//                    } else {
+//                        AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
+//                        LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
+//                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//                        builder1.setView(view1);
+//                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+//                        txtAlert1.setText(response.getString("message"));
+//                        alertDialog = builder1.create();
+//                        alertDialog.setCancelable(false);
+//                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//                        btnOk.setText(R.string.ok);
+//                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                alertDialog.dismiss();
+//                            }
+//                        });
+//                        btnOk.setTypeface(face);
+//                        txtAlert1.setTypeface(face);
+//                        alertDialog.show();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                snackbar = Snackbar.make(coordinatorLayout, R.string.network_error, Snackbar.LENGTH_LONG)
+//                        .setAction(R.string.ok, new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                            }
+//                        });
+//                snackbar.show();
+//            }
+//        }
+//    }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(RegisterActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-        }
-
-        protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
-
-            HashMap<String, String> params = new HashMap<>();
-
-            params.put("ArgMobNo", "966"+mobile);
-            params.put("ArgIsDB", "false");
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "SendOTPDM", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "SendOTPDM", "POST", params);
-            }
-
-            return json;
-        }
-
-        protected void onPostExecute(final JSONObject response) {
-            progressDialog.dismiss();
-
-            if (response != null) {
-                try {
-                    // Parsing json object response
-                    // response will be a json object
-                    if (response.getBoolean("status")) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
-                        final LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
-                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-                        builder1.setView(view1);
-                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-                        txtAlert1.setText(R.string.password_send);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
-                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                        btnOk.setText(R.string.ok);
-                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog1.dismiss();
-
-                                Intent intent = new Intent(RegisterActivity.this, VerifyOTPActivity.class);
-                                registerUser = new RegisterUser();
-                                registerUser.setName(name);
-                                registerUser.setNameArabic("");
-                                registerUser.setMobile(mobile);
-                                registerUser.setMail(mail);
-                                registerUser.setAddress(address);
-                                registerUser.setUsername(username);
-                                registerUser.setPassword(password);
-                                registerUser.setLatitide(latitude+"");
-                                registerUser.setLongitude(longitude+"");
-                                registerUser.setLoginMethod("normal");
-                                registerUser.setvModelId(String.valueOf(vTypeId));
-                                registerUser.setvModelName(vTypeName);
-                                if (withCompany) {
-                                    registerUser.setvCompId(String.valueOf(vCompId));
-                                    registerUser.setvCompName(vCompName);
-                                } else {
-                                    registerUser.setvCompId("1");
-                                    registerUser.setvCompName(getResources().getString(R.string.select_company));
-                                }
-                                registerUser.setLicenseNo("");
-                                registerUser.setLicenseNoArabic("");
-                                registerUser.setWithGlass(withGlass);
-
-                                for (UploadFiles file : uploadFiles) {
-                                    file.setBm(null);
-                                }
-
-                                try {
-                                    VerifyOTPActivity.otpExtra = response.getJSONArray("data").getJSONObject(0).getString("OTP");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                VerifyOTPActivity.registerUserExtra = registerUser;
-                                VerifyOTPActivity.uploadFiles = uploadFiles;
-
-                                startActivity(intent);
-                            }
-                        });
-                        btnOk.setTypeface(face);
-                        txtAlert1.setTypeface(face);
-                        dialog1.show();
-
-                    } else {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(RegisterActivity.this);
-                        LayoutInflater inflater1 = RegisterActivity.this.getLayoutInflater();
-                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-                        builder1.setView(view1);
-                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-                        txtAlert1.setText(response.getString("message"));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
-                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                        btnOk.setText(R.string.ok);
-                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog1.dismiss();
-                            }
-                        });
-                        btnOk.setTypeface(face);
-                        txtAlert1.setTypeface(face);
-                        dialog1.show();
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                snackbar = Snackbar.make(coordinatorLayout, R.string.network_error, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.ok, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                            }
-                        });
-                snackbar.show();
-            }
-        }
-    }
-
-    private class GetVehicleModelVehicleCompany extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParserVehicleModel;
+    private class ListVehicleMakeListVehicleCompanyBackground extends AsyncTask<Void, Void, JSONObject> {
+        JSONObject jsonObjectVehicleSize;
         JSONObject jsonObjectVehicleModel;
-        JsonParser jsonParserVehicleCompany;
         JSONObject jsonObjectVehicleCompany;
-        MyCircularProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(RegisterActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(RegisterActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParserVehicleModel = new JsonParser();
-            jsonParserVehicleCompany = new JsonParser();
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            JsonParser jsonParserVehicleSize = new JsonParser();
+            JsonParser jsonParserVehicleModel = new JsonParser();
+            JsonParser jsonParserVehicleCompany = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                jsonObjectVehicleSize = jsonParserVehicleSize.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleSize", "POST", params);
                 jsonObjectVehicleModel = jsonParserVehicleModel.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleMake", "POST", params);
                 jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleCompany", "POST", params);
 
             } else {
+                jsonObjectVehicleSize = jsonParserVehicleSize.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleSize", "POST", params);
                 jsonObjectVehicleModel = jsonParserVehicleModel.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleMake", "POST", params);
                 jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleCompany", "POST", params);
             }
@@ -1421,7 +1602,36 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(JSONObject jsonObject) {
-            progressDialog.dismiss();
+            myCircularProgressDialog.dismiss();
+
+            if (jsonObjectVehicleSize != null) {
+                try {
+                    // Parsing json object response
+                    // response will be a json object
+                    if (jsonObjectVehicleSize.getBoolean("status")) {
+                        vehicleSizeArray = jsonObjectVehicleSize.getJSONArray("data");
+
+                        if (vehicleSizeArray.length() > 0) {
+                            vehicleSizeIdList = new ArrayList<>();
+                            vehicleSizeDataList = new ArrayList<>();
+
+                            for (int i = 0; i < vehicleSizeArray.length(); i++) {
+                                if (Integer.parseInt(vehicleSizeArray.getJSONObject(i).getString("VsId").trim()) > 1) {
+                                    vehicleSizeIdList.add(vehicleSizeArray.getJSONObject(i).getString("VsId"));
+                                    vehicleSizeDataList.add(vehicleSizeArray.getJSONObject(i).getString("VsName"));
+                                }
+                            }
+                            vehicleSizeAdapter = new MySpinnerAdapter(RegisterActivity.this, android.R.layout.select_dialog_item, vehicleSizeDataList);
+                            vehicleSizeSpinner.setAdapter(vehicleSizeAdapter);
+                        }
+
+                        vSizeId = Integer.parseInt(vehicleSizeArray.getJSONObject(0).getString("VsId"));
+                        vSizeName = vehicleSizeArray.getJSONObject(0).getString("VsName");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
             if (jsonObjectVehicleModel != null) {
                 try {
@@ -1435,8 +1645,10 @@ public class RegisterActivity extends AppCompatActivity {
                             vehicleModelDataList = new ArrayList<>();
 
                             for (int i = 0; i < vehicleModelArray.length(); i++) {
-                                vehicleModelIdList.add(vehicleModelArray.getJSONObject(i).getString("VMId"));
-                                vehicleModelDataList.add(vehicleModelArray.getJSONObject(i).getString("VMName"));
+                                if (Integer.parseInt(vehicleModelArray.getJSONObject(i).getString("VMId").trim()) > 1) {
+                                    vehicleModelIdList.add(vehicleModelArray.getJSONObject(i).getString("VMId"));
+                                    vehicleModelDataList.add(vehicleModelArray.getJSONObject(i).getString("VMName"));
+                                }
                             }
                             vehicleModelAdapter = new MySpinnerAdapter(RegisterActivity.this, android.R.layout.select_dialog_item, vehicleModelDataList);
                             vehicleModelSpinner.setAdapter(vehicleModelAdapter);
@@ -1490,7 +1702,6 @@ public class RegisterActivity extends AppCompatActivity {
             super(context, resource, items);
         }
 
-        // Affects default (closed) state of the spinner
         @NonNull
         @Override
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -1510,41 +1721,38 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private class GetVehicleType extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
-        MyCircularProgressDialog progressDialog;
+    private class ListVehicleModelBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(RegisterActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(RegisterActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
             params.put("ArgVmoVMId", vModelId+"");
+            params.put("ArgVmoVsId", vSizeId+"");
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            String BASE_URL = Constants.BASE_URL_EN + "ListVehicleModel";
 
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleModel", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleModel", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "ListVehicleModel";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(JSONObject response) {
-            progressDialog.dismiss();
+            myCircularProgressDialog.dismiss();
 
             if (response != null) {
                 try {
@@ -1558,8 +1766,10 @@ public class RegisterActivity extends AppCompatActivity {
                             vehicleTypeIdList = new ArrayList<>();
 
                             for (int i = 0; i < vehicleTypeArray.length(); i++) {
-                                vehicleTypeIdList.add(vehicleTypeArray.getJSONObject(i).getString("VmoId"));
-                                vehicleTypeDataList.add(vehicleTypeArray.getJSONObject(i).getString("VmoName"));
+                                if (Integer.parseInt(vehicleTypeArray.getJSONObject(i).getString("VmoId").trim()) > 1) {
+                                    vehicleTypeIdList.add(vehicleTypeArray.getJSONObject(i).getString("VmoId"));
+                                    vehicleTypeDataList.add(vehicleTypeArray.getJSONObject(i).getString("VmoName"));
+                                }
                             }
                             vehicleTypeAdapter = new MySpinnerAdapter(RegisterActivity.this, android.R.layout.select_dialog_item, vehicleTypeDataList);
                             vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
@@ -1575,37 +1785,36 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    private void selectImage(final Context context) {
-        final CharSequence[] options = {context.getResources().getString(R.string.take_photo), context.getResources().getString(R.string.choose_from_gallery), context.getResources().getString(R.string.cancel)};
+//    private void selectImage(final Context context) {
+//        final CharSequence[] options = {context.getResources().getString(R.string.take_photo), context.getResources().getString(R.string.choose_from_gallery), context.getResources().getString(R.string.cancel)};
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setTitle("");
+//        builder.setItems(options, new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int item) {
+//
+//                if (options[item].equals(context.getResources().getString(R.string.take_photo))) {
+//                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
+//
+//                } else if (options[item].equals(context.getResources().getString(R.string.choose_from_gallery))) {
+//                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                    startActivityForResult(i, RESULT_LOAD_IMAGE);
+//
+//                } else if (options[item].equals(context.getResources().getString(R.string.cancel))) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//        builder.show();
+//    }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-
-                if (options[item].equals(context.getResources().getString(R.string.take_photo))) {
-                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
-
-                } else if (options[item].equals(context.getResources().getString(R.string.choose_from_gallery))) {
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, RESULT_LOAD_IMAGE);
-
-                } else if (options[item].equals(context.getResources().getString(R.string.cancel))) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-
-    private class CheckUserIDOrMobileNoExist extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class CheckUserIDOrMobileNoExistBackground extends AsyncTask<Void, Void, JSONObject> {
         Boolean isUsername;
 
-        CheckUserIDOrMobileNoExist(Boolean isUsername) {
+        CheckUserIDOrMobileNoExistBackground(Boolean isUsername) {
             this.isUsername = isUsername;
         }
 
@@ -1614,14 +1823,17 @@ public class RegisterActivity extends AppCompatActivity {
             super.onPreExecute();
 
             if (isUsername) {
-                myCircularProgressDialog = new MyCircularProgressDialog(RegisterActivity.this);
-                myCircularProgressDialog.setCancelable(false);
-                myCircularProgressDialog.show();
+                if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                    myCircularProgressDialog = new MyCircularProgressDialog(RegisterActivity.this);
+                    myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                    myCircularProgressDialog.setCancelable(false);
+                    myCircularProgressDialog.show();
+                }
             }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
@@ -1631,18 +1843,13 @@ public class RegisterActivity extends AppCompatActivity {
                 params.put("ArgUserName", "966"+mobile);
             }
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            String BASE_URL = Constants.BASE_URL_EN + "CheckUserIDOrMobileNoExist";
 
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "CheckUserIDOrMobileNoExist", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "CheckUserIDOrMobileNoExist", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "CheckUserIDOrMobileNoExist";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(JSONObject response) {
@@ -1669,26 +1876,54 @@ public class RegisterActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(msg);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
 
                     } else {
                         if (isUsername) {
-                            new CheckUserIDOrMobileNoExist(false).execute();
+                            new CheckUserIDOrMobileNoExistBackground(false).execute();
                         } else {
-                            new GetOTP().execute();
+                            Intent intent = new Intent(RegisterActivity.this, SocialMediaActivity.class);
+                            registerUser = new RegisterUser();
+                            registerUser.name = name;
+                            registerUser.nameArabic = name;
+                            registerUser.mobile = mobile;
+                            registerUser.mail = mail;
+                            registerUser.address = address;
+                            registerUser.username = username;
+                            registerUser.password = password;
+                            registerUser.latitude = String.valueOf(latitude);
+                            registerUser.longitude = String.valueOf(longitude);
+                            registerUser.loginMethod = Constants.LOG_CONST_NORMAL;
+                            registerUser.vModelId = String.valueOf(vTypeId);
+                            registerUser.vModelName = vTypeName;
+
+                            if (withCompany) {
+                                registerUser.vCompId = String.valueOf(vCompId);
+                                registerUser.vCompName = vCompName;
+                            } else {
+                                registerUser.vCompId = "1";
+                                registerUser.vCompName = getResources().getString(R.string.select_company);
+                            }
+
+                            registerUser.licenseNo = "";
+                            registerUser.licenseNoArabic = "";
+                            registerUser.withGlass = withGlass;
+
+                            intent.putExtra("registerUser", registerUser);
+                            startActivity(intent);
                         }
                     }
                 } catch (JSONException e) {

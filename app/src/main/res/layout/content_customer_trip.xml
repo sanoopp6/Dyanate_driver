@@ -17,7 +17,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
-        android:background="@drawable/btn_gradient_submit2"
+        android:background="@drawable/btn_lightblue_rounded"
         android:clipChildren="false">
 
         <Button
@@ -49,7 +49,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_language"
+        android:background="@drawable/btn_black_rounded"
         android:clipChildren="false">
 
         <Button
@@ -81,7 +81,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_login"
+        android:background="@drawable/btn_lightgrey_rounded"
         android:clipChildren="false">
 
         <Button
@@ -113,7 +113,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_viewall_background"
+        android:background="@drawable/btn_saddlebrown_rounded"
         android:clipChildren="false">
 
         <Button
@@ -145,7 +145,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_all_orders"
+        android:background="@drawable/btn_orange_rounded"
         android:clipChildren="false">
 
         <Button
@@ -177,7 +177,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_cancel"
+        android:background="@drawable/btn_red_rounded"
         android:clipChildren="false">
 
         <Button
@@ -209,7 +209,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_ok"
+        android:background="@drawable/btn_green_rounded"
         android:clipChildren="false">
 
         <Button
@@ -239,7 +239,7 @@
         <!--android:id="@+id/top_layout"-->
         <!--android:layout_width="match_parent"-->
         <!--android:orientation="vertical"-->
-        <!--android:background="@drawable/layout_search_back1"-->
+        <!--android:background="@drawalayout_border_orange_white_squre2ack1"-->
         <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
         <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
         <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
@@ -250,7 +250,7 @@
             <!--android:id="@+id/enter_port_priority_text_view"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="33dp"-->
-            <!--android:background="@drawable/layout_sub_background"-->
+            <!--android:background="@drawabtn_black_bottom_roundedound"-->
             <!--android:gravity="center"-->
             <!--android:text="@string/new_orders"-->
             <!--android:textColor="#FFF"-->
@@ -274,7 +274,7 @@
             <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
             <!--android:layout_marginTop="10dp"-->
             <!--android:layout_marginBottom="10dp"-->
-            <!--android:background="@drawable/btn_all_orders"-->
+            <!--android:background="@drawabtn_orange_roundedders"-->
             <!--android:gravity="center"-->
             <!--android:text="@string/all_new_orders"-->
             <!--android:textAllCaps="false"-->

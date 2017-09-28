@@ -8,15 +8,9 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.fast_prog.dynate.R;
-import com.fast_prog.dynate.utilities.ConnectionDetector;
 import com.fast_prog.dynate.utilities.Constants;
 import com.fast_prog.dynate.utilities.DatabaseHandler;
 
@@ -28,7 +22,7 @@ import java.util.Locale;
  */
 public class SplashScreenActivity extends AppCompatActivity {
 
-    SharedPreferences prefs;
+    SharedPreferences sharedPreferences;
     Typeface face;
 
     @Override
@@ -37,7 +31,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         face = Typeface.createFromAsset(SplashScreenActivity.this.getAssets(), Constants.FONT_URL);
-        prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         //Button english = (Button) findViewById(R.id.englishButton);
         //Button arabic = (Button) findViewById(R.id.arabicButton);
@@ -102,17 +96,34 @@ public class SplashScreenActivity extends AppCompatActivity {
         //    }, SPLASH_TIME_OUT);
         //}
 
-        Locale locale = getCurrentLocale();
-        String lang = "en";
+        if (sharedPreferences.getString(Constants.PREFS_LANG, "").isEmpty()) {
+            Locale locale = getCurrentLocale();
+            String lang = "en";
 
-        if (locale.getLanguage().equals("ar")) {
-            lang = "ar";
+            if (locale.getLanguage().equalsIgnoreCase("ar")) {
+                lang = "ar";
+            }
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+            editor.putString(Constants.PREFS_LANG, lang);
+            editor.commit();
+
+        } else {
+            String lang = "en";
+
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "").equalsIgnoreCase("ar")) { lang = "ar"; }
+
+            Locale locale = new Locale(lang);
+            Locale.setDefault(locale);
+            Configuration confg = new Configuration();
+            confg.locale = locale;
+            getBaseContext().getResources().updateConfiguration(confg, getBaseContext().getResources().getDisplayMetrics());
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+            editor.commit();
         }
-
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-        editor.putString(Constants.PREFS_LANG, lang);
-        editor.commit();
 
         int SPLASH_TIME_OUT = 3000;
         new Handler().postDelayed(new Runnable() {
@@ -134,7 +145,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void gotoNextActivity() {
-        if (prefs.getBoolean(Constants.PREFS_IS_LOGIN, false)) {
+        if (sharedPreferences.getBoolean(Constants.PREFS_IS_LOGIN, false)) {
             startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
 
         } else {

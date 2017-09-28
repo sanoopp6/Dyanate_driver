@@ -31,9 +31,7 @@ public class SetOffline extends AsyncTask<Void, Void, JSONObject> {
         params.put("ArgLng", "0");
         params.put("ArgTripStatus", "2");
 
-        JSONObject json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "UpdateLatLongDM", "POST", params);
-
-        return json;
+        return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "UpdateLatLongDM", "POST", params);
     }
 
     protected void onPostExecute(JSONObject response) {

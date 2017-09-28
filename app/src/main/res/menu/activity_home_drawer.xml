@@ -16,10 +16,9 @@
             <!--android:icon="@drawable/ic_login"-->
             <!--android:title="@string/make_agent" />-->
         <item
-            android:id="@+id/nav_language"
-            android:visible="false"
-            android:icon="@drawable/ic_language_24"
-            android:title="@string/change_language" />
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_24"
+            android:title="@string/settings" />
         <item
             android:id="@+id/nav_share"
             android:icon="@drawable/ic_share_24"

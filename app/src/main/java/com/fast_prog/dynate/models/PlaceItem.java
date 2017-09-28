@@ -8,40 +8,8 @@ import java.io.Serializable;
 
 public class PlaceItem implements Serializable {
 
-    private String plName;
-    private String pLatitude;
-    private String pLongitude;
-    private String pVicinity;
-
-    public String getPlName() {
-        return plName;
-    }
-
-    public void setPlName(String plName) {
-        this.plName = plName;
-    }
-
-    public String getpLatitude() {
-        return pLatitude;
-    }
-
-    public void setpLatitude(String pLatitude) {
-        this.pLatitude = pLatitude;
-    }
-
-    public String getpLongitude() {
-        return pLongitude;
-    }
-
-    public void setpLongitude(String pLongitude) {
-        this.pLongitude = pLongitude;
-    }
-
-    public String getpVicinity() {
-        return pVicinity;
-    }
-
-    public void setpVicinity(String pVicinity) {
-        this.pVicinity = pVicinity;
-    }
+    public String plName;
+    public String pLatitude;
+    public String pLongitude;
+    public String pVicinity;
 }

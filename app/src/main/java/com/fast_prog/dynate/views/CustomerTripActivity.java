@@ -6,45 +6,32 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.fast_prog.dynate.R;
 import com.fast_prog.dynate.utilities.Constants;
-import com.fast_prog.dynate.utilities.CustomTypefaceSpan;
 import com.fast_prog.dynate.utilities.JsonParser;
-import com.fast_prog.dynate.utilities.SetOffline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
-public class CustomerTripActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class CustomerTripActivity extends AppCompatActivity {
+        //implements NavigationView.OnNavigationItemSelectedListener {
+    //TextView usernameTextView;
 
     Typeface face;
 
@@ -52,15 +39,6 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
 
     Snackbar snackbar;
 
-    TextView usernameTextView;
-    //List<Order> ordersArrayList;
-    //JSONArray ordersJSONArray;
-    //RecyclerView homeRecyclerView;
-    //LinearLayoutManager homeLayoutManager;
-    //RecyclerView.Adapter mHomeAdapter;
-    //TextView searchTitleTextView;
-    //Button allOrderButton;
-    //LinearLayout topLayout;
     String glassExtra;
 
     Button driverAcceptedButton;
@@ -78,6 +56,19 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
     TextView customerCancelledCount;
     TextView completedCount;
     TextView newTripsCount;
+
+    SharedPreferences sharedPreferences;
+
+    AlertDialog alertDialog;
+
+    //List<Order> ordersArrayList;
+    //JSONArray ordersJSONArray;
+    //RecyclerView homeRecyclerView;
+    //LinearLayoutManager homeLayoutManager;
+    //RecyclerView.Adapter mHomeAdapter;
+    //TextView searchTitleTextView;
+    //Button allOrderButton;
+    //LinearLayout topLayout;
     //List<View> viewList;
     //int i;
 
@@ -86,12 +77,22 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_trip);
 
-        face = Typeface.createFromAsset(CustomerTripActivity.this.getAssets(), Constants.FONT_URL);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
+
+        face = Typeface.createFromAsset(CustomerTripActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         glassExtra = getIntent().getStringExtra("glass");
 
@@ -111,30 +112,27 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
         titleTextView.setTextColor(Color.WHITE);
         getSupportActionBar().setCustomView(titleTextView);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        Menu menu = navigationView.getMenu();
-        usernameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
-        usernameTextView.setText(preferences.getString(Constants.PREFS_USER_NAME, ""));
-
-        for (int i=0;i<menu.size();i++) {
-            MenuItem mi = menu.getItem(i);
-            SpannableString s = new SpannableString(mi.getTitle());
-            s.setSpan(new CustomTypefaceSpan("", face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            mi.setTitle(s);
-        }
-
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//
+//        Menu menu = navigationView.getMenu();
+//        usernameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
+//        usernameTextView.setText(sharedPreferences.getString(Constants.PREFS_USER_NAME, ""));
+//
+//        for (int i=0;i<menu.size();i++) {
+//            MenuItem mi = menu.getItem(i);
+//            SpannableString s = new SpannableString(mi.getTitle());
+//            s.setSpan(new CustomTypefaceSpan("", face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            mi.setTitle(s);
+//        }
         //if(preferences.getBoolean(Constants.PREFS_USER_AGENT, false)) {
         //    menu.findItem (R.id.nav_orders).setVisible(true);
         //    menu.findItem (R.id.nav_agent).setVisible(false);
@@ -161,55 +159,50 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
         //        allOrderButton.setVisibility(View.GONE);
         //    }
         //});
-        newTripsButton = (Button) findViewById(R.id.new_trips_button);
-        newTripsButton.setTypeface(face);
-        driverRejectedButton = (Button) findViewById(R.id.rejected_by_me_button);
-        driverRejectedButton.setTypeface(face);
-        driverAcceptedButton = (Button) findViewById(R.id.accepted_by_me_button);
-        driverAcceptedButton.setTypeface(face);
-        customerRejectedButton = (Button) findViewById(R.id.customer_rejected_button);
-        customerRejectedButton.setTypeface(face);
-        customerCancelledButton = (Button) findViewById(R.id.customer_cancelled_button);
-        customerCancelledButton.setTypeface(face);
-        customerAcceptedButton = (Button) findViewById(R.id.customer_accepted_button);
-        customerAcceptedButton.setTypeface(face);
-        completedButton = (Button) findViewById(R.id.completed_button);
-        completedButton.setTypeface(face);
-
         //viewList = new ArrayList<>();
 
+        newTripsButton = (Button) findViewById(R.id.new_trips_button);
+        driverRejectedButton = (Button) findViewById(R.id.rejected_by_me_button);
+        driverAcceptedButton = (Button) findViewById(R.id.accepted_by_me_button);
+        customerRejectedButton = (Button) findViewById(R.id.customer_rejected_button);
+        customerCancelledButton = (Button) findViewById(R.id.customer_cancelled_button);
+        customerAcceptedButton = (Button) findViewById(R.id.customer_accepted_button);
+        completedButton = (Button) findViewById(R.id.completed_button);
         driverAcceptedCount = (TextView) findViewById(R.id.accepted_by_me_count);
+        driverRejectedCount = (TextView) findViewById(R.id.rejected_by_me_count);
+        customerRejectedCount = (TextView) findViewById(R.id.customer_rejected_count);
+        customerAcceptedCount = (TextView) findViewById(R.id.customer_accepted_count);
+        customerCancelledCount = (TextView) findViewById(R.id.customer_cancelled_count);
+        completedCount = (TextView) findViewById(R.id.completed_count);
+        newTripsCount = (TextView) findViewById(R.id.new_trips_count);
+
+        newTripsButton.setTypeface(face);
+        driverRejectedButton.setTypeface(face);
+        driverAcceptedButton.setTypeface(face);
+        customerRejectedButton.setTypeface(face);
+        customerCancelledButton.setTypeface(face);
+        customerAcceptedButton.setTypeface(face);
+        completedButton.setTypeface(face);
         driverAcceptedCount.setTypeface(face);
+        driverRejectedCount.setTypeface(face);
+        customerRejectedCount.setTypeface(face);
+        customerAcceptedCount.setTypeface(face);
+        customerCancelledCount.setTypeface(face);
+        completedCount.setTypeface(face);
+        newTripsCount.setTypeface(face);
+
         //new TripDetailsMasterListCountByDate("1", driverAcceptedCount, false).execute();
         //new TripDetailsMasterListCountByDate("1", driverAcceptedCount).execute();
-
-        driverRejectedCount = (TextView) findViewById(R.id.rejected_by_me_count);
-        driverRejectedCount.setTypeface(face);
         //new TripDetailsMasterListCountByDate("5", driverRejectedCount, false).execute();
         //new TripDetailsMasterListCountByDate("5", driverRejectedCount).execute();
-
-        customerRejectedCount = (TextView) findViewById(R.id.customer_rejected_count);
-        customerRejectedCount.setTypeface(face);
         //new TripDetailsMasterListCountByDate("3", customerRejectedCount, false).execute();
         //new TripDetailsMasterListCountByDate("3", customerRejectedCount).execute();
-
-        customerAcceptedCount = (TextView) findViewById(R.id.customer_accepted_count);
-        customerAcceptedCount.setTypeface(face);
         //new TripDetailsMasterListCountByDate("2", customerAcceptedCount, false).execute();
         //new TripDetailsMasterListCountByDate("2", customerAcceptedCount).execute();
-
-        customerCancelledCount = (TextView) findViewById(R.id.customer_cancelled_count);
-        customerCancelledCount.setTypeface(face);
         //new TripDetailsMasterListCountByDate("4", customerCancelledCount, false).execute();
         //new TripDetailsMasterListCountByDate("4", customerCancelledCount).execute();
-
-        completedCount = (TextView) findViewById(R.id.completed_count);
-        completedCount.setTypeface(face);
         //new TripDetailsMasterListCountByDate("6", completedCount, false).execute();
         //new TripDetailsMasterListCountByDate("6", completedCount).execute();
-
-        newTripsCount = (TextView) findViewById(R.id.new_trips_count);
-        newTripsCount.setTypeface(face);
         //new TripDetailsMasterListCountByDate("7", newTripsCount, true).execute();
         //new TripDetailsMasterListCountByDate("7", newTripsCount).execute();
 
@@ -292,235 +285,239 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
     }
 
     @Override
+    protected void onDestroy(){
+        super.onDestroy();
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+        new TripDetailsMasterListCountBackground("1", driverAcceptedCount).execute();
+        new TripDetailsMasterListCountBackground("5", driverRejectedCount).execute();
+        new TripDetailsMasterListCountBackground("3", customerRejectedCount).execute();
+        new TripDetailsMasterListCountBackground("2", customerAcceptedCount).execute();
+        new TripDetailsMasterListCountBackground("4", customerCancelledCount).execute();
+        new TripDetailsMasterListCountBackground("6", completedCount).execute();
+        new TripDetailsMasterListCountBackground("7", newTripsCount).execute();
         //viewList = new ArrayList<>();
         //new TripDetailsMasterListCountByDate("1", driverAcceptedCount, false).execute();
-        new TripDetailsMasterListCountByDate("1", driverAcceptedCount).execute();
-        new TripDetailsMasterListCountByDate("5", driverRejectedCount).execute();
-        new TripDetailsMasterListCountByDate("3", customerRejectedCount).execute();
-        new TripDetailsMasterListCountByDate("2", customerAcceptedCount).execute();
-        new TripDetailsMasterListCountByDate("4", customerCancelledCount).execute();
-        new TripDetailsMasterListCountByDate("6", completedCount).execute();
         //new TripDetailsMasterListCountByDate("7", newTripsCount, true).execute();
-        new TripDetailsMasterListCountByDate("7", newTripsCount).execute();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+////        if (id == R.id.back_option) {
+////            finish();
+////        }
+//
+//        if (id == R.id.exit_option) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(CustomerTripActivity.this);
+//            LayoutInflater inflater = CustomerTripActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_CUST_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
+//                    editor.commit();
+//
+//                    Intent intent = new Intent(CustomerTripActivity.this, LoginActivity.class);
+//                    ActivityCompat.finishAffinity(CustomerTripActivity.this);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_home) {
+//            startActivity(new Intent(CustomerTripActivity.this, HomeActivity.class));
+//        }
+//
+//        //if (id == R.id.nav_orders) {
+//        //    startActivity(new Intent(CustomerTripActivity.this, MyOrdersActivity.class));
+//        //}
+//        //if (id == R.id.nav_agent) {
+//        //    final MyCircularProgressDialog progressDialog;
+//        //    progressDialog = new MyCircularProgressDialog(CustomerTripActivity.this);
+//        //    progressDialog.setCancelable(false);
+//        //    progressDialog.show();
+//        //
+//        //    Handler handler = new Handler();
+//        //    handler.postDelayed(new Runnable() {
+//        //        public void run() {
+//        //            progressDialog.dismiss();
+//        //
+//        //            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+//        //
+//        //            SharedPreferences.Editor editor = preferences.edit();
+//        //            editor.putBoolean(Constants.PREFS_USER_AGENT, true);
+//        //            editor.commit();
+//        //
+//        //            startActivity(new Intent(CustomerTripActivity.this, HomeActivity.class));
+//        //            finish();
+//        //        }
+//        //    }, 2000);
+//        //}
+//
+//        if (id == R.id.nav_settings) {
+//            startActivity(new Intent(CustomerTripActivity.this, ChangeLanguageActivity.class));
+//        }
+//
+//        if (id == R.id.nav_share) {
+//            Intent sendIntent = new Intent();
+//            sendIntent.setAction(Intent.ACTION_SEND);
+//            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.download_dynate) + " " + sharedPreferences.getString(Constants.PREFS_SHARE_URL, ""));
+//            sendIntent.setType("text/plain");
+//            startActivity(sendIntent);
+//        }
+//
+//        if (id == R.id.nav_logout) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(CustomerTripActivity.this);
+//            LayoutInflater inflater = CustomerTripActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_CUST_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
+//                    editor.commit();
+//
+//                    Intent intent = new Intent(CustomerTripActivity.this, LoginActivity.class);
+//                    ActivityCompat.finishAffinity(CustomerTripActivity.this);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        //if (id == R.id.nav_exit) {
+//        //    SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+//        //
+//        //    if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//        //        SharedPreferences.Editor editor = preferences.edit();
+//        //        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//        //        editor.commit();
+//        //
+//        //        new SetOffline(preferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//        //    }
+//        //
+//        //    ActivityCompat.finishAffinity(CustomerTripActivity.this);
+//        //    finish();
+//        //}
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            finish();
-        }
-
-        if (id == R.id.exit_option) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CustomerTripActivity.this);
-            LayoutInflater inflater = CustomerTripActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_CUST_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    Intent intent = new Intent(CustomerTripActivity.this, LoginActivity.class);
-                    ActivityCompat.finishAffinity(CustomerTripActivity.this);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            startActivity(new Intent(CustomerTripActivity.this, HomeActivity.class));
-        }
-
-        //if (id == R.id.nav_orders) {
-        //    startActivity(new Intent(CustomerTripActivity.this, MyOrdersActivity.class));
-        //}
-        //if (id == R.id.nav_agent) {
-        //    final MyCircularProgressDialog progressDialog;
-        //    progressDialog = new MyCircularProgressDialog(CustomerTripActivity.this);
-        //    progressDialog.setCancelable(false);
-        //    progressDialog.show();
-        //
-        //    Handler handler = new Handler();
-        //    handler.postDelayed(new Runnable() {
-        //        public void run() {
-        //            progressDialog.dismiss();
-        //
-        //            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        //
-        //            SharedPreferences.Editor editor = preferences.edit();
-        //            editor.putBoolean(Constants.PREFS_USER_AGENT, true);
-        //            editor.commit();
-        //
-        //            startActivity(new Intent(CustomerTripActivity.this, HomeActivity.class));
-        //            finish();
-        //        }
-        //    }, 2000);
-        //}
-
-        if (id == R.id.nav_language) {
-            startActivity(new Intent(CustomerTripActivity.this, ChangeLanguageActivity.class));
-        }
-
-        if (id == R.id.nav_share) {
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.download_dynate) + " " + preferences.getString(Constants.PREFS_SHARE_URL, ""));
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-        }
-
-        if (id == R.id.nav_logout) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(CustomerTripActivity.this);
-            LayoutInflater inflater = CustomerTripActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_CUST_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    Intent intent = new Intent(CustomerTripActivity.this, LoginActivity.class);
-                    ActivityCompat.finishAffinity(CustomerTripActivity.this);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        //if (id == R.id.nav_exit) {
-        //    SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        //
-        //    if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-        //        SharedPreferences.Editor editor = preferences.edit();
-        //        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-        //        editor.commit();
-        //
-        //        new SetOffline(preferences.getString(Constants.PREFS_USER_ID, "")).execute();
-        //    }
-        //
-        //    ActivityCompat.finishAffinity(CustomerTripActivity.this);
-        //    finish();
-        //}
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private class TripDetailsMasterListCountByDate extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class TripDetailsMasterListCountBackground extends AsyncTask<Void, Void, JSONObject> {
         String status;
         TextView view;
-        //boolean animate;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
-        //TripDetailsMasterListCountByDate(String status, TextView view, boolean animate) {
-        TripDetailsMasterListCountByDate(String status, TextView view) {
+        TripDetailsMasterListCountBackground(String status, TextView view) {
             this.status = status;
             this.view = view;
-            //this.animate = animate;
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
             if (glassExtra.equalsIgnoreCase("true")) {
                 params.put("ArgTripMCustId", "1");
@@ -531,22 +528,19 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
                 params.put("ArgExcludeCustId", "1");
             }
 
-            params.put("ArgTripDDmId", preferences.getString(Constants.PREFS_USER_ID, "0"));
+            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"));
             params.put("ArgTripMID", "0");
             params.put("ArgTripDID", "0");
             params.put("ArgTripMStatus", "0");
             params.put("ArgTripDStatus", status);
 
-            JSONObject json;
+            String BASE_URL = Constants.BASE_URL_EN + "TripDetailsMasterListCount";
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsMasterListCount", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "TripDetailsMasterListCount", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "TripDetailsMasterListCount";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(JSONObject response) {
@@ -564,9 +558,10 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
                         }
 
                         if (count > 0) {
+                            Animation blinkText = AnimationUtils.loadAnimation(CustomerTripActivity.this, R.anim.blink);
                             view.setVisibility(View.VISIBLE);
                             view.setText(String.format(Locale.getDefault(), "%d", count));
-                            view.startAnimation(getBlinkAnimation());
+                            view.startAnimation(blinkText);
                             //viewList.add(view);
                         } else {
                             view.setVisibility(View.GONE);
@@ -617,15 +612,16 @@ public class CustomerTripActivity extends AppCompatActivity implements Navigatio
         }
     }
 
-    public Animation getBlinkAnimation(){
-        Animation animation = new AlphaAnimation(1, 0);          // Change alpha from fully visible to invisible
-        animation.setDuration(300);                              // duration - half a second
-        animation.setInterpolator(new LinearInterpolator());     // do not alter animation rate
-        animation.setRepeatCount(-1);                            // Repeat animation infinitely
-        animation.setRepeatMode(Animation.REVERSE);              // Reverse animation at the end so the button will fade back in
+//    public Animation getBlinkAnimation(){
+//        Animation animation = new AlphaAnimation(1, 0);          // Change alpha from fully visible to invisible
+//        animation.setDuration(300);                              // duration - half a second
+//        animation.setInterpolator(new LinearInterpolator());     // do not alter animation rate
+//        animation.setRepeatCount(-1);                            // Repeat animation infinitely
+//        animation.setRepeatMode(Animation.REVERSE);              // Reverse animation at the end so the button will fade back in
+//
+//        return animation;
+//    }
 
-        return animation;
-    }
     //class GetOrderHistory extends AsyncTask<Void, Void, JSONObject> {
     //    MyCircularProgressDialog progressDialog;
     //    JsonParser jsonParser;

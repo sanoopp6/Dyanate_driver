@@ -3,7 +3,6 @@ package com.fast_prog.dynate.views;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,19 +10,14 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.widget.Button;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,7 +26,6 @@ import com.fast_prog.dynate.R;
 import com.fast_prog.dynate.models.Order;
 import com.fast_prog.dynate.utilities.Constants;
 import com.fast_prog.dynate.utilities.DirectionsJSONParser;
-import com.fast_prog.dynate.utilities.SetOffline;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -79,17 +72,31 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     LatLngBounds.Builder builder;
     LatLngBounds bounds;
 
+    SharedPreferences sharedPreferences;
+
+    AlertDialog alertDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
 
-        face = Typeface.createFromAsset(RouteActivity.this.getAssets(), Constants.FONT_URL);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
+
+        face = Typeface.createFromAsset(RouteActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         String title = getResources().getString(R.string.show_route);
         TextView titleTextView = new TextView(getApplicationContext());
@@ -136,118 +143,128 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
-        distanceTextView.startAnimation(getBlinkAnimation());
-    }
-
-    public Animation getBlinkAnimation(){
-        Animation animation = new AlphaAnimation(1, 0);         // Change alpha from fully visible to invisible
-        animation.setDuration(300);                             // duration - half a second
-        animation.setInterpolator(new LinearInterpolator());    // do not alter animation rate
-        animation.setRepeatCount(-1);                            // Repeat animation infinitely
-        animation.setRepeatMode(Animation.REVERSE);             // Reverse animation at the end so the button will fade back in
-
-        return animation;
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-
-        return true;
+        Animation blinkText = AnimationUtils.loadAnimation(RouteActivity.this, R.anim.blink);
+        distanceTextView.startAnimation(blinkText);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    protected void onDestroy(){
+        super.onDestroy();
 
-        if (id == R.id.back_option) {
-            finish();
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
         }
-
-        if (id == R.id.exit_option) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(RouteActivity.this);
-            LayoutInflater inflater = RouteActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_CUST_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(RouteActivity.this);
-                    LayoutInflater inflater1 = RouteActivity.this.getLayoutInflater();
-                    final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-                    builder1.setView(view1);
-                    TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-                    txtAlert1.setText(R.string.logged_out);
-                    final AlertDialog dialog1 = builder1.create();
-                    dialog1.setCancelable(false);
-                    view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                    Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                    btnOk.setText(R.string.ok);
-                    view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog1.dismiss();
-
-                            Intent intent = new Intent(RouteActivity.this, LoginActivity.class);
-                            ActivityCompat.finishAffinity(RouteActivity.this);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                    btnOk.setTypeface(face);
-                    txtAlert1.setTypeface(face);
-                    dialog1.show();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        return super.onOptionsItemSelected(item);
     }
+
+//    public Animation getBlinkAnimation(){
+//        Animation animation = new AlphaAnimation(1, 0);         // Change alpha from fully visible to invisible
+//        animation.setDuration(300);                             // duration - half a second
+//        animation.setInterpolator(new LinearInterpolator());    // do not alter animation rate
+//        animation.setRepeatCount(-1);                            // Repeat animation infinitely
+//        animation.setRepeatMode(Animation.REVERSE);             // Reverse animation at the end so the button will fade back in
+//
+//        return animation;
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+////        if (id == R.id.back_option) {
+////            finish();
+////        }
+//
+//        if (id == R.id.exit_option) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(RouteActivity.this);
+//            LayoutInflater inflater = RouteActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_CUST_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    editor.commit();
+//
+//                    AlertDialog.Builder builder1 = new AlertDialog.Builder(RouteActivity.this);
+//                    LayoutInflater inflater1 = RouteActivity.this.getLayoutInflater();
+//                    final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//                    builder1.setView(view1);
+//                    TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+//                    txtAlert1.setText(R.string.logged_out);
+//                    alertDialog = builder1.create();
+//                    alertDialog.setCancelable(false);
+//                    view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//                    Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//                    btnOk.setText(R.string.ok);
+//                    view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            alertDialog.dismiss();
+//
+//                            Intent intent = new Intent(RouteActivity.this, LoginActivity.class);
+//                            ActivityCompat.finishAffinity(RouteActivity.this);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//                    });
+//                    btnOk.setTypeface(face);
+//                    txtAlert1.setTypeface(face);
+//                    alertDialog.show();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         try {
-            start = new LatLng(Double.parseDouble(order.getTripFromLat()), Double.parseDouble(order.getTripFromLng()));
-            stop = new LatLng(Double.parseDouble(order.getTripToLat()), Double.parseDouble(order.getTripToLng()));
+            start = new LatLng(Double.parseDouble(order.tripFromLat), Double.parseDouble(order.tripFromLng));
+            stop = new LatLng(Double.parseDouble(order.tripToLat), Double.parseDouble(order.tripToLng));
         } catch (Exception e) {
             start = new LatLng(0,0);
             stop = new LatLng(0,0);
@@ -450,7 +467,7 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
             // Drawing polyline in the Google Map for the i-th route
             if(lineOptions != null) {
                 mMap.addPolyline(lineOptions);
-                distanceTextView.setText(getResources().getString(R.string.distance)  + " : " + distance + ", " + getResources().getString(R.string.duration) + " : " + duration);
+                distanceTextView.setText(String.format("%s : %s, %s : %s", getResources().getString(R.string.distance), distance, getResources().getString(R.string.duration), duration));
             }
         }
     }

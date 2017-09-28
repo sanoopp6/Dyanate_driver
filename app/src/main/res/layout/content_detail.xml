@@ -41,7 +41,7 @@
                 android:id="@+id/image_view_map_change_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/layout_transparent_squre"
+                android:background="@drawable/layout_transparent_squre_rounded"
                 android:padding="8dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_earth1" />
@@ -350,7 +350,7 @@
             android:layout_gravity="center"
             android:layout_margin="3dp"
             android:layout_weight="1"
-            android:background="@drawable/btn_gradient_submit2"
+            android:background="@drawable/btn_lightblue_rounded"
             android:text="@string/show_details"
             android:textColor="@color/whiteColorText"
             android:textSize="12sp" />
@@ -362,7 +362,7 @@
             android:layout_gravity="center"
             android:layout_margin="3dp"
             android:layout_weight="1"
-            android:background="@drawable/btn_gradient_submit3"
+            android:background="@drawable/btn_blue2_rounded"
             android:text="@string/show_replies"
             android:textColor="@color/whiteColorText"
             android:textSize="12sp" />
@@ -375,7 +375,7 @@
             android:layout_margin="3dp"
             android:text="@string/cancel_trip"
             android:layout_height="33dp"
-            android:background="@drawable/btn_cancel"
+            android:background="@drawable/btn_red_rounded"
             android:textColor="@color/whiteColorText"
             android:textSize="12sp" />
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Dyanate Driver</string>
+    <string name="app_name">Dynate Driver</string>
     <string name="english" translatable="false">ENGLISH</string>
     <string name="arabic" translatable="false">عربي</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -8,6 +8,9 @@
     <string name="item_image_contentDescription" translatable="false">Country flag</string>
     <string name="item_preview_country" translatable="false">Saudi Arabia (‫المملكة العربية السعودية‬‎)</string>
     <string name="item_preview_dialCode" translatable="false">+966</string>
+    <!--<string name="facebook_app_id" translatable="false">332647443829494</string>-->
+    <!--<string name="fb_login_protocol_scheme" translatable="false">fb332647443829494</string>-->
+    <!--<string name="or">OR</string>-->
 
     <string-array name="city_array">
         <item>Riyadh</item>
@@ -46,7 +49,7 @@
     <string name="alphanumeric_username">Username must have alphabets and numbers!</string>
     <string name="approval_failed">Approval failed!</string>
     <string name="approve">Approve</string>
-    <string name="approved_succesfully">This trip will be assigned to you, Continue ?</string>
+    <string name="approved_succesfully">Approved Successfully.</string>
     <string name="are_you_ready_to_accept_this_trip">This trip will be assigned to you, Continue ?</string>
     <string name="are_you_sure_new">Are you sure to change status ?</string>
     <string name="are_you_sure">Are you sure ?</string>
@@ -70,7 +73,7 @@
     <string name="distance">Driving distance</string>
     <string name="do_you_want_to_continue_without_locations">Do you want to send message to sender and receiver for location or pick location from map ?</string>
     <string name="do_you_want_to_exit">Do you want to exit ?</string>
-    <string name="download_dynate">Download Dyanate Application</string>
+    <string name="download_dynate">Download Dynate Application</string>
     <string name="driver_login">Driver Login</string>
     <string name="driver_replies">Driver Replies</string>
     <string name="driver">Driver</string>
@@ -148,7 +151,7 @@
     <string name="password_resend">OTP resend.</string>
     <string name="password_reset_success">Password reset successful</string>
     <string name="password_send">OTP send, please verify to continue.</string>
-    <string name="password">Password :</string>
+    <string name="password">Password</string>
     <string name="pick_location">Pick Location</string>
     <string name="pick_map">Pick From Map</string>
     <string name="please_switchon_gps">Please enable GPS from settings.</string>
@@ -225,16 +228,17 @@
     <string name="use_pin_location">User Location.</string>
     <string name="username_10_char">Username must be with in 10 characters!</string>
     <string name="username_4_char">Username must have at least 4 characters!</string>
-    <string name="username_or_mobile">Username or Mobile Number :</string>
-    <string name="username">Username :</string>
+    <string name="username_or_mobile">Username or Mobile Number</string>
     <string name="vehicle_model">Model :</string>
+    <string name="vehicle_size">Size :</string>
     <string name="vehicle_type">Type :</string>
     <string name="vehicle">Vehicle :</string>
     <string name="verify_otp">Verify OTP</string>
     <string name="view">View</string>
     <string name="warning">Warning</string>
     <string name="we_have_sent_an_otp_via_sms">We have sent an OTP via SMS to</string>
-    <string name="work_with_glass">Would you like work with Glass factory ?</string>
+    <string name="work_with_glass1">Would you like work with</string>
+    <string name="work_with_glass2">Glass factory ?</string>
     <string name="wrong_trip_date">Please check your trip booking date / time.</string>
     <string name="yes">YES</string>
     <string name="you_are_here">You are here</string>
@@ -242,5 +246,28 @@
     <string name="registering_under_company">Are you registering under a company ?</string>
     <string name="select_company">Select Company</string>
     <string name="you_must_select_company">You must select a company.</string>
+    <string name="name_reg">Name (required):</string>
+    <string name="mobile_reg">Mobile (required):</string>
+    <string name="username_reg">Username (required):</string>
+    <string name="password_reg">Password (required):</string>
+    <string name="conf_password">Confirm Password :</string>
+    <string name="conf_password_no_colon">Confirm Password</string>
+    <string name="do_you_want_remove_bookmark">Delete saved location ?</string>
+    <string name="do_you_want_add_bookmark">Save this location ?</string>
+    <string name="password_does_not_match">Passwords does not match!</string>
+    <string name="switch_lang">Switch language to عربي</string>
+    <string name="image_id">ID</string>
+    <string name="car_form">Car Papers</string>
+    <string name="card">Card</string>
+    <string name="other_doc">Other Papers</string>
+    <string name="id_not_selected">ID not selected!</string>
+    <string name="carform_not_selected">Car Papers not selected!</string>
+    <string name="card_not_selected">Card not selected!</string>
+    <string name="other_not_selected">Other Papers not selected!</string>
+    <string name="about_glass1" translatable="false">مصنع ركن الهوامير للزجاج المقسي</string>
+    <string name="about_glass2" translatable="false">الرياض - السلي</string>
+    <string name="about_glass3" translatable="false">للتواصل ٠٥٠٥٨١٠٢٠٠/٠٥٠٥٧٧٧٦١٨</string>
+    <string name="username">user name:</string>
+    <string name="work_with_glass">Would you like work with Glass factory ?</string>
 
 </resources>

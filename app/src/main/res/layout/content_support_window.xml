@@ -28,7 +28,7 @@
                 android:paddingBottom="30dp"
                 android:paddingTop="30dp"
                 android:orientation="vertical"
-                android:background="@drawable/btn_new_orders"
+                android:background="@drawable/btn_lightblue2_rounded"
                 android:layout_height="wrap_content">
 
                 <ImageView
@@ -90,7 +90,7 @@
                 <!--android:layout_width="match_parent"-->
                 <!--android:orientation="vertical"-->
                 <!--android:padding="10dp"-->
-                <!--android:background="@drawable/layout_bordered_rounded_squre"-->
+                <!--android:background="@drawalayout_border_grey_transparent_squrequre"-->
                 <!--android:layout_height="wrap_content">-->
 
                 <!--&lt;!&ndash;<TextView&ndash;&gt;-->

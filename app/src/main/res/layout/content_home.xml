@@ -22,7 +22,7 @@
         android:text="@string/add_new_trip"
         android:textAllCaps="true"
         android:textSize="17sp"
-        android:background="@drawable/btn_gradient_submit2"
+        android:background="@drawable/btn_lightblue_rounded"
         android:id="@+id/add_new_button"/>
 
     <!--<Button-->
@@ -36,7 +36,7 @@
         <!--android:textAllCaps="true"-->
         <!--android:textSize="17sp"-->
         <!--android:layout_marginTop="15dp"-->
-        <!--android:background="@drawable/btn_language"-->
+        <!--android:background="@drawabtn_black_roundeduage"-->
         <!--android:id="@+id/my_booked_button"/>-->
 
     <FrameLayout
@@ -45,7 +45,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_language"
+        android:background="@drawable/btn_black_rounded"
         android:clipChildren="false">
 
         <Button
@@ -81,7 +81,7 @@
         <!--android:textSize="17sp"-->
         <!--android:textAllCaps="true"-->
         <!--android:layout_marginTop="15dp"-->
-        <!--android:background="@drawable/btn_agree_order"-->
+        <!--android:background="@drawabtn_blue_roundedrder"-->
         <!--android:id="@+id/glass_fact_button"/>-->
 
     <FrameLayout
@@ -91,7 +91,7 @@
         android:id="@+id/glass_fact_frame"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_agree_order"
+        android:background="@drawable/btn_blue_rounded"
         android:clipChildren="false">
 
         <Button
@@ -127,7 +127,7 @@
         <!--android:textAllCaps="true"-->
         <!--android:textSize="17sp"-->
         <!--android:layout_marginTop="15dp"-->
-        <!--android:background="@drawable/btn_all_orders"-->
+        <!--android:background="@drawabtn_orange_roundedders"-->
         <!--android:id="@+id/other_cus_button"/>-->
 
     <FrameLayout
@@ -136,7 +136,7 @@
         android:layout_marginLeft="30dp"
         android:layout_height="35dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_all_orders"
+        android:background="@drawable/btn_orange_rounded"
         android:clipChildren="false">
 
         <Button
@@ -177,7 +177,7 @@
         android:textAllCaps="true"
         android:textSize="17sp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/btn_not_agree_order"
+        android:background="@drawable/btn_red2_rounded"
         android:id="@+id/make_online_button"/>
 
 </LinearLayout>

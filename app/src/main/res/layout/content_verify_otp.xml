@@ -40,31 +40,47 @@
                 android:gravity="center"
                 android:text="@string/please_verify_your_mobile_number"/>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/edit_otp_layout"
+            <EditText
                 android:layout_below="@+id/txt_otp2"
+                android:id="@+id/edit_otp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white10"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="80dp"
-                android:layout_marginLeft="80dp">
+                android:layout_height="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/layout_border_grey_transparent_squre"
+                android:textAlignment="center"
+                android:hint="@string/otp"
+                android:padding="5dp"
+                android:singleLine="true"
+                android:inputType="number"
+                android:textSize="14sp" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/edit_otp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textAlignment="center"
-                    android:padding="5dp"
-                    android:inputType="phone"
-                    android:maxLines="1"
-                    android:typeface="sans" />
-            </android.support.design.widget.TextInputLayout>
+            <!--<android.support.design.widget.TextInputLayout-->
+                <!--android:id="@+id/edit_otp_layout"-->
+                <!--android:layout_below="@+id/txt_otp2"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@color/white10"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:layout_marginRight="80dp"-->
+                <!--android:layout_marginLeft="80dp">-->
+
+                <!--<android.support.design.widget.TextInputEditText-->
+                    <!--android:id="@+id/edit_otp"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:padding="5dp"-->
+                    <!--android:inputType="number"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:typeface="sans" />-->
+            <!--</android.support.design.widget.TextInputLayout>-->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/edit_otp_layout"
+                android:layout_below="@+id/edit_otp"
                 android:layout_marginTop="20dp"
                 android:textAlignment="center"
                 android:textSize="16sp"
@@ -87,7 +103,7 @@
                 android:layout_height="35dp"
                 android:layout_below="@+id/btn_resend_otp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/btn_ok"
+                android:background="@drawable/btn_green_rounded"
                 android:text="@string/submit"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"

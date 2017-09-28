@@ -10,31 +10,19 @@ import java.io.Serializable;
 
 public class UploadFiles implements Serializable {
 
-    private Bitmap bm;
-    private String base64Encoded;
-    private String imageName;
+    public Bitmap bm1;
+    public String base64Encoded1;
+    public String imageName1;
 
-    public Bitmap getBm() {
-        return bm;
-    }
+    public Bitmap bm2;
+    public String base64Encoded2;
+    public String imageName2;
 
-    public void setBm(Bitmap bm) {
-        this.bm = bm;
-    }
+    public Bitmap bm3;
+    public String base64Encoded3;
+    public String imageName3;
 
-    public String getBase64Encoded() {
-        return base64Encoded;
-    }
-
-    public void setBase64Encoded(String base64Encoded) {
-        this.base64Encoded = base64Encoded;
-    }
-
-    public String getImageName() {
-        return imageName;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
+    public Bitmap bm4;
+    public String base64Encoded4;
+    public String imageName4;
 }

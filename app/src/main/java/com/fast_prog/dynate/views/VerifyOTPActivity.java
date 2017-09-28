@@ -1,26 +1,23 @@
 package com.fast_prog.dynate.views;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +35,7 @@ import com.fast_prog.dynate.utilities.SMSReceiver;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -67,18 +65,48 @@ public class VerifyOTPActivity extends AppCompatActivity {
 
     static String otpExtra;
     static RegisterUser registerUserExtra;
-    static List<UploadFiles> uploadFiles;
+    static UploadFiles uploadFiles;
 
     int custID;
 
     MyCircularProgressDialog myCircularProgressDialog;
+
+    SharedPreferences sharedPreferences;
+
+    AlertDialog alertDialog;
+
+    List<String> otpArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_otp);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
+
         face = Typeface.createFromAsset(VerifyOTPActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        String title = getResources().getString(R.string.verify_otp);
+        TextView titleTextView = new TextView(getApplicationContext());
+        titleTextView.setText(title);
+        titleTextView.setTextSize(16);
+        titleTextView.setAllCaps(true);
+        titleTextView.setTypeface(face, Typeface.BOLD);
+        titleTextView.setTextColor(Color.WHITE);
+        getSupportActionBar().setCustomView(titleTextView);
 
         oTPEditText = (EditText) findViewById(R.id.edit_otp);
         oTPEditText.setTypeface(face);
@@ -103,12 +131,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
         //uploadFiles = (List<UploadFiles>) getIntent().getSerializableExtra("uploadFiles");
         //registerUserExtra = (RegisterUser) getIntent().getSerializableExtra("registerUser");
 
-        otpTextView2.setText(String.format("%s %s", VerifyOTPActivity.this.getResources().getString(R.string.we_have_sent_an_otp_via_sms), registerUserExtra.getMobile()));
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        otpTextView2.setText(String.format("%s %s", VerifyOTPActivity.this.getResources().getString(R.string.we_have_sent_an_otp_via_sms), registerUserExtra.mobile));
 
         new CountDownTimer(45000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -123,21 +146,12 @@ public class VerifyOTPActivity extends AppCompatActivity {
             }
         }.start();
 
-        String title = getResources().getString(R.string.verify_otp);
-        TextView titleTextView = new TextView(getApplicationContext());
-        titleTextView.setText(title);
-        titleTextView.setTextSize(16);
-        titleTextView.setAllCaps(true);
-        titleTextView.setTypeface(face, Typeface.BOLD);
-        titleTextView.setTextColor(Color.WHITE);
-        getSupportActionBar().setCustomView(titleTextView);
-
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (validate()) {
                     if (ConnectionDetector.isConnected(VerifyOTPActivity.this)) {
-                        new RegisterBackground().execute();
+                        new AddDriverMasterBackground().execute();
                     } else {
                         ConnectionDetector.errorSnackbar(coordinatorLayout);
                     }
@@ -149,7 +163,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (ConnectionDetector.isConnected(VerifyOTPActivity.this)) {
-                    new ResendOTPBackground().execute();
+                    new SendOTPDMBackground().execute();
                 } else {
                     ConnectionDetector.errorSnackbar(coordinatorLayout);
                 }
@@ -163,29 +177,32 @@ public class VerifyOTPActivity extends AppCompatActivity {
             registerReceiver(receiver, filter);
             isRegistered = true;
         }
+
+        otpArray = new ArrayList<>();
+        otpArray.add(otpExtra);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-
-        MenuItem menuLogout = menu.findItem(R.id.exit_option);
-        menuLogout.setVisible(false);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            finish();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        MenuItem menuLogout = menu.findItem(R.id.exit_option);
+//        menuLogout.setVisible(false);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.back_option) {
+//            finish();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     public static void updateData(String otp) {
         oTPEditText.setText(otp);
@@ -212,6 +229,22 @@ public class VerifyOTPActivity extends AppCompatActivity {
             unregisterReceiver(receiver);
             isRegistered = false;
         }
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
+        }
+
+        if (myCircularProgressDialog != null && myCircularProgressDialog.isShowing()) {
+            myCircularProgressDialog.cancel();
+        }
+    }
+
+    public boolean useLoop(String targetValue) {
+        for (String s: otpArray) {
+            if (s.equals(targetValue))
+                return true;
+        }
+        return false;
     }
 
     boolean validate() {
@@ -225,9 +258,29 @@ public class VerifyOTPActivity extends AppCompatActivity {
             oTPEditText.setError(null);
         }
 
-        if (!(otp.equals(otpExtra))) {
-            oTPEditText.setError(VerifyOTPActivity.this.getResources().getText(R.string.invalid_otp));
-            oTPEditText.requestFocus();
+        if (!useLoop(otpExtra)) {
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(VerifyOTPActivity.this);
+            LayoutInflater inflater1 = VerifyOTPActivity.this.getLayoutInflater();
+            final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+            builder1.setView(view1);
+            TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+            txtAlert1.setText(R.string.invalid_otp);
+            alertDialog = builder1.create();
+            alertDialog.setCancelable(false);
+            view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+            Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+            btnOk.setText(R.string.ok);
+            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.dismiss();
+                }
+            });
+            btnOk.setTypeface(face);
+            txtAlert1.setTypeface(face);
+            alertDialog.show();
+            //oTPEditText.setError(VerifyOTPActivity.this.getResources().getText(R.string.invalid_otp));
+            //oTPEditText.requestFocus();
             return  false;
         } else {
             oTPEditText.setError(null);
@@ -236,51 +289,47 @@ public class VerifyOTPActivity extends AppCompatActivity {
         return true;
     }
 
-    private class RegisterBackground extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class AddDriverMasterBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            myCircularProgressDialog = new MyCircularProgressDialog(VerifyOTPActivity.this);
-            myCircularProgressDialog.setCancelable(false);
-            myCircularProgressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(VerifyOTPActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
-            params.put("ArgDmName", registerUserExtra.getName());
-            params.put("ArgDmNameAr", registerUserExtra.getNameArabic());
-            params.put("ArgDmMobNumber", "966"+registerUserExtra.getMobile());
-            params.put("ArgDmEmailId", registerUserExtra.getMail());
-            params.put("ArgDmAddress", registerUserExtra.getAddress());
-            params.put("ArgDmLatitude", registerUserExtra.getLatitide());
-            params.put("ArgDmLongitude", registerUserExtra.getLongitude());
-            params.put("ArgDmUserId", registerUserExtra.getUsername());
-            params.put("ArgDmPassWord", registerUserExtra.getPassword());
-            params.put("ArgDmVmoId", registerUserExtra.getvModelId()+"");
-            params.put("ArgDmLicenseNo", registerUserExtra.getLicenseNo());
-            params.put("ArgDmLicenseNoAr", registerUserExtra.getLicenseNoArabic());
-            params.put("ArgDmIsFactory", registerUserExtra.isWithGlass()+"");
-            params.put("ArgDmLoginType", registerUserExtra.getLoginMethod());
-            params.put("ArgVcId", registerUserExtra.getvCompId());
+            params.put("ArgDmName", registerUserExtra.name);
+            params.put("ArgDmNameAr", registerUserExtra.nameArabic);
+            params.put("ArgDmMobNumber", "966"+registerUserExtra.mobile);
+            params.put("ArgDmEmailId", registerUserExtra.mail);
+            params.put("ArgDmAddress", registerUserExtra.address);
+            params.put("ArgDmLatitude", registerUserExtra.latitude);
+            params.put("ArgDmLongitude", registerUserExtra.longitude);
+            params.put("ArgDmUserId", registerUserExtra.username);
+            params.put("ArgDmPassWord", registerUserExtra.password);
+            params.put("ArgDmVmoId", registerUserExtra.vModelId);
+            params.put("ArgDmLicenseNo", registerUserExtra.licenseNo);
+            params.put("ArgDmLicenseNoAr", registerUserExtra.licenseNoArabic);
+            params.put("ArgDmIsFactory", String.valueOf(registerUserExtra.withGlass));
+            params.put("ArgDmLoginType", registerUserExtra.loginMethod);
+            params.put("ArgVcId", registerUserExtra.vCompId);
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            String BASE_URL = Constants.BASE_URL_EN + "AddDriverMaster";
 
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "AddDriverMaster", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "AddDriverMaster", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "AddDriverMaster";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(final JSONObject response) {
@@ -298,9 +347,9 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         //final AlertDialog dialog1 = builder1.create();
                         //dialog1.setCancelable(false);
                         //view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        //Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+                        //Button btnOk = (Button) view1.findViewById(R.id.btn_green_rounded);
                         //btnOk.setText(R.string.ok);
-                        //view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                        //view1.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
                         //    @Override
                         //    public void onClick(View v) {
                         //        dialog1.dismiss();
@@ -315,7 +364,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         } catch (Exception ignored) {
                         }
 
-                        new UploadFilesNow().execute();
+                        new AddRegFilesBackground().execute();
 
                     } else {
                         myCircularProgressDialog.dismiss();
@@ -326,20 +375,20 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(response.getString("message"));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {
@@ -348,6 +397,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                 }
             } else {
                 myCircularProgressDialog.dismiss();
+
                 snackbar = Snackbar.make(coordinatorLayout, R.string.network_error, Snackbar.LENGTH_LONG)
                         .setAction(R.string.ok, new View.OnClickListener() {
                             @Override
@@ -359,8 +409,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
         }
     }
 
-    private class UploadFilesNow extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class AddRegFilesBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
@@ -368,40 +417,50 @@ public class VerifyOTPActivity extends AppCompatActivity {
         }
 
         protected JSONObject doInBackground(Void... param) {
+            JsonParser jsonParser = new JsonParser();
 
-            jsonParser = new JsonParser();
-
-            HashMap<String, String> params;
-
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-
-            JSONObject jsonAll = null;
             JSONObject json;
 
-            for (UploadFiles item: uploadFiles ){
-                params = new HashMap<>();
+            String BASE_URL = Constants.BASE_URL_EN + "AddRegFiles";
 
-                params.put("ArgBase64", item.getBase64Encoded());
-                params.put("ArgRFCaption", item.getImageName());
-                params.put("ArgRFDmId", custID+"");
-
-                if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                    json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "AddRegFiles", "POST", params);
-
-                } else {
-                    json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "AddRegFiles", "POST", params);
-                }
-
-                try {
-                    if (json.getBoolean("status") || jsonAll == null) {
-                        jsonAll = json;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "AddRegFiles";
             }
 
-            return jsonAll;
+            HashMap<String, String> params = new HashMap<>();
+
+            params.put("ArgBase64", uploadFiles.base64Encoded1);
+            params.put("ArgRFCaption", uploadFiles.imageName1);
+            params.put("ArgRFDmId", custID+"");
+
+            json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params);
+
+            params = new HashMap<>();
+
+            params.put("ArgBase64", uploadFiles.base64Encoded2);
+            params.put("ArgRFCaption", uploadFiles.imageName2);
+            params.put("ArgRFDmId", custID+"");
+
+            json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params);
+
+            params = new HashMap<>();
+
+            params.put("ArgBase64", uploadFiles.base64Encoded3);
+            params.put("ArgRFCaption", uploadFiles.imageName3);
+            params.put("ArgRFDmId", custID+"");
+
+            json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params);
+
+            params = new HashMap<>();
+
+            params.put("ArgBase64", uploadFiles.base64Encoded4);
+            params.put("ArgRFCaption", uploadFiles.imageName4);
+            params.put("ArgRFDmId", custID+"");
+
+            json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params);
+
+
+            return json;
         }
 
         protected void onPostExecute(final JSONObject response) {
@@ -424,9 +483,9 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         //final AlertDialog dialog1 = builder1.create();
                         //dialog1.setCancelable(false);
                         //view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        //Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+                        //Button btnOk = (Button) view1.findViewById(R.id.btn_green_rounded);
                         //btnOk.setText(R.string.ok);
-                        //view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                        //view1.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
                         //    @Override
                         //    public void onClick(View v) {
                         //        dialog1.dismiss();
@@ -446,20 +505,20 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(response.getString("message"));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {
@@ -549,9 +608,9 @@ public class VerifyOTPActivity extends AppCompatActivity {
     //                            final AlertDialog dialog1 = builder1.create();
     //                            dialog1.setCancelable(false);
     //                            view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-    //                            Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+    //                            Button btnOk = (Button) view1.findViewById(R.id.btn_green_rounded);
     //                            btnOk.setText(R.string.ok);
-    //                            view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+    //                            view1.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
     //                                @Override
     //                                public void onClick(View v) {
     //                                    dialog1.dismiss();
@@ -580,9 +639,9 @@ public class VerifyOTPActivity extends AppCompatActivity {
     //                    final AlertDialog dialog1 = builder1.create();
     //                    dialog1.setCancelable(false);
     //                    view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-    //                    Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+    //                    Button btnOk = (Button) view1.findViewById(R.id.btn_green_rounded);
     //                    btnOk.setText(R.string.ok);
-    //                    view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+    //                    view1.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
     //                        @Override
     //                        public void onClick(View v) {
     //                            dialog1.dismiss();
@@ -602,75 +661,82 @@ public class VerifyOTPActivity extends AppCompatActivity {
     //    }
     //}
 
-    private class ResendOTPBackground extends AsyncTask<Void, Void, JSONObject> {
-        MyCircularProgressDialog progressDialog;
-        JsonParser jsonParser;
+    private class SendOTPDMBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(VerifyOTPActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(VerifyOTPActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
-            params.put("ArgMobNo", "966"+registerUserExtra.getMobile());
+            params.put("ArgMobNo", "966"+registerUserExtra.mobile);
             params.put("ArgIsDB", "false");
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            String BASE_URL = Constants.BASE_URL_EN + "SendOTPDM";
 
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "SendOTPDM", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "SendOTPDM", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "SendOTPDM";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(final JSONObject response) {
-            progressDialog.dismiss();
+            myCircularProgressDialog.dismiss();
 
             if (response != null) {
                 try {
                     // Parsing json object response
                     // response will be a json object
                     if (response.getBoolean("status")) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(VerifyOTPActivity.this);
-                        LayoutInflater inflater1 = VerifyOTPActivity.this.getLayoutInflater();
-                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
-                        builder1.setView(view1);
-                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
-                        txtAlert1.setText(R.string.password_resend);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
-                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
-                        btnOk.setText(R.string.ok);
-                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialog1.dismiss();
-                                resendButton.setVisibility(View.GONE);
-                                try {
-                                    otpExtra = response.getJSONArray("data").getJSONObject(0).getString("OTP");
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                        otpExtra = response.getJSONArray("data").getJSONObject(0).getString("OTP");
+                        otpArray.add(otpExtra);
+                        resendButton.setEnabled(false);
+                        timerTextView.setVisibility(View.VISIBLE);
+
+                        new CountDownTimer(45000, 1000) {
+                            public void onTick(long millisUntilFinished) {
+                                timerTextView.setText(String.format(Locale.getDefault() ,"00: %d", millisUntilFinished / 1000));
                             }
-                        });
-                        btnOk.setTypeface(face);
-                        txtAlert1.setTypeface(face);
-                        dialog1.show();
+
+                            public void onFinish() {
+                                timerTextView.setVisibility(View.GONE);
+                                resendButton.setEnabled(true);
+                                resendButton.setPaintFlags(resendButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                resendButton.setTextColor(getResources().getColor(R.color.edit_text_focused_color));
+                            }
+                        }.start();
+
+//                        AlertDialog.Builder builder1 = new AlertDialog.Builder(VerifyOTPActivity.this);
+//                        LayoutInflater inflater1 = VerifyOTPActivity.this.getLayoutInflater();
+//                        final View view1 = inflater1.inflate(R.layout.alert_dialog, null);
+//                        builder1.setView(view1);
+//                        TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
+//                        txtAlert1.setText(R.string.password_resend);
+//                        alertDialog = builder1.create();
+//                        alertDialog.setCancelable(false);
+//                        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
+//                        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+//                        btnOk.setText(R.string.ok);
+//                        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                alertDialog.dismiss();
+//                            }
+//                        });
+//                        btnOk.setTypeface(face);
+//                        txtAlert1.setTypeface(face);
+//                        alertDialog.show();
 
                     } else {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(VerifyOTPActivity.this);
@@ -679,20 +745,20 @@ public class VerifyOTPActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(response.getString("message"));
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {

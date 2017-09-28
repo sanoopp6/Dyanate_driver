@@ -213,7 +213,7 @@
                         android:text="@string/approve"
                         android:layout_height="33dp"
                         android:layout_marginEnd="2dp"
-                        android:background="@drawable/btn_gradient_submit2"
+                        android:background="@drawable/btn_lightblue_rounded"
                         android:textColor="@android:color/white"
                         android:textSize="10sp" />
 
@@ -225,7 +225,7 @@
                         android:visibility="gone"
                         android:layout_height="33dp"
                         android:layout_marginEnd="2dp"
-                        android:background="@drawable/btn_ok"
+                        android:background="@drawable/btn_green_rounded"
                         android:textColor="@android:color/white"
                         android:textSize="10sp" />
 

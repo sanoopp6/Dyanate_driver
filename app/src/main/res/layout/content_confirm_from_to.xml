@@ -29,22 +29,22 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top"
+            android:layout_gravity="end|bottom"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="28dp"
+            android:layout_marginBottom="30dp"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/image_view_map_change_icon"
+                android:background="@drawable/layout_transparent_squre_rounded"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/layout_transparent_squre"
-                android:padding="8dp"
+                android:padding="2dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_earth1" />
+                android:src="@drawable/ic_globe_icon" />
 
         </LinearLayout>
 
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="33dp"
             android:layout_gravity="center"
-            android:background="@drawable/btn_language"
+            android:background="@drawable/btn_black_rounded"
             android:text="@string/show_details"
             android:visibility="invisible"
             android:textColor="@color/whiteColorText"
@@ -88,7 +88,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/btn_ok"
+            android:background="@drawable/btn_green_rounded"
             android:text="@string/confirm_trip"
             android:visibility="invisible"
             android:textColor="@color/whiteColorText"

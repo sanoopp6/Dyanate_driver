@@ -5,19 +5,19 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
 
     Button loginButton;
     Button registerButton;
+    Button englishButton;
+    Button arabicButton;
 
     String username;
     String password;
@@ -58,6 +61,12 @@ public class LoginActivity extends AppCompatActivity {
 
     List<String> permissionsList;
 
+    MyCircularProgressDialog myCircularProgressDialog;
+
+    SharedPreferences sharedPreferences;
+
+    AlertDialog alertDialog;
+
     private static final int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
 
     @Override
@@ -66,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         face = Typeface.createFromAsset(LoginActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         usernameText = (EditText) findViewById(R.id.edt_username);
         usernameText.setTypeface(face);
@@ -82,6 +92,12 @@ public class LoginActivity extends AppCompatActivity {
         registerButton = (Button) findViewById(R.id.btn_register);
         registerButton.setTypeface(face);
 
+        englishButton = (Button) findViewById(R.id.englishButton);
+        englishButton.setTypeface(face);
+
+        arabicButton = (Button) findViewById(R.id.arabicButton);
+        arabicButton.setTypeface(face);
+
         //rememberCheckBox = (CheckBox) findViewById(R.id.chk_remember);
         //rememberCheckBox.setTypeface(face);
 
@@ -96,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         password = "";
         //agent = false;
 
-        new CheckVersion().execute();
+        new IsAppLiveBackground().execute();
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
@@ -162,9 +178,9 @@ public class LoginActivity extends AppCompatActivity {
                     //        final AlertDialog dialog1 = builder1.create();
                     //        dialog1.setCancelable(false);
                     //        view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-                    //        Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
+                    //        Button btnOk = (Button) view1.findViewById(R.id.btn_green_rounded);
                     //        btnOk.setText(R.string.ok);
-                    //        view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+                    //        view1.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
                     //            @Override
                     //            public void onClick(View v) {
                     //                dialog1.dismiss();
@@ -189,7 +205,7 @@ public class LoginActivity extends AppCompatActivity {
                     //} else {
                     if (password.length() != 0 && !password.equals("")) {
                         if (ConnectionDetector.isConnectedOrConnecting(getApplicationContext())) {
-                            new LoginBackground().execute();
+                            new CheckDriverLoginBackground().execute();
 
                         } else {
                             ConnectionDetector.errorSnackbar(coordinatorLayout);
@@ -219,6 +235,53 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
+
+        englishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (sharedPreferences.getString(Constants.PREFS_LANG, "").equalsIgnoreCase("ar")) {
+                    reloadActivity("en");
+                }
+            }
+        });
+
+        arabicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sharedPreferences.getString(Constants.PREFS_LANG, "").equalsIgnoreCase("en")) {
+                    reloadActivity("ar");
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
+        }
+
+        if (myCircularProgressDialog != null && myCircularProgressDialog.isShowing()) {
+            myCircularProgressDialog.cancel();
+        }
+    }
+
+    private void reloadActivity(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration confg = new Configuration();
+        confg.locale = locale;
+        getBaseContext().getResources().updateConfiguration(confg, getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constants.PREFS_LANG, lang);
+        editor.commit();
+
+        startActivity(new Intent(LoginActivity.this, LoginActivity.class));
+        finish();
     }
 
     @Override
@@ -229,18 +292,18 @@ public class LoginActivity extends AppCompatActivity {
         builder.setView(view);
         TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
         txtAlert.setText(R.string.do_you_want_to_exit);
-        final AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
+        alertDialog = builder.create();
+        alertDialog.setCancelable(false);
         view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                alertDialog.dismiss();
             }
         });
         view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                alertDialog.dismiss();
 
                 ActivityCompat.finishAffinity(LoginActivity.this);
                 finish();
@@ -251,7 +314,7 @@ public class LoginActivity extends AppCompatActivity {
         Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
         btnCancel.setTypeface(face);
         txtAlert.setTypeface(face);
-        dialog.show();
+        alertDialog.show();
     }
 
     //@Override
@@ -276,51 +339,46 @@ public class LoginActivity extends AppCompatActivity {
     //    return super.onOptionsItemSelected(item);
     //}
 
-    private class LoginBackground extends AsyncTask<Void, Void, JSONObject> {
-        MyCircularProgressDialog progressDialog;
-        JsonParser jsonParser;
+    private class CheckDriverLoginBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(LoginActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(LoginActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
             params.put("ArgDmUserId", username);
             params.put("ArgDmPassWord", password);
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+            String BASE_URL = Constants.BASE_URL_EN + "CheckDriverLogin";
 
-            JSONObject json;
-
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "CheckDriverLogin", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "CheckDriverLogin", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "CheckDriverLogin";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
-
         protected void onPostExecute(final JSONObject response) {
-            progressDialog.dismiss();
+            myCircularProgressDialog.dismiss();
 
             if (response != null) {
                 try {
                     // Parsing json object response
                     // response will be a json object
                     if (response.getBoolean("status")) {
-                        SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
                         editor.putString(Constants.PREFS_USER_ID, response.getJSONArray("data").getJSONObject(0).getString("DmId"));
                         editor.putString(Constants.PREFS_VMO_ID, response.getJSONArray("data").getJSONObject(0).getString("DmVmoId"));
                         editor.putString(Constants.PREFS_VMS_ID, response.getJSONArray("data").getJSONObject(0).getString("VmoVsId"));
@@ -331,9 +389,10 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString(Constants.PREFS_USER_NAME, response.getJSONArray("data").getJSONObject(0).getString("DmUserId"));
                         editor.putString(Constants.PREFS_USER_CONSTANT, response.getJSONArray("data").getJSONObject(0).getString("DmLoginToken"));
                         editor.putBoolean(Constants.PREFS_IS_FACTORY, response.getJSONArray("data").getJSONObject(0).getBoolean("DmIsFactory"));
-                        //editor.putString(Constants.PREFS_SHARE_URL, response.getJSONArray("data").getJSONObject(0).getString("DmId"));
                         editor.putString(Constants.PREFS_SHARE_URL, "https://goo.gl/i7Qasx");
                         editor.putBoolean(Constants.PREFS_IS_LOGIN, true);
+
+                        //editor.putString(Constants.PREFS_SHARE_URL, response.getJSONArray("data").getJSONObject(0).getString("DmId"));
                         //editor.putBoolean(Constants.PREFS_USER_AGENT, agent);
                         editor.commit();
 
@@ -350,20 +409,20 @@ public class LoginActivity extends AppCompatActivity {
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         //txtAlert1.setText(response.getString("message"));
                         txtAlert1.setText(R.string.invalid_login);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         btnOk.setTypeface(face);
                         txtAlert1.setTypeface(face);
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {
@@ -441,15 +500,17 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    public class CheckVersion extends AsyncTask<Void, Void, JSONObject> {
-        MyCircularProgressDialog progressDialog;
+    public class IsAppLiveBackground extends AsyncTask<Void, Void, JSONObject> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new MyCircularProgressDialog(LoginActivity.this);
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            if (myCircularProgressDialog == null || !myCircularProgressDialog.isShowing()) {
+                myCircularProgressDialog = new MyCircularProgressDialog(LoginActivity.this);
+                myCircularProgressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                myCircularProgressDialog.setCancelable(false);
+                myCircularProgressDialog.show();
+            }
         }
 
         protected JSONObject doInBackground(Void... param) {
@@ -457,25 +518,20 @@ public class LoginActivity extends AppCompatActivity {
 
             HashMap<String, String> params = new HashMap<>();
 
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-
             params.put("ArgAppPackageName", Constants.APP_NAME);
             params.put("ArgAppVersionNo", Constants.APP_VERSION);
 
-            JSONObject json;
+            String BASE_URL = Constants.BASE_URL_EN + "IsAppLive";
 
-            if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_AR + "IsAppLive", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "IsAppLive", "POST", params);
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+                BASE_URL = Constants.BASE_URL_AR + "IsAppLive";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
 
         protected void onPostExecute(JSONObject response) {
-            progressDialog.dismiss();
+            myCircularProgressDialog.dismiss();
 
             if (response != null) {
                 try {
@@ -488,15 +544,15 @@ public class LoginActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(R.string.update_available);
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
 
                                 final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
                                 try {
@@ -506,7 +562,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                        dialog1.show();
+                        alertDialog.show();
 
                     } else if(!(response.getJSONArray("data").getJSONObject(0).getString("AppMsg").trim().equalsIgnoreCase(""))) {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(LoginActivity.this);
@@ -515,15 +571,15 @@ public class LoginActivity extends AppCompatActivity {
                         builder1.setView(view1);
                         TextView txtAlert1 = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert1.setText(response.getJSONArray("data").getJSONObject(0).getString("AppMsg").trim());
-                        final AlertDialog dialog1 = builder1.create();
-                        dialog1.setCancelable(false);
+                        alertDialog = builder1.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         Button btnOk = (Button) view1.findViewById(R.id.btn_ok);
                         btnOk.setText(R.string.ok);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog1.dismiss();
+                                alertDialog.dismiss();
 
                                 final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
                                 try {
@@ -533,7 +589,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                        dialog1.show();
+                        alertDialog.show();
                     }
 
                 } catch (JSONException e) {

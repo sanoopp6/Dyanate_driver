@@ -143,7 +143,7 @@
                     android:layout_width="25dp"
                     android:textColor="#9571d8"
                     android:gravity="center_vertical"
-                    android:src="@drawable/location_map"
+                    android:src="@drawable/goto_loc"
                     android:layout_height="25dp" />
 
             </LinearLayout>
@@ -202,7 +202,7 @@
                     android:layout_width="25dp"
                     android:textColor="#9571d8"
                     android:gravity="center_vertical"
-                    android:src="@drawable/location_map"
+                    android:src="@drawable/goto_loc"
                     android:layout_height="25dp" />
 
             </LinearLayout>
@@ -231,7 +231,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="4"
                     android:layout_height="35dp"
-                    android:background="@drawable/layout_thick_bordered_rounded_squre"
+                    android:background="@drawable/layout_border_black_transparent_squre"
                     android:gravity="center"
                     android:maxLines="1"
                     android:hint="@string/price"
@@ -253,6 +253,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
                 android:layout_height="wrap_content">
 
                 <Button
@@ -263,7 +264,7 @@
                     android:layout_gravity="center"
                     android:layout_marginEnd="2dp"
                     android:text="@string/agree"
-                    android:background="@drawable/btn_agree_order"
+                    android:background="@drawable/btn_blue_rounded"
                     android:textColor="@color/whiteColorText"
                     android:textSize="14sp" />
 
@@ -275,7 +276,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_gravity="center"
                     android:text="@string/not_agree"
-                    android:background="@drawable/btn_not_agree_order"
+                    android:background="@drawable/btn_red2_rounded"
                     android:textColor="@color/whiteColorText"
                     android:textSize="14sp" />
 

@@ -55,7 +55,7 @@
                     <!--android:layout_width="match_parent"-->
                     <!--android:layout_height="35dp"-->
                     <!--android:gravity="center"-->
-                    <!--android:background="@drawable/btn_login"-->
+                    <!--android:background="@drawabtn_lightgrey_roundedogin"-->
                     <!--android:text="@string/log_in"/>-->
 
                 <!--<LinearLayout-->
@@ -107,13 +107,55 @@
                         <!--android:layout_height="wrap_content"-->
                         <!--android:text="@string/username_or_mobile"/>-->
 
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content" >-->
+
+                        <!--<com.twitter.sdk.android.core.identity.TwitterLoginButton-->
+                            <!--android:id="@+id/button_twitter_login"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:paddingTop="10sp"-->
+                            <!--android:paddingBottom="10sp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:layout_marginLeft="5dp"-->
+                            <!--android:layout_marginRight="5dp"-->
+                            <!--android:textSize="12sp" />-->
+
+                        <!--<com.facebook.login.widget.LoginButton-->
+                            <!--android:id="@+id/button_facebook_login"-->
+                            <!--android:layout_width="0dp"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:layout_gravity="center_horizontal"-->
+                            <!--android:layout_marginLeft="5dp"-->
+                            <!--android:layout_marginRight="5dp"-->
+                            <!--android:paddingTop="10sp"-->
+                            <!--android:paddingBottom="10sp"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:maxHeight="40dp"-->
+                            <!--android:minHeight="40dp"-->
+                            <!--android:textSize="12sp" />-->
+                    <!--</LinearLayout>-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/textview_or"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--android:layout_marginLeft="15dp"-->
+                        <!--android:layout_marginRight="15dp"-->
+                        <!--android:textColor="@color/whiteColorText"-->
+                        <!--android:text="@string/or"-->
+                        <!--android:textSize="15sp" />-->
+
                     <EditText
                         android:id="@+id/edt_username"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginTop="10dp"
                         android:hint="@string/username_or_mobile"
-                        android:background="@drawable/layout_bordered_rounded_squre_white"
+                        android:background="@drawable/layout_border_grey_white_squre"
                         android:padding="5dp"
                         android:gravity="center"
                         android:maxLines="1"
@@ -132,7 +174,7 @@
                         android:id="@+id/edt_password"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:background="@drawable/layout_bordered_rounded_squre_white"
+                        android:background="@drawable/layout_border_grey_white_squre"
                         android:hint="@string/password"
                         android:gravity="center"
                         android:layout_marginTop="10dp"
@@ -162,7 +204,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/btn_ok"
+                        android:background="@drawable/btn_green_rounded"
                         android:text="@string/login"
                         android:textColor="@color/whiteColorText"
                         android:textSize="14sp" />
@@ -174,7 +216,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        android:background="@drawable/btn_gradient_submit2"
+                        android:background="@drawable/btn_lightblue_rounded"
                         android:text="@string/register_new_user"
                         android:textColor="@color/whiteColorText"
                         android:textSize="14sp" />
@@ -190,6 +232,28 @@
                         android:gravity="center"
                         android:textColor="@color/whiteColorText"
                         android:textSize="14sp" />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="100dp"
+                        android:layout_marginLeft="100dp"
+                        android:layout_height="35dp"
+                        android:text="@string/arabic"
+                        android:textColor="@color/whiteColorText"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/btn_green_rounded"
+                        android:id="@+id/arabicButton"/>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_marginRight="100dp"
+                        android:layout_marginLeft="100dp"
+                        android:layout_height="35dp"
+                        android:text="@string/english"
+                        android:textColor="@color/whiteColorText"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/btn_lightblue2_rounded"
+                        android:id="@+id/englishButton"/>
 
                 </LinearLayout>
 

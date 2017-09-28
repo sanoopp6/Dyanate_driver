@@ -37,4 +37,14 @@ public class Constants {
     public static final String GOOGLE_API_KEY               = "AIzaSyAf_xaKiNcO_xRdgf7-e3w-OGi8Nw5FG-I";
     public static final String PREFS_SEARCH_LOCATION_AREA   = "0";
 
+    public static final String LOG_CONST_NORMAL             = "normal";
+
+    public static final String STAT_CONST_ONLINE            = "online";
+    public static final String STAT_CONST_OFFLINE           = "offline";
+
+    public static final String DYNA_DB                      = "dyna_main_db";
+    public static final String DYNA_DB_KEY                  = "dyna_db_placeItem";
+
+    public static final String FILTER_COLOR                 = "#FF27AB3D";
+
 }

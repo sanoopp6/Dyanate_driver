@@ -11,22 +11,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -43,11 +34,9 @@ import com.fast_prog.dynate.models.Ride;
 import com.fast_prog.dynate.models.RideTemp;
 import com.fast_prog.dynate.utilities.ConnectionDetector;
 import com.fast_prog.dynate.utilities.Constants;
-import com.fast_prog.dynate.utilities.CustomTypefaceSpan;
 import com.fast_prog.dynate.utilities.DatabaseHandler;
 import com.fast_prog.dynate.utilities.GPSTracker;
 import com.fast_prog.dynate.utilities.JsonParser;
-import com.fast_prog.dynate.utilities.SetOffline;
 import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar;
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -66,7 +55,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class SenderDetailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, GregorianDatePickerDialog.OnDateSetListener, HijriDatePickerDialog.OnDateSetListener {
+public class SenderDetailsActivity extends AppCompatActivity implements GregorianDatePickerDialog.OnDateSetListener,
+        HijriDatePickerDialog.OnDateSetListener {
+        //NavigationView.OnNavigationItemSelectedListener,
 
     Ride ride;
 
@@ -80,9 +71,6 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
 
     Button bookVehicleButton;
 
-    //IntlPhoneInput fromMobile;
-    //IntlPhoneInput toMobile;
-
     EditText fromName;
     EditText toName;
     EditText fromMobile;
@@ -95,7 +83,6 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
     Button fromDateEtxt2;
     Button fromTimeEtxt;
 
-    TextView usernameTextView;
     TextView senderDetTitleTextView;
     TextView receiverDetTitleTextView;
     TextView dateTitleTextView;
@@ -122,26 +109,41 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
     String clickedImg;
 
     SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-    SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy/MM/dd KK:mm", Locale.ENGLISH);
-    SimpleDateFormat simpleDateFormat3 = new SimpleDateFormat("KK:mm", Locale.ENGLISH);
-    SimpleDateFormat simpleDateFormat4 = new SimpleDateFormat("KK:mm aa", Locale.ENGLISH);
+    SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.ENGLISH);
+    SimpleDateFormat simpleDateFormat3 = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+    SimpleDateFormat simpleDateFormat4 = new SimpleDateFormat("HH:mm aa", Locale.ENGLISH);
 
     private PhoneNumberUtil mPhoneUtil = PhoneNumberUtil.getInstance();
 
-    AlertDialog alertFromMob;
-    AlertDialog alertToMob;
+    AlertDialog alertDialog;
+
+    SharedPreferences sharedPreferences;
+
+    //TextView usernameTextView;
+    //IntlPhoneInput fromMobile;
+    //IntlPhoneInput toMobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sender_details);
 
-        face = Typeface.createFromAsset(SenderDetailsActivity.this.getAssets(), Constants.FONT_URL);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
+
+        face = Typeface.createFromAsset(SenderDetailsActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         final String title = getResources().getString(R.string.sender_and_recipient);
         TextView titleTextView = new TextView(getApplicationContext());
@@ -152,58 +154,56 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         titleTextView.setTextColor(Color.WHITE);
         getSupportActionBar().setCustomView(titleTextView);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
         ride = (Ride) getIntent().getSerializableExtra("ride");
         editRide = getIntent().getBooleanExtra("editRide", false);
-
-        final SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
 
         dbHandler = new DatabaseHandler(this);
         final int count = dbHandler.getRideTempCount();
 
-        if(count > 0) {
+        if(count > 0 && !editRide) {
             RideTemp rideTemp = dbHandler.getRideTemp(1);
 
-            ride.setFromself(false);
-            ride.setFromName(rideTemp.getFromName());
-            ride.setFromMobile(rideTemp.getFromMobile());
-            ride.setFromISO(rideTemp.getFromISO());
-            ride.setFromMobWithoutISO(rideTemp.getFromMobWithoutISO());
-            ride.setDate(rideTemp.getDate());
-            ride.setHijriDate(rideTemp.getHijriDate());
-            ride.setTime(rideTemp.getTime());
-            ride.setToself(false);
-            ride.setToName(rideTemp.getToName());
-            ride.setToMobile(rideTemp.getToMobile());
-            ride.setToISO(rideTemp.getToISO());
-            ride.setToMobWithoutISO(rideTemp.getToMobWithoutISO());
-            ride.setMessage(Boolean.parseBoolean(rideTemp.getIsMessage()));
-            timeString = rideTemp.getTimeString().trim();
+            ride.isFromSelf = false;
+            ride.fromName = rideTemp.fromName;
+            ride.fromMobile = rideTemp.fromName;
+            ride.fromISO = rideTemp.fromISO;
+            ride.fromMobWithoutISO = rideTemp.fromMobWithoutISO;
+            ride.date = rideTemp.date;
+            ride.hijriDate = rideTemp.hijriDate;
+            ride.time = rideTemp.time;
+            ride.isToSelf = false;
+            ride.toName = rideTemp.toName;
+            ride.toMobile = rideTemp.toMobile;
+            ride.toISO = rideTemp.toISO;
+            ride.toMobWithoutISO = rideTemp.toMobWithoutISO;
+            ride.isMessage = Boolean.parseBoolean(rideTemp.isMessage);
+            timeString = rideTemp.timeString.trim();
 
             dbHandler.deleteRideTemp(rideTemp);
         }
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        Menu menu = navigationView.getMenu();
-        usernameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
-        usernameTextView.setText(preferences.getString(Constants.PREFS_USER_NAME, ""));
-
-        for (int i=0;i<menu.size();i++) {
-            MenuItem mi = menu.getItem(i);
-            SpannableString s = new SpannableString(mi.getTitle());
-            s.setSpan(new CustomTypefaceSpan("", face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            mi.setTitle(s);
-        }
-
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
+//
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        navigationView.setNavigationItemSelectedListener(this);
+//
+//        Menu menu = navigationView.getMenu();
+//        usernameTextView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_username);
+//        usernameTextView.setText(sharedPreferences.getString(Constants.PREFS_USER_NAME, ""));
+//
+//        for (int i=0;i<menu.size();i++) {
+//            MenuItem mi = menu.getItem(i);
+//            SpannableString s = new SpannableString(mi.getTitle());
+//            s.setSpan(new CustomTypefaceSpan("", face), 0, s.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            mi.setTitle(s);
+//        }
+//
         //if(preferences.getBoolean(Constants.PREFS_USER_AGENT, false)) {
         //    menu.findItem (R.id.nav_orders).setVisible(true);
         //    menu.findItem (R.id.nav_agent).setVisible(false);
@@ -242,20 +242,20 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                         builder.setView(view1);
                         TextView txtAlert = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert.setText(R.string.enter_sender_no);
-                        alertFromMob = builder.create();
-                        alertFromMob.setCancelable(false);
+                        alertDialog = builder.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                alertFromMob.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         Button btnOK = (Button) view1.findViewById(R.id.btn_ok);
                         btnOK.setText(R.string.ok);
                         btnOK.setTypeface(face);
                         txtAlert.setTypeface(face);
-                        alertFromMob.show();
+                        alertDialog.show();
                         //fromMobile.requestFocus();
                     }
                 }
@@ -288,27 +288,27 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                         v.clearFocus();
                         fromMobile.requestFocus();
 
-                        if ((alertFromMob != null && !alertFromMob.isShowing()) || alertFromMob == null) {
+                        if (alertDialog == null || !alertDialog.isShowing()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
                             LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
                             final View view = inflater.inflate(R.layout.alert_dialog, null);
                             builder.setView(view);
                             TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
                             txtAlert.setText(R.string.enter_sender_no);
-                            final AlertDialog dialog = builder.create();
-                            dialog.setCancelable(false);
+                            alertDialog = builder.create();
+                            alertDialog.setCancelable(false);
                             view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                             view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    dialog.dismiss();
+                                    alertDialog.dismiss();
                                 }
                             });
                             Button btnOK = (Button) view.findViewById(R.id.btn_ok);
                             btnOK.setText(R.string.ok);
                             btnOK.setTypeface(face);
                             txtAlert.setTypeface(face);
-                            dialog.show();
+                            alertDialog.show();
                         }
 
                     } else if (fromDateEtxt1.getText().toString().trim().length() == 0) {
@@ -349,27 +349,27 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                         v.clearFocus();
                         fromMobile.requestFocus();
 
-                        if ((alertFromMob != null && !alertFromMob.isShowing()) || alertFromMob == null) {
+                        if (alertDialog == null && !alertDialog.isShowing()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
                             LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
                             final View view1 = inflater.inflate(R.layout.alert_dialog, null);
                             builder.setView(view1);
                             TextView txtAlert = (TextView) view1.findViewById(R.id.txt_alert);
                             txtAlert.setText(R.string.enter_sender_no);
-                            final AlertDialog dialog = builder.create();
-                            dialog.setCancelable(false);
+                            alertDialog = builder.create();
+                            alertDialog.setCancelable(false);
                             view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                             view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    dialog.dismiss();
+                                    alertDialog.dismiss();
                                 }
                             });
                             Button btnOK = (Button) view1.findViewById(R.id.btn_ok);
                             btnOK.setText(R.string.ok);
                             btnOK.setTypeface(face);
                             txtAlert.setTypeface(face);
-                            dialog.show();
+                            alertDialog.show();
                         }
 
                     } else if (fromDateEtxt1.getText().toString().trim().length() == 0) {
@@ -400,20 +400,20 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                         builder.setView(view1);
                         TextView txtAlert = (TextView) view1.findViewById(R.id.txt_alert);
                         txtAlert.setText(R.string.enter_sender_no);
-                        alertToMob = builder.create();
-                        alertToMob.setCancelable(false);
+                        alertDialog = builder.create();
+                        alertDialog.setCancelable(false);
                         view1.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         view1.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                alertToMob.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         Button btnOK = (Button) view1.findViewById(R.id.btn_ok);
                         btnOK.setText(R.string.ok);
                         btnOK.setTypeface(face);
                         txtAlert.setTypeface(face);
-                        alertToMob.show();
+                        alertDialog.show();
                         //toMobile.requestFocus();
                     }
                 }
@@ -467,24 +467,24 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                             gpsTracker.showSettingsAlert();
 
                         } else {
-                            ride.setMessage(false);
+                            ride.isMessage = false;
 
                             RideTemp rideTemp = new RideTemp();
-                            rideTemp.setIsFromself(ride.getFromself()+"");
-                            rideTemp.setFromName(ride.getFromName());
-                            rideTemp.setFromMobile(ride.getFromMobile());
-                            rideTemp.setFromISO(ride.getFromISO());
-                            rideTemp.setFromMobWithoutISO(ride.getFromMobWithoutISO());
-                            rideTemp.setDate(ride.getDate());
-                            rideTemp.setHijriDate(ride.getHijriDate());
-                            rideTemp.setTime(ride.getTime());
-                            rideTemp.setIsToself(ride.getToself()+"");
-                            rideTemp.setToName(ride.getToName());
-                            rideTemp.setToMobile(ride.getToMobile());
-                            rideTemp.setToISO(ride.getToISO());
-                            rideTemp.setToMobWithoutISO(ride.getToMobWithoutISO());
-                            rideTemp.setTimeString(timeString);
-                            rideTemp.setIsMessage(ride.getMessage()+"");
+                            rideTemp.isFromSelf = String.valueOf(ride.isFromSelf);
+                            rideTemp.fromName = ride.fromName;
+                            rideTemp.fromMobile = ride.fromMobile;
+                            rideTemp.fromISO = ride.fromISO;
+                            rideTemp.fromMobWithoutISO = ride.fromMobWithoutISO;
+                            rideTemp.date = ride.date;
+                            rideTemp.hijriDate = ride.hijriDate;
+                            rideTemp.time = ride.time;
+                            rideTemp.isToSelf = String.valueOf(ride.isToSelf);
+                            rideTemp.toName = ride.toName;
+                            rideTemp.toMobile = ride.toMobile;
+                            rideTemp.toISO = ride.toISO;
+                            rideTemp.toMobWithoutISO = ride.toMobWithoutISO;
+                            rideTemp.timeString = timeString;
+                            rideTemp.isMessage = String.valueOf(ride.isMessage);
 
                             dbHandler.truncateTable();
                             dbHandler.addRideTemp(rideTemp);
@@ -503,9 +503,13 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         });
 
         if(editRide || count > 0) {
-            fromDateEtxt1.setText(ride.getDate());
-            fromDateEtxt2.setText(ride.getHijriDate());
-            fromTimeEtxt.setText(ride.getTime());
+            fromName.setText(ride.fromName);
+            fromMobile.setText(ride.fromMobile);
+            fromDateEtxt1.setText(ride.date);
+            fromDateEtxt2.setText(ride.hijriDate);
+            fromTimeEtxt.setText(ride.time);
+            toName.setText(ride.toName);
+            toMobile.setText(ride.toMobile);
         }
 
         final Calendar newCalendar = Calendar.getInstance();
@@ -525,27 +529,27 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                     v.clearFocus();
                     fromMobile.requestFocus();
 
-                    if ((alertFromMob != null && !alertFromMob.isShowing()) || alertFromMob == null) {
+                    if (alertDialog == null && !alertDialog.isShowing()) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
                         LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
                         final View view = inflater.inflate(R.layout.alert_dialog, null);
                         builder.setView(view);
                         TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
                         txtAlert.setText(R.string.enter_sender_no);
-                        final AlertDialog dialog = builder.create();
-                        dialog.setCancelable(false);
+                        alertDialog = builder.create();
+                        alertDialog.setCancelable(false);
                         view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         Button btnOK = (Button) view.findViewById(R.id.btn_ok);
                         btnOK.setText(R.string.ok);
                         btnOK.setTypeface(face);
                         txtAlert.setTypeface(face);
-                        dialog.show();
+                        alertDialog.show();
                     }
                     return;
                 }
@@ -603,27 +607,27 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                     v.clearFocus();
                     fromMobile.requestFocus();
 
-                    if ((alertFromMob != null && !alertFromMob.isShowing()) || alertFromMob == null) {
+                    if (alertDialog == null && !alertDialog.isShowing()) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
                         LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
                         final View view = inflater.inflate(R.layout.alert_dialog, null);
                         builder.setView(view);
                         TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
                         txtAlert.setText(R.string.enter_sender_no);
-                        final AlertDialog dialog = builder.create();
-                        dialog.setCancelable(false);
+                        alertDialog = builder.create();
+                        alertDialog.setCancelable(false);
                         view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         Button btnOK = (Button) view.findViewById(R.id.btn_ok);
                         btnOK.setText(R.string.ok);
                         btnOK.setTypeface(face);
                         txtAlert.setTypeface(face);
-                        dialog.show();
+                        alertDialog.show();
                     }
                     return;
                 }
@@ -680,27 +684,27 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                     v.clearFocus();
                     fromMobile.requestFocus();
 
-                    if ((alertFromMob != null && !alertFromMob.isShowing()) || alertFromMob == null) {
+                    if (alertDialog == null && !alertDialog.isShowing()) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
                         LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
                         final View view = inflater.inflate(R.layout.alert_dialog, null);
                         builder.setView(view);
                         TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
                         txtAlert.setText(R.string.enter_sender_no);
-                        final AlertDialog dialog = builder.create();
-                        dialog.setCancelable(false);
+                        alertDialog = builder.create();
+                        alertDialog.setCancelable(false);
                         view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
                         view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialog.dismiss();
+                                alertDialog.dismiss();
                             }
                         });
                         Button btnOK = (Button) view.findViewById(R.id.btn_ok);
                         btnOK.setText(R.string.ok);
                         btnOK.setTypeface(face);
                         txtAlert.setTypeface(face);
-                        dialog.show();
+                        alertDialog.show();
                     }
                     return;
 
@@ -751,7 +755,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                         }
 
                         fromTimeEtxt.setText(time);
-                        ride.setTime(time);
+                        ride.time = time;
 
                     }
                 },newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE), false);
@@ -763,7 +767,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();
 
-        if (preferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
+        if (sharedPreferences.getString(Constants.PREFS_LANG, "en").equalsIgnoreCase("ar")) {
             animationToLeft1 = new TranslateAnimation(0, 260 - width, 0, 0);
             animationToLeft2 = new TranslateAnimation(0, 280 - width, 0, 0);
 
@@ -854,7 +858,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         else
             dateString += "/"+dayOfMonth;
 
-        new GetDate(false, dateString).execute();
+        new GetDateBackground(false, dateString).execute();
     }
 
     @Override
@@ -873,7 +877,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         else
             dateString += "/"+dayOfMonth;
 
-        new GetDate(true, dateString).execute();
+        new GetDateBackground(true, dateString).execute();
     }
 
     public boolean isValidMobile(String mobile) {
@@ -906,6 +910,10 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         if(dateTimeUpdate != null) {
             runThread = false;
             dateTimeUpdate.interrupt();
+        }
+
+        if (alertDialog != null && alertDialog.isShowing()){
+            alertDialog.cancel();
         }
     }
 
@@ -956,20 +964,20 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
 
                 temp = simpleDateFormat4.format(date);
                 fromTimeEtxt.setText(temp);
-                ride.setTime(temp);
+                ride.time = temp;
 
                 temp = simpleDateFormat1.format(date);
-                new GetDate(true, temp).execute();
+                new GetDateBackground(true, temp).execute();
             }
         } else {
             timeString = simpleDateFormat3.format(date);
 
             temp = simpleDateFormat4.format(date);
             fromTimeEtxt.setText(temp);
-            ride.setTime(temp);
+            ride.time = temp;
 
             temp = simpleDateFormat1.format(date);
-            new GetDate(true, temp).execute();
+            new GetDateBackground(true, temp).execute();
         }
     }
 
@@ -981,8 +989,8 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
     }
 
     boolean validate() {
-        ride.setFromself(false);
-        ride.setToself(false);
+        ride.isFromSelf = false;
+        ride.isToSelf = false;
 
         String fromNameText = fromName.getText().toString();
         String fromNumber = fromMobile.getText().toString().trim().replaceFirst("^0+(?!$)", "");
@@ -998,15 +1006,15 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             return false;
 
         } else {
-            ride.setFromName(fromNameText.trim());
+            ride.fromName = fromNameText.trim();
             hideSoftKeyboard();
             fromName.setError(null);
         }
 
         if (isValidMobile(fromNumber)) {
-            ride.setFromMobile(fromNumber);
-            ride.setFromISO("sa");
-            ride.setFromMobWithoutISO(fromNumber);
+            ride.fromMobile = fromNumber;
+            ride.fromISO = "sa";
+            ride.fromMobWithoutISO = fromNumber;
 
         } else {
             fromMobile.setError(SenderDetailsActivity.this.getResources().getText(R.string.enter_sender_no));
@@ -1024,14 +1032,14 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             //txtAlert.setText(R.string.enter_sender_no);
             //final AlertDialog dialog = builder.create();
             //dialog.setCancelable(false);
-            //view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-            //view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+            //view.findViewById(R.id.btn_red_rounded).setVisibility(View.GONE);
+            //view.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
             //    @Override
             //    public void onClick(View v) {
             //        dialog.dismiss();
             //    }
             //});
-            //Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+            //Button btnOK = (Button) view.findViewById(R.id.btn_green_rounded);
             //btnOK.setText(R.string.ok);
             //btnOK.setTypeface(face);
             //txtAlert.setTypeface(face);
@@ -1044,7 +1052,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             fromDateEtxt1.requestFocus();
             return  false;
         } else {
-            ride.setDate(dateText1.trim());
+            ride.date = dateText1.trim();
             hideSoftKeyboard();
             fromDateEtxt1.setError(null);
         }
@@ -1063,7 +1071,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             fromTimeEtxt.requestFocus();
             return  false;
         } else {
-            ride.setTime(timeText.trim());
+            ride.time = timeText.trim();
             hideSoftKeyboard();
             fromTimeEtxt.setError(null);
         }
@@ -1073,15 +1081,15 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             toName.requestFocus();
             return  false;
         } else {
-            ride.setToName(toNameText.trim());
+            ride.toName = toNameText.trim();
             hideSoftKeyboard();
             toName.setError(null);
         }
 
         if(isValidMobile(toNumber)) {
-            ride.setToMobile(toNumber);
-            ride.setToISO("sa");
-            ride.setToMobWithoutISO(toNumber);
+            ride.toMobile = toNumber;
+            ride.toISO = "sa";
+            ride.toMobWithoutISO = toNumber;
 
         } else {
             toMobile.setError(SenderDetailsActivity.this.getResources().getText(R.string.enter_receiver_no));
@@ -1099,14 +1107,14 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             //txtAlert.setText(R.string.enter_receiver_no);
             //final AlertDialog dialog = builder.create();
             //dialog.setCancelable(false);
-            //view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-            //view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+            //view.findViewById(R.id.btn_red_rounded).setVisibility(View.GONE);
+            //view.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
             //    @Override
             //    public void onClick(View v) {
             //        dialog.dismiss();
             //    }
             //});
-            //Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+            //Button btnOK = (Button) view.findViewById(R.id.btn_green_rounded);
             //btnOK.setText(R.string.ok);
             //btnOK.setTypeface(face);
             //txtAlert.setTypeface(face);
@@ -1114,7 +1122,7 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             //return  false;
         }
 
-        if (ride.getFromMobile().trim().equalsIgnoreCase(ride.getToMobile().trim())) {
+        if (ride.fromMobile.trim().equalsIgnoreCase(ride.toMobile.trim())) {
             //fromMobile.setDefault();
             fromMobile.setText("");
             fromMobile.requestFocus();
@@ -1126,25 +1134,25 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             builder.setView(view);
             TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
             txtAlert.setText(R.string.sender_and_receiver_no_same);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
+            alertDialog = builder.create();
+            alertDialog.setCancelable(false);
             view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
             view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    alertDialog.dismiss();
                 }
             });
             Button btnOK = (Button) view.findViewById(R.id.btn_ok);
             btnOK.setText(R.string.ok);
             btnOK.setTypeface(face);
             txtAlert.setTypeface(face);
-            dialog.show();
+            alertDialog.show();
 
             return  false;
         }
 
-        String getMyDateTime = dateText1.trim() + " " + timeString.trim();
+        String getMyDateTime = dateText1.trim() + " " + timeText.trim();
         Date getCurrentDate = null;
         Date getMyDate = null;
 
@@ -1165,20 +1173,20 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             builder.setView(view);
             TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
             txtAlert.setText(R.string.wrong_trip_date);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
+            alertDialog = builder.create();
+            alertDialog.setCancelable(false);
             view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
             view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    alertDialog.dismiss();
                 }
             });
             Button btnOK = (Button) view.findViewById(R.id.btn_ok);
             btnOK.setText(R.string.ok);
             btnOK.setTypeface(face);
             txtAlert.setTypeface(face);
-            dialog.show();
+            alertDialog.show();
 
             return  false;
         }
@@ -1186,204 +1194,204 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+////        if (id == R.id.back_option) {
+////            finish();
+////        }
+//
+//        if (id == R.id.exit_option) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
+//            LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_CUST_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
+//                    editor.commit();
+//
+//                    Intent intent = new Intent(SenderDetailsActivity.this, LoginActivity.class);
+//                    ActivityCompat.finishAffinity(SenderDetailsActivity.this);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//
+//        int id = item.getItemId();
+//
+//        if (id == R.id.nav_home) {
+//            startActivity(new Intent(SenderDetailsActivity.this, HomeActivity.class));
+//        }
+//
+//        //if (id == R.id.nav_orders) {
+//        //    startActivity(new Intent(SenderDetailsActivity.this, MyOrdersActivity.class));
+//        //}
+//        //if (id == R.id.nav_agent) {
+//        //    final MyCircularProgressDialog progressDialog;
+//        //    progressDialog = new MyCircularProgressDialog(SenderDetailsActivity.this);
+//        //    progressDialog.setCancelable(false);
+//        //    progressDialog.show();
+//        //
+//        //    Handler handler = new Handler();
+//        //    handler.postDelayed(new Runnable() {
+//        //        public void run() {
+//        //            progressDialog.dismiss();
+//        //
+//        //            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+//        //
+//        //            SharedPreferences.Editor editor = preferences.edit();
+//        //            editor.putBoolean(Constants.PREFS_USER_AGENT, true);
+//        //            editor.commit();
+//        //
+//        //            startActivity(new Intent(SenderDetailsActivity.this, HomeActivity.class));
+//        //            finish();
+//        //        }
+//        //    }, 2000);
+//        //}
+//
+//        if (id == R.id.nav_settings) {
+//            startActivity(new Intent(SenderDetailsActivity.this, ChangeLanguageActivity.class));
+//        }
+//
+//        if (id == R.id.nav_share) {
+//            Intent sendIntent = new Intent();
+//            sendIntent.setAction(Intent.ACTION_SEND);
+//            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.download_dynate) + " " + sharedPreferences.getString(Constants.PREFS_SHARE_URL, ""));
+//            sendIntent.setType("text/plain");
+//            startActivity(sendIntent);
+//        }
+//
+//        if (id == R.id.nav_logout) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
+//            LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
+//            final View view = inflater.inflate(R.layout.alert_dialog, null);
+//            builder.setView(view);
+//            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
+//            txtAlert.setText(R.string.are_you_sure);
+//            alertDialog = builder.create();
+//            alertDialog.setCancelable(false);
+//            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                }
+//            });
+//            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    alertDialog.dismiss();
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                    if(sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//                        new SetOffline(sharedPreferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//                    }
+//
+//                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
+//                    editor.putString(Constants.PREFS_USER_ID, "0");
+//                    editor.putString(Constants.PREFS_CUST_ID, "0");
+//                    editor.putString(Constants.PREFS_USER_NAME, "0");
+//                    editor.putString(Constants.PREFS_USER_MOBILE, "");
+//                    editor.putString(Constants.PREFS_SHARE_URL, "");
+//                    editor.putString(Constants.PREFS_LATITUDE, "");
+//                    editor.putString(Constants.PREFS_LONGITUDE, "");
+//                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
+//                    editor.putString(Constants.PREFS_IS_FACTORY, "");
+//                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
+//                    editor.commit();
+//
+//                    Intent intent = new Intent(SenderDetailsActivity.this, LoginActivity.class);
+//                    ActivityCompat.finishAffinity(SenderDetailsActivity.this);
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            });
+//            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+//            btnOK.setTypeface(face);
+//            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
+//            btnCancel.setTypeface(face);
+//            txtAlert.setTypeface(face);
+//            alertDialog.show();
+//        }
+//
+//        //if (id == R.id.nav_exit) {
+//        //    SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+//        //
+//        //    if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
+//        //        SharedPreferences.Editor editor = preferences.edit();
+//        //        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
+//        //        editor.commit();
+//        //
+//        //        new SetOffline(preferences.getString(Constants.PREFS_USER_ID, "")).execute();
+//        //    }
+//        //
+//        //    ActivityCompat.finishAffinity(SenderDetailsActivity.this);
+//        //    finish();
+//        //}
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            finish();
-        }
-
-        if (id == R.id.exit_option) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
-            LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_CUST_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    Intent intent = new Intent(SenderDetailsActivity.this, LoginActivity.class);
-                    ActivityCompat.finishAffinity(SenderDetailsActivity.this);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            startActivity(new Intent(SenderDetailsActivity.this, HomeActivity.class));
-        }
-
-        //if (id == R.id.nav_orders) {
-        //    startActivity(new Intent(SenderDetailsActivity.this, MyOrdersActivity.class));
-        //}
-        //if (id == R.id.nav_agent) {
-        //    final MyCircularProgressDialog progressDialog;
-        //    progressDialog = new MyCircularProgressDialog(SenderDetailsActivity.this);
-        //    progressDialog.setCancelable(false);
-        //    progressDialog.show();
-        //
-        //    Handler handler = new Handler();
-        //    handler.postDelayed(new Runnable() {
-        //        public void run() {
-        //            progressDialog.dismiss();
-        //
-        //            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        //
-        //            SharedPreferences.Editor editor = preferences.edit();
-        //            editor.putBoolean(Constants.PREFS_USER_AGENT, true);
-        //            editor.commit();
-        //
-        //            startActivity(new Intent(SenderDetailsActivity.this, HomeActivity.class));
-        //            finish();
-        //        }
-        //    }, 2000);
-        //}
-
-        if (id == R.id.nav_language) {
-            startActivity(new Intent(SenderDetailsActivity.this, ChangeLanguageActivity.class));
-        }
-
-        if (id == R.id.nav_share) {
-            SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.download_dynate) + " " + preferences.getString(Constants.PREFS_SHARE_URL, ""));
-            sendIntent.setType("text/plain");
-            startActivity(sendIntent);
-        }
-
-        if (id == R.id.nav_logout) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(SenderDetailsActivity.this);
-            LayoutInflater inflater = SenderDetailsActivity.this.getLayoutInflater();
-            final View view = inflater.inflate(R.layout.alert_dialog, null);
-            builder.setView(view);
-            TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
-            txtAlert.setText(R.string.are_you_sure);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
-            view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    SharedPreferences prefs = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    if(prefs.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-                        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-                        new SetOffline(prefs.getString(Constants.PREFS_USER_ID, "")).execute();
-                    }
-                    editor.putBoolean(Constants.PREFS_IS_LOGIN, false);
-                    //editor.putBoolean(Constants.PREFS_USER_AGENT, false);
-                    editor.putString(Constants.PREFS_USER_ID, "0");
-                    editor.putString(Constants.PREFS_CUST_ID, "0");
-                    editor.putString(Constants.PREFS_USER_NAME, "0");
-                    editor.putString(Constants.PREFS_USER_MOBILE, "");
-                    editor.putString(Constants.PREFS_SHARE_URL, "");
-                    editor.putString(Constants.PREFS_LATITUDE, "");
-                    editor.putString(Constants.PREFS_LONGITUDE, "");
-                    editor.putString(Constants.PREFS_USER_CONSTANT, "");
-                    editor.putString(Constants.PREFS_IS_FACTORY, "");
-                    editor.commit();
-
-                    Intent intent = new Intent(SenderDetailsActivity.this, LoginActivity.class);
-                    ActivityCompat.finishAffinity(SenderDetailsActivity.this);
-                    startActivity(intent);
-                    finish();
-                }
-            });
-            Button btnOK = (Button) view.findViewById(R.id.btn_ok);
-            btnOK.setTypeface(face);
-            Button btnCancel = (Button) view.findViewById(R.id.btn_cancel);
-            btnCancel.setTypeface(face);
-            txtAlert.setTypeface(face);
-            dialog.show();
-        }
-
-        //if (id == R.id.nav_exit) {
-        //    SharedPreferences preferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
-        //
-        //    if(preferences.getString(Constants.PREFS_ONLINE_STATUS, "").equalsIgnoreCase("online")) {
-        //        SharedPreferences.Editor editor = preferences.edit();
-        //        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline");
-        //        editor.commit();
-        //
-        //        new SetOffline(preferences.getString(Constants.PREFS_USER_ID, "")).execute();
-        //    }
-        //
-        //    ActivityCompat.finishAffinity(SenderDetailsActivity.this);
-        //    finish();
-        //}
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private class GetDate extends AsyncTask<Void, Void, JSONObject> {
-        JsonParser jsonParser;
+    private class GetDateBackground extends AsyncTask<Void, Void, JSONObject> {
         Boolean isHijri = false;
         String dateString = "";
 
-        GetDate(Boolean isHijri, String dateString) {
+        GetDateBackground(Boolean isHijri, String dateString) {
             this.isHijri = isHijri;
             this.dateString = dateString;
         }
@@ -1394,24 +1402,20 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
         }
 
         protected JSONObject doInBackground(Void... param) {
-            jsonParser = new JsonParser();
+            JsonParser jsonParser = new JsonParser();
 
             HashMap<String, String> params = new HashMap<>();
 
             params.put("data", dateString);
 
-            JSONObject json;
+            String BASE_URL = "https://dyanate.fast-prog.com/JBLCalendarWebService.asmx/GetGregorianJson";
 
             if (isHijri) {
-                json = jsonParser.makeHttpRequest("https://dyanate.fast-prog.com/JBLCalendarWebService.asmx/GethijiriJson", "POST", params);
-
-            } else {
-                json = jsonParser.makeHttpRequest("https://dyanate.fast-prog.com/JBLCalendarWebService.asmx/GetGregorianJson", "POST", params);
+                BASE_URL = "https://dyanate.fast-prog.com/JBLCalendarWebService.asmx/GethijiriJson";
             }
 
-            return json;
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params);
         }
-
 
         protected void onPostExecute(JSONObject response) {
             if (response != null) {
@@ -1433,8 +1437,8 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                             if (getMyDate.after(curDate) || getMyDate.equals(curDate)) {
                                 fromDateEtxt1.setText(dateString);
                                 fromDateEtxt2.setText(date);
-                                ride.setHijriDate(date);
-                                ride.setDate(dateString);
+                                ride.hijriDate = date;
+                                ride.date = dateString;
                             }
 
                         } else {
@@ -1447,8 +1451,8 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
                             if (getMyDate.after(curDate) || getMyDate.equals(curDate)) {
                                 fromDateEtxt1.setText(date);
                                 fromDateEtxt2.setText(dateString);
-                                ride.setHijriDate(dateString);
-                                ride.setDate(date);
+                                ride.hijriDate = dateString;
+                                ride.date = date;
                             }
                         }
                     }
@@ -1495,14 +1499,14 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             //        txtAlert.setText(R.string.no_mobile_number);
             //        final AlertDialog dialog = builder.create();
             //        dialog.setCancelable(false);
-            //        view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
-            //        view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+            //        view.findViewById(R.id.btn_red_rounded).setVisibility(View.GONE);
+            //        view.findViewById(R.id.btn_green_rounded).setOnClickListener(new View.OnClickListener() {
             //            @Override
             //            public void onClick(View v) {
             //                dialog.dismiss();
             //            }
             //        });
-            //        Button btnOK = (Button) view.findViewById(R.id.btn_ok);
+            //        Button btnOK = (Button) view.findViewById(R.id.btn_green_rounded);
             //        btnOK.setText(R.string.ok);
             //        btnOK.setTypeface(face);
             //        txtAlert.setTypeface(face);
@@ -1546,20 +1550,20 @@ public class SenderDetailsActivity extends AppCompatActivity implements Navigati
             builder.setView(view);
             TextView txtAlert = (TextView) view.findViewById(R.id.txt_alert);
             txtAlert.setText(R.string.no_mobile_number);
-            final AlertDialog dialog = builder.create();
-            dialog.setCancelable(false);
+            alertDialog = builder.create();
+            alertDialog.setCancelable(false);
             view.findViewById(R.id.btn_cancel).setVisibility(View.GONE);
             view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    alertDialog.dismiss();
                 }
             });
             Button btnOK = (Button) view.findViewById(R.id.btn_ok);
             btnOK.setText(R.string.ok);
             btnOK.setTypeface(face);
             txtAlert.setTypeface(face);
-            dialog.show();
+            alertDialog.show();
         }
     }
 

@@ -9,18 +9,18 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +28,9 @@ import android.widget.TextView;
 import com.fast_prog.dynate.R;
 import com.fast_prog.dynate.models.PlaceItem;
 import com.fast_prog.dynate.utilities.Constants;
+import com.snappydb.DB;
+import com.snappydb.DBFactory;
+import com.snappydb.SnappydbException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +42,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PickLocationActivity extends AppCompatActivity {
 
@@ -60,8 +64,9 @@ public class PickLocationActivity extends AppCompatActivity {
 
     Typeface face;
 
-    Boolean selectMap;
+    Boolean bookMarked = true;
 
+    //Boolean selectMap;
     //Button pickLocationButton;
     //private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
@@ -74,8 +79,18 @@ public class PickLocationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.home_up_icon));
 
         face = Typeface.createFromAsset(PickLocationActivity.this.getAssets(), Constants.FONT_URL);
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         String title = getResources().getString(R.string.pick_location);
         TextView titleTextView = new TextView(getApplicationContext());
@@ -86,13 +101,25 @@ public class PickLocationActivity extends AppCompatActivity {
         titleTextView.setTextColor(Color.WHITE);
         getSupportActionBar().setCustomView(titleTextView);
 
-        selectMap = getIntent().getBooleanExtra("selectMap", false);
-
+        //selectMap = getIntent().getBooleanExtra("selectMap", false);
         Spinner citySpinner = (Spinner) findViewById(R.id.city_spinner);
-        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, MODE_PRIVATE);
         listView = (ListView) findViewById(R.id.listView_results);
         EditText etEnterLocation = (EditText) findViewById(R.id.edEnterLocation);
         etEnterLocation.setTypeface(face);
+
+        m_parts = new ArrayList<>();
+
+        try {
+            DB snappyDB = DBFactory.open(PickLocationActivity.this, Constants.DYNA_DB);
+            PlaceItem[] placeItemArray = snappyDB.getObjectArray(Constants.DYNA_DB_KEY, PlaceItem.class);
+            if (placeItemArray != null && placeItemArray.length > 0) {
+                m_parts = new ArrayList<>(Arrays.asList(placeItemArray));
+            }
+            snappyDB.close();
+
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
 
         ArrayList<String> cityArray = new ArrayList<>();
         cityLatLngArray = new ArrayList<>();
@@ -137,6 +164,8 @@ public class PickLocationActivity extends AppCompatActivity {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                bookMarked = false;
+
                 if (s != null) {
                     if (s.length() != 0) {
 //                        pickLocationButton.setVisibility(View.GONE);
@@ -179,27 +208,27 @@ public class PickLocationActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-
-        MenuItem menuLogout = menu.findItem(R.id.exit_option);
-        menuLogout.setVisible(false);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.back_option) {
-            finish();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.home, menu);
+//
+//        MenuItem menuLogout = menu.findItem(R.id.exit_option);
+//        menuLogout.setVisible(false);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if (id == R.id.back_option) {
+//            finish();
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private class GetPlaceNamesBackground extends AsyncTask<Void, Void, Void> {
         private String s;
@@ -275,13 +304,13 @@ public class PickLocationActivity extends AppCompatActivity {
 
                 for (int i = 0; i < resultsJsonArray.length(); i++) {
                     PlaceItem placeItem = new PlaceItem();
-                    placeItem.setPlName(resultsJsonArray.getJSONObject(i).getString("name"));
+                    placeItem.plName = resultsJsonArray.getJSONObject(i).getString("name");
 
                     if (resultsJsonArray.getJSONObject(i).getString("vicinity") != null)
-                        placeItem.setpVicinity(resultsJsonArray.getJSONObject(i).getString("vicinity"));
+                        placeItem.pVicinity = resultsJsonArray.getJSONObject(i).getString("vicinity");
 
-                    placeItem.setpLatitude(resultsJsonArray.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat"));
-                    placeItem.setpLongitude(resultsJsonArray.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng"));
+                    placeItem.pLatitude = resultsJsonArray.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lat");
+                    placeItem.pLongitude = resultsJsonArray.getJSONObject(i).getJSONObject("geometry").getJSONObject("location").getString("lng");
                     resultList.add(placeItem);
                 }
             }
@@ -292,62 +321,62 @@ public class PickLocationActivity extends AppCompatActivity {
     }
 
     private class PlaceListCustomAdapter extends ArrayAdapter<PlaceItem> {
-
-        // declaring our ArrayList of items
         private ArrayList<PlaceItem> objects;
 
-        /* here we must override the constructor for ArrayAdapter
-        * the only variable we care about now is ArrayList<Item> objects,
-        * because it is the list of objects we want to display.
-        */
         PlaceListCustomAdapter(Context context, int textViewResourceId, ArrayList<PlaceItem> objects) {
             super(context, textViewResourceId, objects);
             this.objects = objects;
         }
 
-        /*
-         * we are overriding the getView method here - this is what defines how each
-         * list item will look.
-         */
         @NonNull
         public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
-
-            // assign the view we are converting to a local variable
             View v = convertView;
 
-            // first check to see if the view is null. if so, we have to inflate it.
-            // to inflate it basically means to render, or show, the view.
             if (v == null) {
                 LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = inflater.inflate(R.layout.place_item, null);
             }
 
-		/*
-         * Recall that the variable position is sent in as an argument to this method.
-		 * The variable simply refers to the position of the current object in the list. (The ArrayAdapter
-		 * iterates through the list we sent it)
-		 *
-		 * Therefore, i refers to the current Item object.
-		 */
             final PlaceItem placeItem = objects.get(position);
 
             if (placeItem != null) {
-
-                // This is how you obtain a reference to the TextViews.
-                // These TextViews are created in the XML files we defined.
                 TextView placeNameTextView = (TextView) v.findViewById(R.id.place_name_text_view);
                 placeNameTextView.setTypeface(face);
+                placeNameTextView.setText(placeItem.plName);
+
                 TextView placeVicinityTextView = (TextView) v.findViewById(R.id.place_vicinity_text_view);
                 placeVicinityTextView.setTypeface(face);
+                if (placeItem.pVicinity != null) {
+                    placeVicinityTextView.setText(placeItem.pVicinity);
+                }
 
-                // check to see if each individual textview is null.
-                // if not, assign some text!
-                placeNameTextView.setText(placeItem.getPlName());
-                if (placeItem.getpVicinity() != null) {
-                    placeVicinityTextView.setText(placeItem.getpVicinity());
+                final ImageView bookmarkLocationImageView = (ImageView) v.findViewById(R.id.bookmark_location_image_view);
+                if (bookMarked) {
+                    bookmarkLocationImageView.setColorFilter(Color.parseColor(Constants.FILTER_COLOR));
+                    bookmarkLocationImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            m_parts.remove(position);
+                            m_parts.add(null);
+
+                            try {
+                                DB snappyDB = DBFactory.open(PickLocationActivity.this, Constants.DYNA_DB);
+                                snappyDB.del(Constants.DYNA_DB_KEY);
+                                snappyDB.put(Constants.DYNA_DB_KEY, m_parts);
+                                snappyDB.close();
+
+                                m_parts.remove(m_parts.size() - 1);
+                                m_adapter.notifyDataSetChanged();
+
+                            } catch (SnappydbException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    bookmarkLocationImageView.setVisibility(View.GONE);
                 }
             }
-            // the view must be returned to our activity
             return v;
         }
     }
@@ -357,16 +386,11 @@ public class PickLocationActivity extends AppCompatActivity {
         public Resources res;
         LayoutInflater inflater;
 
-        /*************
-         * CustomAdapter Constructor
-         *****************/
         CustomSpinnerAdapter(Context context, int textViewResourceId, ArrayList objects, Resources resLocal) {
             super(context, textViewResourceId, objects);
-            /********** Take passed values **********/
+
             data = objects;
             res = resLocal;
-
-            /***********  Layout inflator to call external xml layout () **********************/
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -381,17 +405,11 @@ public class PickLocationActivity extends AppCompatActivity {
             return getCustomView(position, convertView, parent);
         }
 
-        // This funtion called for each row ( Called data.size() times )
         View getCustomView(int position, View convertView, ViewGroup parent) {
-
-            /********** Inflate spinner_rows.xml file for each row ( Defined below ) ************/
             View row = inflater.inflate(R.layout.city_spinner_item, parent, false);
-
-            /***** Get each Model object from Arraylist ********/
             TextView label = (TextView) row.findViewById(R.id.city_name_text_view);
             label.setText(data.get(position));
             label.setTypeface(face);
-
             return row;
         }
     }
