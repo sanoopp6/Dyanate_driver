@@ -7,16 +7,11 @@
     android:orientation="vertical">
 
     <ProgressBar
-        android:progressDrawable="@drawable/circular_dialog"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
         android:id="@+id/circular_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="90dp"
         android:layout_height="90dp"
-        android:layout_gravity="center"
-        android:progress="100"
-        android:indeterminate="false"
-        android:max="100"
-        android:secondaryProgress="10" />
+        android:layout_gravity="center" />
 
     <ImageView
         android:id="@+id/img_logo"

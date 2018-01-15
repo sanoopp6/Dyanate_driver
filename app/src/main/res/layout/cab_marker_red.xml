@@ -27,8 +27,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="@string/stop_place"
-                android:textColor="@color/whiteColorText"
+                android:text="@string/StopPoint"
+                android:textColor="@color/whiteColor"
                 android:textSize="10sp" />
 
         </LinearLayout>

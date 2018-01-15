@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBG"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.SenderReceiverActivity"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:scaleType="fitCenter"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:alpha="0.2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/logo_1" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/layout_gradient_background"
+                    android:layout_height="25dp">
+
+                    <TextView
+                        android:id="@+id/sender_det_title"
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="5dp"
+                        style="@style/FontSizeFourteen"
+                        android:text="@string/SenderIs"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/edit_from_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:textAlignment="center"
+                    style="@style/FontSizeFifteen"
+                    android:hint="@string/Name"
+                    android:background="@drawable/layout_border_grey_white_squre"
+                    android:inputType="text"
+                    android:singleLine="true" />
+
+                <LinearLayout
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layoutDirection="ltr"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:clipChildren="false" >
+
+                    <com.hbb20.CountryCodePicker
+                        app:ccp_showNameCode = "false"
+                        app:ccp_showFlag="false"
+                        app:ccp_textSize="15sp"
+                        app:ccp_autoFormatNumber="false"
+                        app:ccp_autoDetectCountry="false"
+                        app:ccp_autoDetectLanguage="true"
+                        app:ccp_defaultNameCode="SA"
+                        android:textColor="@color/blackColor"
+                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:id="@+id/countryCodePicker_from"
+                        android:layout_width="75dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/layout_border_grey_white_squre" >
+
+                        <EditText
+                            android:gravity="center"
+                            android:id="@+id/edit_from_mobile"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:hint="@string/Mobile"
+                            android:textDirection="ltr"
+                            android:singleLine="true"
+                            android:inputType="phone"
+                            style="@style/FontSizeFifteen"
+                            android:background="@android:color/transparent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/img_from_mobile"
+                            android:layout_width="wrap_content"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_address_book"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    style="@style/FontSizeFourteen"
+                    android:text="@string/Date"
+                    android:layout_height="25dp" />
+
+                <LinearLayout
+                    android:id="@+id/date_layout"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layoutDirection="ltr"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="33dp">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:clipChildren="false">
+
+                        <Button
+                            android:textColor="@color/blackColor"
+                            android:id="@+id/txt_datepicker1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/FontSizeFourteen"
+                            android:background="@android:color/transparent" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:padding="2dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_date" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:clipChildren="false">
+
+                        <Button
+                            android:textColor="@color/blackColor"
+                            android:id="@+id/txt_datepicker2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/FontSizeFourteen"
+                            android:background="@android:color/transparent" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:padding="2dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_date" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    style="@style/FontSizeFourteen"
+                    android:layout_width="match_parent"
+                    android:text="@string/Time"
+                    android:layout_height="25dp" />
+
+                <LinearLayout
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="33dp">
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:clipChildren="false">
+
+                        <Button
+                            android:textColor="@color/blackColor"
+                            android:id="@+id/txt_timepicker"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            style="@style/FontSizeFourteen"
+                            android:background="@android:color/transparent" />
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:padding="2dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_time" />
+
+                    </FrameLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/layout_gradient_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp">
+
+                    <TextView
+                        android:id="@+id/receiver_det_title"
+                        android:layout_width="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/ReceiverIs"
+                        android:paddingStart="10dp"
+                        style="@style/FontSizeFourteen"
+                        android:paddingEnd="5dp"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/edit_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:textAlignment="center"
+                    android:hint="@string/Name"
+                    android:background="@drawable/layout_border_grey_white_squre"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    style="@style/FontSizeFifteen" />
+
+                <LinearLayout
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layoutDirection="ltr"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:clipChildren="false" >
+
+                    <com.hbb20.CountryCodePicker
+                        app:ccp_showNameCode = "false"
+                        app:ccp_showFlag="false"
+                        app:ccp_textSize="15sp"
+                        app:ccp_autoFormatNumber="false"
+                        app:ccp_autoDetectCountry="false"
+                        app:ccp_autoDetectLanguage="true"
+                        app:ccp_defaultNameCode="SA"
+                        android:textColor="@color/blackColor"
+                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:id="@+id/countryCodePicker_to"
+                        android:layout_width="75dp"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/layout_border_grey_white_squre" >
+
+                        <EditText
+                            android:gravity="center"
+                            android:id="@+id/edit_to_mobile"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:hint="@string/Mobile"
+                            android:textDirection="ltr"
+                            android:singleLine="true"
+                            android:inputType="phone"
+                            style="@style/FontSizeFifteen"
+                            android:background="@android:color/transparent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/img_to_mobile"
+                            android:layout_width="wrap_content"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_address_book"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <Button
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/btn_book_vehicle"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    style="@style/FontBoldSixteen"
+                    android:textColor="@color/whiteColor"
+                    android:background="@drawable/btn_lightblue_rounded"
+                    android:text="@string/Continue" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
+
+</LinearLayout>

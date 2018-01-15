@@ -1,75 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/layout_dialog_box"
+    android:background="@drawable/layout_transparent_squre_rounded"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/txt_alert"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:text="@string/message"
-        android:textSize="15sp"
-        android:textStyle="bold"/>
+        style="@style/FontSizeFifteen" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/txt_alert1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        style="@style/FontBoldSixteen" />
 
     <TextView
         android:visibility="gone"
         android:id="@+id/txt_alert2"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_margin="5dp"
-        android:text="@string/message"
-        android:textSize="12sp"/>
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/txt_alert3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_margin="5dp"
-        android:text="@string/message"
-        android:textSize="13sp"/>
-
-    <EditText
-        android:id="@+id/text_input"
-        android:layout_width="150dp"
-        android:inputType="text"
-        android:visibility="gone"
-        android:background="@drawable/layout_border_black_transparent_squre"
         android:layout_gravity="center"
-        android:textAlignment="center"
-        android:layout_height="30dp" />
+        android:layout_margin="10dp"
+        style="@style/FontBoldSixteen" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_gravity="center"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btn_ok"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:background="@drawable/btn_green_rounded"
-            android:text="@string/yes"
-            android:textColor="@color/whiteColorText"
-            android:textStyle="bold" />
+            android:text="@string/Yes"
+            style="@style/FontSizeFourteen"
+            android:textColor="@color/whiteColor" />
 
         <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
             android:layout_marginStart="5dp"
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:background="@drawable/btn_red_rounded"
-            android:text="@string/no"
-            android:textColor="@color/whiteColorText"
-            android:textStyle="bold" />
+            android:text="@string/No"
+            style="@style/FontSizeFourteen"
+            android:textColor="@color/whiteColor" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -12,229 +12,212 @@
     tools:context=".views.ConfirmDetailsActivity"
     android:orientation="vertical">
 
-    <ScrollView
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
 
-        <LinearLayout
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:scaleType="fitCenter"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:alpha="0.2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal|bottom"
+            android:src="@drawable/logo_1" />
 
-            <TextView
-                android:id="@+id/trip_det_title"
-                android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:text="@string/trip_details"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="5dp"
-                android:id="@+id/sub_title"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/subject"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:id="@+id/ship_title"
-                android:layout_width="match_parent"
-                android:text="@string/shipment"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp" />
-
-            <!--<TextView-->
-                <!--android:id="@+id/model_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_marginLeft="15dp"-->
-                <!--android:layout_marginRight="15dp"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/vehicle_type"-->
-                <!--android:layout_height="25dp" />-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/type_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_marginLeft="15dp"-->
-                <!--android:layout_marginRight="15dp"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/vehicle_model"-->
-                <!--android:layout_height="25dp" />-->
-
-            <View
-                android:layout_marginTop="2dp"
-                android:layout_width="match_parent"
-                android:background="@color/light_gray"
-                android:layout_height="2dp" />
-
-            <TextView
-                android:id="@+id/sender_det_title"
-                android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:text="@string/from_address"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:id="@+id/text_from_name"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:text="@string/name"
-                android:gravity="center_vertical" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/mobile"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
-                    android:id="@+id/title_from_mobile" />
-
-                <!--<ImageView-->
-                    <!--android:paddingEnd="5dp"-->
-                    <!--android:src="@drawable/country_sa"-->
-                    <!--android:layout_width="40dp"-->
-                    <!--android:padding="3dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:id="@+id/img_from_mobile"/>-->
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="15dp"
+                    style="@style/FontBoldSixteen"
+                    android:text="@string/ShipmentTitle"
+                    android:layout_height="wrap_content" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/sub_title"
+                    style="@style/FontSizeFifteen"
+                    android:layout_width="match_parent"
                     android:gravity="center_vertical"
+                    android:text="@string/Subject"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/ship_title"
+                    android:layout_width="match_parent"
+                    android:text="@string/Shipment"
+                    style="@style/FontSizeFifteen"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/model_title"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    style="@style/FontSizeFifteen"
+                    android:gravity="center_vertical"
+                    android:text="@string/Size"
+                    android:layout_height="25dp" />
+
+                <View
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:background="@color/darkest_gray"
+                    android:layout_height="1dp" />
+
+                <TextView
+                    android:id="@+id/sender_det_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="15dp"
+                    style="@style/FontBoldSixteen"
+                    android:text="@string/SenderDetails"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/text_from_name"
+                    android:layout_width="match_parent"
+                    style="@style/FontSizeFifteen"
+                    android:layout_height="25dp"
+                    android:text="@string/Name"
+                    android:gravity="center_vertical" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    style="@style/FontSizeFifteen"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:text="@string/Mobile"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/text_from_mobile" />
 
-            </LinearLayout>
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:id="@+id/date_title"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/date"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:id="@+id/time_title"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/time"
-                android:layout_height="25dp" />
-
-            <View
-                android:layout_marginTop="2dp"
-                android:layout_width="match_parent"
-                android:background="@color/light_gray"
-                android:layout_height="2dp" />
-
-            <TextView
-                android:id="@+id/receiver_det_title"
-                android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:text="@string/to_address"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:gravity="center_vertical"
-                android:text="@string/name"
-                android:id="@+id/text_to_name"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:orientation="horizontal">
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/date_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/Date"
+                    style="@style/FontSizeFifteen"
+                    android:layout_height="25dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/mobile"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/time_title"
+                    android:layout_width="match_parent"
                     android:gravity="center_vertical"
-                    android:id="@+id/title_to_mobile" />
+                    android:text="@string/Time"
+                    style="@style/FontSizeFifteen"
+                    android:layout_height="25dp" />
 
-                <!--<ImageView-->
-                    <!--android:paddingEnd="5dp"-->
-                    <!--android:src="@drawable/country_sa"-->
-                    <!--android:layout_width="40dp"-->
-                    <!--android:padding="3dp"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:id="@+id/img_to_mobile"/>-->
+                <View
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:background="@color/darkest_gray"
+                    android:layout_height="1dp" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
+                    android:id="@+id/receiver_det_title"
+                    android:layout_width="match_parent"
                     android:gravity="center_vertical"
+                    android:text="@string/ReceiverDetails"
+                    style="@style/FontBoldSixteen"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/Name"
+                    style="@style/FontSizeFifteen"
+                    android:id="@+id/text_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    style="@style/FontSizeFifteen"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:text="@string/Mobile"
+                    android:layout_marginRight="15dp"
                     android:id="@+id/text_to_mobile" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:padding="15dp"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_confirm_route"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="33dp"
+                        android:background="@drawable/btn_green_rounded"
+                        android:text="@string/ConfirmTrip"
+                        android:textColor="@color/whiteColor"
+                        style="@style/FontBoldSixteen" />
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent" />
+
+                    <Button
+                        android:id="@+id/btn_edit_details"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="33dp"
+                        android:background="@drawable/btn_grey_rounded"
+                        android:text="@string/EditOrder"
+                        android:textColor="@color/whiteColor"
+                        style="@style/FontBoldSixteen" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:padding="15dp"
-                android:layout_height="wrap_content">
+        </ScrollView>
 
-                <Button
-                    android:id="@+id/btn_confirm_route"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="33dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="2dp"
-                    android:background="@drawable/btn_green_rounded"
-                    android:text="@string/confirm_trip"
-                    android:textColor="@color/whiteColorText"
-                    android:textSize="14sp" />
+    </FrameLayout>
 
-                <Button
-                    android:id="@+id/btn_edit_details"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="33dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/btn_black_rounded"
-                    android:text="@string/edit_order"
-                    android:textColor="@color/whiteColorText"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
 
 </LinearLayout>

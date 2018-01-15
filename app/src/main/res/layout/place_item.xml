@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:background="@color/blackColorBackground"
+    android:background="@color/blackColor"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_margin="1dp"
-        android:background="@color/whiteColorBackground"
+        android:background="@color/whiteColor"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -23,8 +23,7 @@
                 android:id="@+id/place_name_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                style="@style/FontBoldSixteen"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:paddingStart="3dp" />
@@ -33,7 +32,7 @@
                 android:id="@+id/place_vicinity_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
-                android:textSize="14sp"
+                style="@style/FontSizeFourteen"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:paddingStart="3dp"  />
@@ -49,7 +48,6 @@
             android:scaleType="fitXY"
             android:layout_gravity="center_vertical"
             android:scrollHorizontally="true"
-            android:tint="@color/blackColorBackground"
             android:src="@drawable/ic_bookmark" />
 
     </LinearLayout>

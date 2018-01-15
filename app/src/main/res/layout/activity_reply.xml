@@ -11,6 +11,7 @@
     tools:context=".views.ReplyActivity">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -35,14 +36,5 @@
         <include layout="@layout/content_reply" />
 
     </android.support.design.widget.CoordinatorLayout>
-
-    <!--<android.support.design.widget.NavigationView-->
-        <!--android:id="@+id/nav_view"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="start"-->
-        <!--android:fitsSystemWindows="true"-->
-        <!--app:headerLayout="@layout/nav_header_home"-->
-        <!--app:menu="@menu/activity_home_drawer" />-->
 
 </android.support.v4.widget.DrawerLayout>

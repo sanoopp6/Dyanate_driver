@@ -34,11 +34,11 @@
             android:drawableStart="@android:drawable/ic_menu_search"
             android:drawableTint="@color/darkest_gray"
             android:gravity="start|center"
-            android:hint="@string/type_your_location"
+            android:hint="@string/TypeYourLocation"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:singleLine="true"
-            android:textColor="@color/darker_gray"
-            android:textColorHint="@color/darker_gray"
+            android:textColor="@color/darkest_gray"
+            android:textColorHint="@color/darkest_gray"
             android:textSize="16sp">
 
             <requestFocus />
@@ -47,7 +47,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/darker_gray" />
+            android:background="@color/darkest_gray" />
 
         <Spinner
             android:id="@+id/city_spinner"
@@ -61,23 +61,11 @@
         android:layout_height="5dp"
         android:background="@drawable/btn_grey_rounded" />
 
-    <!--<Button-->
-        <!--android:id="@+id/btn_pick_address"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="40dp"-->
-        <!--android:layout_below="@+id/linearLayoutDestination"-->
-        <!--android:background="@color/lighter_gray"-->
-        <!--android:text="@string/select_location_from_map"-->
-        <!--android:visibility="gone"-->
-        <!--android:textAllCaps="false"-->
-        <!--android:textColor="@color/light_gray"-->
-        <!--android:textSize="16dp" />-->
-
     <ListView
         android:id="@+id/listView_results"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@color/darker_gray"
+        android:divider="@color/darkest_gray"
         android:dividerHeight="1dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp" />

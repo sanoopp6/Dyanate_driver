@@ -12,278 +12,363 @@
     tools:context=".views.ReplyActivity"
     android:orientation="vertical">
 
-    <ScrollView
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
 
-        <LinearLayout
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:scaleType="fitCenter"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:alpha="0.2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:layout_gravity="center_horizontal|bottom"
+            android:src="@drawable/logo_1" />
 
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:layout_marginTop="10dp"
-                android:id="@+id/sub_title"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/subject"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:id="@+id/ship_title"
-                android:layout_width="match_parent"
-                android:text="@string/shipment"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:id="@+id/type_title"
-                android:layout_width="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:gravity="center_vertical"
-                android:text="@string/vehicle_type"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:id="@+id/model_title"
-                android:layout_width="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:gravity="center_vertical"
-                android:text="@string/vehicle_model"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp"
-                android:gravity="center_vertical"
-                android:text="@string/distance"
-                android:id="@+id/text_distance" />
-
-            <View
-                android:layout_marginTop="2dp"
-                android:layout_width="match_parent"
-                android:background="@color/light_gray"
-                android:layout_height="2dp" />
-
-            <TextView
-                android:id="@+id/sender_det_title"
-                android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:text="@string/from_address"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:id="@+id/text_from_name"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:text="@string/name"
-                android:gravity="center_vertical" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp"
-                android:text="@string/mobile"
-                android:gravity="center_vertical"
-                android:id="@+id/text_from_mobile" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:id="@+id/date_title"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/date"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:id="@+id/time_title"
-                android:layout_width="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/time"
-                android:layout_height="25dp" />
-
-            <LinearLayout
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="25dp">
-
-                <TextView
-                    android:id="@+id/from_addr"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/sender"
-                    android:layout_height="25dp" />
-
-                <ImageView
-                    android:id="@+id/from_loc"
-                    android:layout_width="25dp"
-                    android:textColor="#9571d8"
-                    android:gravity="center_vertical"
-                    android:src="@drawable/goto_loc"
-                    android:layout_height="25dp" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_marginTop="2dp"
-                android:layout_width="match_parent"
-                android:background="@color/light_gray"
-                android:layout_height="2dp" />
-
-            <TextView
-                android:id="@+id/receiver_det_title"
-                android:layout_width="match_parent"
-                android:layout_marginTop="5dp"
-                android:gravity="center_vertical"
-                android:text="@string/to_address"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp" />
-
-            <TextView
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:gravity="center_vertical"
-                android:text="@string/name"
-                android:id="@+id/text_to_name"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="25dp"
-                android:gravity="center_vertical"
-                android:text="@string/mobile"
-                android:id="@+id/text_to_mobile" />
-
-            <LinearLayout
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="25dp">
-
-                <TextView
-                    android:id="@+id/to_addr"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="@string/sender"
-                    android:layout_height="25dp" />
-
-                <ImageView
-                    android:id="@+id/to_loc"
-                    android:layout_width="25dp"
-                    android:textColor="#9571d8"
-                    android:gravity="center_vertical"
-                    android:src="@drawable/goto_loc"
-                    android:layout_height="25dp" />
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/price_title"
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="wrap_content"
-                android:text="@string/enter_price"/>
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/edit_price"
-                    android:layout_width="0dp"
-                    android:layout_weight="4"
-                    android:layout_height="35dp"
-                    android:background="@drawable/layout_border_black_transparent_squre"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:hint="@string/price"
-                    android:inputType="numberDecimal"
-                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="15dp"
+                    style="@style/FontBoldSixteen"
+                    android:text="@string/ShipmentTitle"
+                    android:layout_height="wrap_content" />
 
-                <CheckBox
-                    android:id="@+id/chk_negotiable"
-                    android:layout_width="0dp"
-                    android:layout_weight="3"
-                    android:layout_height="35dp"
-                    android:gravity="center"
-                    android:text="@string/negotiable" />
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/sub_title"
+                    style="@style/FontSizeFifteen"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/Subject"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/ship_title"
+                    android:layout_width="match_parent"
+                    style="@style/FontSizeFifteen"
+                    android:text="@string/Shipment"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/type_title"
+                    style="@style/FontSizeFifteen"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/Make"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:id="@+id/model_title"
+                    style="@style/FontSizeFifteen"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/Model"
+                    android:layout_height="25dp" />
+
+                <View
+                    android:layout_marginTop="2dp"
+                    android:layout_width="match_parent"
+                    android:background="@color/darkest_gray"
+                    android:layout_height="1dp" />
+
+                <TextView
+                    android:id="@+id/sender_det_title"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="15dp"
+                    style="@style/FontBoldSixteen"
+                    android:text="@string/SenderDetails"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/text_from_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    style="@style/FontSizeFifteen"
+                    android:text="@string/Name"
+                    android:gravity="center_vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/Mobile"
+                        style="@style/FontSizeFifteen"
+                        android:gravity="center_vertical"
+                        android:id="@+id/title_from_mobile" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        style="@style/FontSizeFifteen"
+                        android:textDirection="ltr"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:id="@+id/text_from_mobile" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/date_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    style="@style/FontSizeFifteen"
+                    android:text="@string/Date"
+                    android:layout_height="25dp" />
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/time_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    style="@style/FontSizeFifteen"
+                    android:text="@string/Time"
+                    android:layout_height="25dp" />
+
+                <LinearLayout
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        style="@style/FontSizeFifteen"
+                        android:text="@string/Address"
+                        android:id="@+id/from_addr"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/from_loc"
+                        android:layout_width="30dp"
+                        android:textColor="#9571d8"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_goto_loc"
+                        android:layout_height="30dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_marginTop="2dp"
+                    android:layout_width="match_parent"
+                    android:background="@color/darkest_gray"
+                    android:layout_height="1dp" />
+
+                <TextView
+                    android:id="@+id/receiver_det_title"
+                    android:layout_width="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/ReceiverDetails"
+                    style="@style/FontBoldSixteen"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/Name"
+                    style="@style/FontSizeFifteen"
+                    android:id="@+id/text_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/Mobile"
+                        style="@style/FontSizeFifteen"
+                        android:gravity="center_vertical"
+                        android:id="@+id/title_to_mobile" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        style="@style/FontSizeFifteen"
+                        android:textDirection="ltr"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:id="@+id/text_to_mobile" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:gravity="center_vertical"
+                        android:maxLines="3"
+                        style="@style/FontSizeFifteen"
+                        android:text="@string/Address"
+                        android:id="@+id/to_addr"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/to_loc"
+                        android:layout_width="30dp"
+                        android:textColor="#9571d8"
+                        android:gravity="center_vertical"
+                        android:src="@drawable/ic_goto_loc"
+                        android:layout_height="30dp" />
+
+                </LinearLayout>
+
+                <TextView
+                    style="@style/FontSizeFifteen"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/EnterYourPrice"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        style="@style/FontSizeFifteen"
+                        android:id="@+id/edit_price"
+                        android:layout_width="0dp"
+                        android:layout_weight="4"
+                        android:layout_height="35dp"
+                        android:background="@drawable/layout_border_black_transparent_squre"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:hint="@string/Rate"
+                        android:inputType="numberDecimal" />
+
+                    <CheckBox
+                        android:id="@+id/chk_negotiable"
+                        android:layout_width="0dp"
+                        android:layout_weight="3"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                        android:text="@string/Negotiable" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_agree"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="33dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="2dp"
+                        android:text="@string/Agree"
+                        android:background="@drawable/btn_blue_rounded"
+                        android:textColor="@color/whiteColor"
+                        style="@style/FontBoldSixteen" />
+
+                    <Button
+                        android:id="@+id/btn_disagree"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="33dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_gravity="center"
+                        android:text="@string/NotAgree"
+                        android:background="@drawable/btn_red_rounded"
+                        android:textColor="@color/whiteColor"
+                        style="@style/FontSizeFifteen" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="10dp"
-                android:layout_height="wrap_content">
+        </ScrollView>
 
-                <Button
-                    android:id="@+id/btn_agree"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="33dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="2dp"
-                    android:text="@string/agree"
-                    android:background="@drawable/btn_blue_rounded"
-                    android:textColor="@color/whiteColorText"
-                    android:textSize="14sp" />
+    </FrameLayout>
 
-                <Button
-                    android:id="@+id/btn_disagree"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="33dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_gravity="center"
-                    android:text="@string/not_agree"
-                    android:background="@drawable/btn_red2_rounded"
-                    android:textColor="@color/whiteColorText"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
 
 </LinearLayout>

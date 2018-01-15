@@ -8,296 +8,286 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBG"
+    android:gravity="center"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".views.AllOrdersActivity">
 
-    <LinearLayout
-        android:id="@+id/top_layout"
+    <View
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/layout_border_black_white_squre"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="10dp"
-        android:layout_height="250dp">
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
 
-        <TextView
-            android:id="@+id/enter_port_priority_text_view"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:scaleType="fitCenter"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:alpha="0.2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:src="@drawable/logo_1" />
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/btn_black_bottom_rounded"
-            android:gravity="center"
-            android:text="@string/previous_orders"
-            android:textColor="#FFF"
-            android:textSize="16sp" />
+            android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_home"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginTop="5dp"
-            android:scrollbars="vertical" />
+            <LinearLayout
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/all_orders_button"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/btn_orange_rounded"
-            android:gravity="center"
-            android:text="@string/all_new_orders"
-            android:textAllCaps="true"
-            android:textColor="#fff"
-            android:textSize="14sp" />
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/btn_lightblue_rounded"
+                    android:clipChildren="false">
 
-</LinearLayout>
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/NewTripRequests"
+                        android:background="@android:color/transparent"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:id="@+id/new_trips_button"/>
 
-<!--<ScrollView-->
-        <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
-        <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:id="@+id/new_trips_count"
+                        android:gravity="center"
+                        style="@style/FontSizeTwelve"
+                        android:textColor="@color/blackColor"
+                        android:visibility="gone"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical">-->
+                </FrameLayout>
 
-            <!--<TextView-->
-                <!--android:layout_marginRight="15dp"-->
-                <!--android:id="@+id/sub_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/subject"-->
-                <!--android:layout_height="25dp" />-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/btn_black_rounded"
+                    android:clipChildren="false">
 
-            <!--<TextView-->
-                <!--android:id="@+id/ship_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:text="@string/shipment"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:layout_height="25dp" />-->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/TripsRejectedByMe"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/rejected_by_me_button"/>
 
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-                <!--&lt;!&ndash;android:id="@+id/model_title"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:gravity="center_vertical"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:text="@string/vehicle_type"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_height="25dp" />&ndash;&gt;-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:id="@+id/rejected_by_me_count"
+                        android:gravity="center"
+                        style="@style/FontSizeTwelve"
+                        android:textColor="@color/blackColor"
+                        android:visibility="gone"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-                <!--&lt;!&ndash;android:id="@+id/type_title"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:gravity="center_vertical"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:text="@string/vehicle_model"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_height="25dp" />&ndash;&gt;-->
+                </FrameLayout>
 
-            <!--<View-->
-                <!--android:layout_marginTop="2dp"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:background="@color/light_gray"-->
-                <!--android:layout_height="2dp" />-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/btn_grey_rounded"
+                    android:clipChildren="false">
 
-            <!--<TextView-->
-                <!--android:id="@+id/sender_det_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_marginTop="5dp"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:textStyle="bold"-->
-                <!--android:text="@string/from_address"-->
-                <!--android:layout_height="25dp" />-->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/TripsAcceptedByMe"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/accepted_by_me_button"/>
 
-            <!--<TextView-->
-                <!--android:id="@+id/text_from_name"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="25dp"-->
-                <!--android:text="@string/name"-->
-                <!--android:gravity="center_vertical" />-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        style="@style/FontSizeTwelve"
+                        android:textColor="@color/blackColor"
+                        android:id="@+id/accepted_by_me_count"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="25dp"-->
-                <!--android:text="@string/mobile"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:id="@+id/text_from_mobile" />-->
+                </FrameLayout>
 
-            <!--<TextView-->
-                <!--android:id="@+id/date_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/date"-->
-                <!--android:layout_height="25dp" />-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/btn_saddlebrown_rounded"
+                    android:clipChildren="false">
 
-            <!--<TextView-->
-                <!--android:id="@+id/time_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/time"-->
-                <!--android:layout_height="25dp" />-->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/RejectedByCustomer"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/customer_rejected_button"/>
 
-            <!--<LinearLayout-->
-                <!--android:orientation="horizontal"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="25dp">-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        style="@style/FontSizeTwelve"
+                        android:textColor="@color/blackColor"
+                        android:id="@+id/customer_rejected_count"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-                <!--<TextView-->
-                    <!--android:id="@+id/from_addr"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:text="@string/sender"-->
-                    <!--android:layout_height="25dp" />-->
+                </FrameLayout>
 
-                <!--<TextView-->
-                    <!--android:id="@+id/from_loc"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="0.2"-->
-                    <!--android:textColor="#9571d8"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:text="@string/show_map"-->
-                    <!--android:layout_height="25dp" />-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/btn_orange_rounded"
+                    android:clipChildren="false">
 
-            <!--</LinearLayout>-->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/AcceptedByCustomer"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/customer_accepted_button"/>
 
-            <!--<View-->
-                <!--android:layout_marginTop="2dp"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:background="@color/light_gray"-->
-                <!--android:layout_height="2dp" />-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        style="@style/FontSizeTwelve"
+                        android:textColor="@color/blackColor"
+                        android:id="@+id/customer_accepted_count"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-            <!--<TextView-->
-                <!--android:id="@+id/receiver_det_title"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/to_address"-->
-                <!--android:textStyle="bold"-->
-                <!--android:layout_height="25dp" />-->
+                </FrameLayout>
 
-            <!--<TextView-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/name"-->
-                <!--android:id="@+id/text_to_name"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="25dp"/>-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/btn_red_rounded"
+                    android:clipChildren="false">
 
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="25dp"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/mobile"-->
-                <!--android:id="@+id/text_to_mobile" />-->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/CancelledByCustomer"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/customer_cancelled_button"/>
 
-            <!--<LinearLayout-->
-                <!--android:orientation="horizontal"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="25dp">-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:id="@+id/customer_cancelled_count"
+                        android:gravity="center"
+                        style="@style/FontSizeTwelve"
+                        android:visibility="gone"
+                        android:textColor="@color/blackColor"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-                <!--<TextView-->
-                    <!--android:id="@+id/to_addr"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:text="@string/sender"-->
-                    <!--android:layout_height="25dp" />-->
+                </FrameLayout>
 
-                <!--<TextView-->
-                    <!--android:id="@+id/to_loc"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_weight="0.2"-->
-                    <!--android:textColor="#9571d8"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:text="@string/show_map"-->
-                    <!--android:layout_height="25dp" />-->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/btn_green_rounded"
+                    android:clipChildren="false">
 
-            <!--</LinearLayout>-->
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/CompletedTrips"
+                        android:textAllCaps="true"
+                        style="@style/FontBoldSixteen"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/completed_button"/>
 
-            <!--<LinearLayout-->
-                <!--android:id="@+id/reply_layout"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:visibility="visible"-->
-                <!--android:orientation="vertical"-->
-                <!--android:layout_height="wrap_content">-->
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:id="@+id/completed_count"
+                        android:gravity="center"
+                        style="@style/FontSizeTwelve"
+                        android:visibility="gone"
+                        android:textColor="@color/blackColor"
+                        android:background="@drawable/layout_round_marker_white"
+                        android:layout_marginEnd="25dp"/>
 
-                <!--<TextView-->
-                    <!--android:id="@+id/price_title"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="@string/enter_price"/>-->
+                </FrameLayout>
 
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="5dp"-->
-                    <!--android:layout_marginBottom="5dp"-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:gravity="center_vertical">-->
+            </LinearLayout>
 
-                    <!--<EditText-->
-                        <!--android:id="@+id/edit_price"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="4"-->
-                        <!--android:layout_height="35dp"-->
-                        <!--android:background="@drawable/layout_thick_bordered_rounded_squre"-->
-                        <!--android:gravity="center"-->
-                        <!--android:maxLines="1"-->
-                        <!--android:hint="@string/price"-->
-                        <!--android:inputType="numberDecimal"-->
-                        <!--android:textSize="14sp" />-->
+        </ScrollView>
 
-                    <!--<CheckBox-->
-                        <!--android:id="@+id/chk_negotiable"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="3"-->
-                        <!--android:layout_height="35dp"-->
-                        <!--android:gravity="center"-->
-                        <!--android:text="@string/negotiable" />-->
+    </FrameLayout>
 
-                <!--</LinearLayout>-->
-
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_marginTop="5dp"-->
-                    <!--android:layout_height="wrap_content">-->
-
-                    <!--<Button-->
-                        <!--android:id="@+id/btn_agree"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:layout_height="33dp"-->
-                        <!--android:layout_gravity="center"-->
-                        <!--android:layout_marginEnd="2dp"-->
-                        <!--android:text="@string/agree"-->
-                        <!--android:background="@drawabtn_blue_roundedrder"-->
-                        <!--android:textColor="@color/whiteColorText"-->
-                        <!--android:textSize="14sp" />-->
-
-                    <!--<Button-->
-                        <!--android:id="@+id/btn_disagree"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:layout_height="33dp"-->
-                        <!--android:layout_marginStart="2dp"-->
-                        <!--android:layout_gravity="center"-->
-                        <!--android:text="@string/not_agree"-->
-                        <!--android:background="@drawabtn_red2_roundedrder"-->
-                        <!--android:textColor="@color/whiteColorText"-->
-                        <!--android:textSize="14sp" />-->
-
-                <!--</LinearLayout>-->
-
-            <!--</LinearLayout>-->
-
-        <!--</LinearLayout>-->
-
-    <!--</ScrollView>-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
 
 </LinearLayout>
