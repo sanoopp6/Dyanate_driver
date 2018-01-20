@@ -424,7 +424,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         editor.putString(Constants.PREFS_IS_FACTORY, "")
                         editor.commit()
 
-                        val intent = Intent(this@HomeActivity, LoginActivity::class.java)
+                        val intent = Intent(this@HomeActivity, NoLoginActivity::class.java)
                         ActivityCompat.finishAffinity(this@HomeActivity)
                         startActivity(intent)
                         finish()
@@ -474,7 +474,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         editor.putString(Constants.PREFS_IS_FACTORY, "")
                         editor.commit()
 
-                        val intent = Intent(this@HomeActivity, LoginActivity::class.java)
+                        val intent = Intent(this@HomeActivity, NoLoginActivity::class.java)
                         ActivityCompat.finishAffinity(this@HomeActivity)
                         startActivity(intent)
                         finish()

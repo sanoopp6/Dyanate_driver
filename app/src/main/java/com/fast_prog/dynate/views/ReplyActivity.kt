@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
@@ -200,6 +201,8 @@ class ReplyActivity : AppCompatActivity() {
                 }
             }, SPLASH_TIME_OUT.toLong())
         }
+
+        edit_price.filters += DecimalDigitsInputFilter(5,2)
     }
 
     override fun onPause() {

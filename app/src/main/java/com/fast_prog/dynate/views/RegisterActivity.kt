@@ -690,7 +690,7 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleSizeDataList.add(resources.getString(R.string.SelectSize))
 
                             for (i in 0 until vehicleSizeArray.length()) {
-                                if (Integer.parseInt(vehicleSizeArray.getJSONObject(i).getString("VsId").trim { it <= ' ' }) > 0) {
+                                if (Integer.parseInt(vehicleSizeArray.getJSONObject(i).getString("VsId").trim()) > 0) {
                                     vehicleSizeIdList.add(vehicleSizeArray.getJSONObject(i).getString("VsId").toInt())
                                     vehicleSizeDataList.add(vehicleSizeArray.getJSONObject(i).getString("VsName").trim())
                                 }
@@ -714,7 +714,7 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleMakeDataList.add(resources.getString(R.string.SelectMake))
 
                             for (i in 0 until vehicleMakeArray.length()) {
-                                if (Integer.parseInt(vehicleMakeArray.getJSONObject(i).getString("VMId").trim { it <= ' ' }) > 0) {
+                                if (Integer.parseInt(vehicleMakeArray.getJSONObject(i).getString("VMId").trim()) > 0) {
                                     vehicleMakeIdList.add(vehicleMakeArray.getJSONObject(i).getString("VMId").toInt())
                                     vehicleMakeDataList.add(vehicleMakeArray.getJSONObject(i).getString("VMName").trim())
                                 }
@@ -738,7 +738,7 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleCompanyDataList.add(resources.getString(R.string.SelectCompany))
 
                             for (i in 0 until vehicleCompanyArray.length()) {
-                                if (Integer.parseInt(vehicleCompanyArray.getJSONObject(i).getString("VcId").trim { it <= ' ' }) > 0) {
+                                if (Integer.parseInt(vehicleCompanyArray.getJSONObject(i).getString("VcId").trim()) > 0) {
                                     vehicleCompanyIdList.add(vehicleCompanyArray.getJSONObject(i).getString("VcId").toInt())
                                     vehicleCompanyDataList.add(vehicleCompanyArray.getJSONObject(i).getString("VcName").trim())
                                 }
@@ -815,7 +815,7 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleModelDataList.add(resources.getString(R.string.SelectModel))
 
                             for (i in 0 until vehicleModelArray.length()) {
-                                if (Integer.parseInt(vehicleModelArray.getJSONObject(i).getString("VmoId").trim { it <= ' ' }) > 0) {
+                                if (Integer.parseInt(vehicleModelArray.getJSONObject(i).getString("VmoId").trim()) > 0) {
                                     vehicleModelIdList.add(vehicleModelArray.getJSONObject(i).getString("VmoId").toInt())
                                     vehicleModelDataList.add(vehicleModelArray.getJSONObject(i).getString("VmoName").trim())
                                 }

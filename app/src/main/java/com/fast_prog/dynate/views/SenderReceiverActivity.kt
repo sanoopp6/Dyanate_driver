@@ -89,9 +89,6 @@ class SenderReceiverActivity : AppCompatActivity(), GregorianDatePickerDialog.On
         countryCodePicker_from.registerCarrierNumberEditText(edit_from_mobile)
         countryCodePicker_to.registerCarrierNumberEditText(edit_to_mobile)
 
-        Ride.instance.isFromSelf = false
-        Ride.instance.isToSelf = false
-
         edit_from_name.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
                 val name = edit_from_name.text.toString().trim()
@@ -500,20 +497,23 @@ class SenderReceiverActivity : AppCompatActivity(), GregorianDatePickerDialog.On
             return false
         }
 
-        if (!Ride.instance.isFromSelf!! && !Ride.instance.isToSelf!! && fromNumber.equals(toNumber, true)) {
+        if (fromNumber.equals(toNumber, true)) {
             UtilityFunctions.showAlertOnActivity(this@SenderReceiverActivity,
                     resources.getText(R.string.FromMobileAndToMobileSame).toString(), resources.getString(R.string.Ok).toString(),
                     "", false, false, {}, {})
             return false
         }
 
+        Ride.instance.isFromSelf = false
         Ride.instance.fromName = fromName
         Ride.instance.fromMobile = fromNumber
         Ride.instance.date = dateText1
         Ride.instance.hijriDate = dateText2
         Ride.instance.time = timeText
+        Ride.instance.isToSelf = false
         Ride.instance.toName = toName
         Ride.instance.toMobile = toNumber
+        Ride.instance.isMessage = false
 
         return true
     }

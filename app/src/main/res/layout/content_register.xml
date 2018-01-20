@@ -997,7 +997,6 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:gravity="start|center_vertical"
-                        android:text="@string/WorkingWith"
                         android:textAlignment="viewStart" />
 
                     <RadioGroup
