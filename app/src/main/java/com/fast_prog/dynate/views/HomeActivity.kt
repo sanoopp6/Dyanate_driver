@@ -19,13 +19,10 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.models.NotnModel
 import com.fast_prog.dynate.models.Order
-import com.fast_prog.dynate.models.Ride
 import com.fast_prog.dynate.utilities.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
@@ -52,18 +49,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     internal lateinit var sharedPreferences: SharedPreferences
 
-    private val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124
+    internal val REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124
 
-    val blinkAnimation: Animation
-        get() {
-            val animation = AlphaAnimation(1f, 0f)
-            animation.duration = 300
-            animation.interpolator = LinearInterpolator()
-            animation.repeatCount = -1
-            animation.repeatMode = Animation.REVERSE
+    internal var notnModels: MutableList<NotnModel>? = null
 
-            return animation
-        }
+    var notfnCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +68,6 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val titleTextView = TextView(applicationContext)
         titleTextView.text = resources.getString(R.string.Home)
-        titleTextView.text = resources.getString(R.string.ConfirmDetail)
         if (Build.VERSION.SDK_INT < 23) {
             titleTextView.setTextAppearance(this@HomeActivity, R.style.FontBoldSixteen)
         } else {
@@ -150,103 +139,29 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         UtilityFunctions.showAlertOnActivity(this@HomeActivity,
                                 resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
                                 resources.getString(R.string.No).toString(), true, false,
-                                {
-                                    val editor = sharedPreferences.edit()
-                                    editor.putString(Constants.PREFS_ONLINE_STATUS, "offline")
-                                    editor.commit()
-
-                                    make_online_button.text = resources.getString(R.string.MakeOnline)
-                                    make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.btn_red_rounded)
-                                    make_online_button.clearAnimation()
-
-                                    online = false
-
-                                    gpsTracker.getLocation()
-
-                                    if (UploadLocationThread != null) UploadLocationThread!!.interrupt()
-
-                                    UpdateLatLongDMBackground("2").execute()
-
-                                }, {})
-                    } else {
-                        ConnectionDetector.errorSnackbar(coordinator_layout)
-                    }
-
+                                { makeOffline(true) }, {})
+                    } else { ConnectionDetector.errorSnackbar(coordinator_layout) }
                 } else {
                     if (ConnectionDetector.isConnected(applicationContext)) {
                         UtilityFunctions.showAlertOnActivity(this@HomeActivity,
                                 resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
                                 resources.getString(R.string.No).toString(), true, false,
-                                {
-                                    val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH)
-                                    val date = Date()
-
-                                    val editor = sharedPreferences.edit()
-                                    editor.putString(Constants.PREFS_STATUS_TIME, simpleDateFormat.format(date))
-                                    editor.putString(Constants.PREFS_ONLINE_STATUS, "online")
-                                    editor.commit()
-
-                                    make_online_button.text = resources.getString(R.string.MakeOffline)
-                                    make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.btn_green_rounded)
-                                    make_online_button.startAnimation(blinkAnimation)
-
-                                    online = true
-
-                                    gpsTracker.getLocation()
-                                    UpdateLatLongDMBackground("1").execute()
-
-                                    UploadLocationThread = Thread(object : Runnable {
-
-                                        internal var handler: Handler = @SuppressLint("HandlerLeak")
-                                        object : Handler() {
-                                            override fun handleMessage(msg: Message) {
-                                                super.handleMessage(msg)
-                                                updateTime()
-                                                UpdateLatLongDMBackground("0").execute()
-                                            }
-                                        }
-
-                                        override fun run() {
-                                            while (online) {
-                                                threadMsg("track")
-
-                                                try { Thread.sleep(5000)
-                                                } catch (e: InterruptedException) {
-                                                    e.printStackTrace()
-                                                }
-                                            }
-                                        }
-
-                                        private fun threadMsg(msg: String) {
-                                            if (msg != "") {
-                                                val msgObj = handler.obtainMessage()
-                                                val b = Bundle()
-                                                b.putString("message", msg)
-                                                msgObj.data = b
-                                                handler.sendMessage(msgObj)
-                                            }
-                                        }
-                                    })
-
-                                    UploadLocationThread!!.start()
-                                }, {})
-                    } else {
-                        ConnectionDetector.errorSnackbar(coordinator_layout)
-                    }
+                                { makeOnline(true) }, {})
+                    } else { ConnectionDetector.errorSnackbar(coordinator_layout) }
                 }
             }
         }
+
+        GetDmTripStatusBackground().execute()
     }
 
     fun updateTime() {
         val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
 
         var startTime: Date? = null
-        try {
-            startTime = sdf.parse(sharedPreferences.getString(Constants.PREFS_STATUS_TIME, ""))
-        } catch (e: ParseException) {
-            e.printStackTrace()
-        }
+
+        try { startTime = sdf.parse(sharedPreferences.getString(Constants.PREFS_STATUS_TIME, ""))
+        } catch (e: ParseException) { e.printStackTrace() }
 
         val endTime = Date()
 
@@ -293,75 +208,125 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         TripDetailsMasterListCountBackground(false).execute()
         TripDetailsMasterListCountCustBackground().execute()
+        GetNotificationsListByCustIdBackground().execute()
+        IsAppLiveBackground().execute()
 
-        if (sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "offline")!!.equals("online", ignoreCase = true)) {
-            gpsTracker.getLocation()
-
-            if (!gpsTracker.canGetLocation()) {
-                gpsTracker.showSettingsAlert()
-
-                online = false
-
-                val editor = sharedPreferences.edit()
-                editor.putString(Constants.PREFS_ONLINE_STATUS, "offline")
-                editor.commit()
-
-                make_online_button.text = resources.getString(R.string.MakeOffline)
-                make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.btn_red_rounded)
-                make_online_button.clearAnimation()
-
-                if (UploadLocationThread != null) UploadLocationThread!!.interrupt()
-
-                UpdateLatLongDMBackground("2").execute()
-
-            } else {
-                online = true
-
-                make_online_button.text = resources.getString(R.string.MakeOffline)
-                make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.btn_green_rounded)
-                make_online_button.startAnimation(blinkAnimation)
-
-                UpdateLatLongDMBackground("1").execute()
-
-                if (UploadLocationThread == null) {
-                    UploadLocationThread = Thread(object : Runnable {
-
-                        internal var handler: Handler = @SuppressLint("HandlerLeak")
-                        object : Handler() {
-                            override fun handleMessage(msg: Message) {
-                                super.handleMessage(msg)
-                                updateTime()
-                                UpdateLatLongDMBackground("0").execute()
-                            }
-                        }
-
-                        override fun run() {
-                            while (online) {
-                                threadMsg("track")
-
-                                try { Thread.sleep(5000)
-                                } catch (e: InterruptedException) {
-                                    e.printStackTrace()
-                                }
-                            }
-                        }
-
-                        private fun threadMsg(msg: String) {
-                            if (msg != "") {
-                                val msgObj = handler.obtainMessage()
-                                val b = Bundle()
-                                b.putString("message", msg)
-                                msgObj.data = b
-                                handler.sendMessage(msgObj)
-                            }
-                        }
-                    })
-
-                    UploadLocationThread!!.start()
-                }
-            }
-        } else {
+        if (sharedPreferences.getString(Constants.PREFS_ONLINE_STATUS, "").isNullOrEmpty()) {
             online = false
+            val editor = sharedPreferences.edit()
+            editor.putString(Constants.PREFS_ONLINE_STATUS, "offline")
+            editor.commit()
+        }
+    }
+
+//    override fun onPause() {
+//        super.onPause()
+//
+//        online = false
+//        if (UploadLocationThread != null) UploadLocationThread?.interrupt()
+//    }
+
+    private fun makeOffline(showDialog: Boolean) {
+        online = false
+
+        val editor = sharedPreferences.edit()
+        editor.putString(Constants.PREFS_ONLINE_STATUS, "offline")
+        editor.commit()
+
+        make_online_button.text = resources.getString(R.string.MakeOffline)
+        make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.button_red_rounded)
+        make_online_button.clearAnimation()
+
+        if (UploadLocationThread != null) UploadLocationThread!!.interrupt()
+
+        UpdateLatLongDMBackground("2", showDialog).execute()
+    }
+
+    private fun makeOnline(showDialog: Boolean) {
+        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH)
+        val date = Date()
+
+        val editor = sharedPreferences.edit()
+        editor.putString(Constants.PREFS_STATUS_TIME, simpleDateFormat.format(date))
+        editor.putString(Constants.PREFS_ONLINE_STATUS, "online")
+        editor.commit()
+
+        make_online_button.text = resources.getString(R.string.MakeOffline)
+        make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.button_green_rounded)
+        make_online_button.startAnimation(UtilityFunctions.blinkAnimation)
+
+        if (UploadLocationThread != null) {
+            UploadLocationThread?.interrupt()
+            UploadLocationThread = null
+        }
+
+        online = true
+
+        UpdateLatLongDMBackground(if (showDialog) "1" else "0", showDialog).execute()
+
+        if (UploadLocationThread == null) {
+            UploadLocationThread = Thread(object : Runnable {
+
+                internal var handler: Handler = @SuppressLint("HandlerLeak")
+                object : Handler() {
+                    override fun handleMessage(msg: Message) {
+                        super.handleMessage(msg)
+                        updateTime()
+                        UpdateLatLongDMBackground("0", false).execute()
+                    }
+                }
+
+                override fun run() {
+                    while (online) {
+                        threadMsg("track")
+
+                        try { Thread.sleep(5000)
+                        } catch (e: InterruptedException) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+
+                private fun threadMsg(msg: String) {
+                    if (msg != "") {
+                        val msgObj = handler.obtainMessage()
+                        val b = Bundle()
+                        b.putString("message", msg)
+                        msgObj.data = b
+                        handler.sendMessage(msgObj)
+                    }
+                }
+            })
+
+            UploadLocationThread!!.start()
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class IsAppLiveBackground : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun doInBackground(vararg param: Void): JSONObject? {
+            val jsonParser = JsonParser()
+            val params = HashMap<String, String>()
+
+            params["ArgAppPackageName"] = Constants.APP_NAME
+            params["ArgAppVersionNo"] = Constants.APP_VERSION
+
+            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "IsAppLive", "POST", params)
+        }
+
+        override fun onPostExecute(response: JSONObject?) {
+            if (response != null) {
+                try {
+                    if (!response.getBoolean("status")) {
+                        ActivityCompat.finishAffinity(this@HomeActivity)
+                        val intent = Intent(this@HomeActivity, UpdateActivity::class.java)
+                        intent.putExtra("message", response.getString("data"))
+                        startActivity(intent)
+                        finish()
+                    }
+                } catch (e: JSONException) { e.printStackTrace() }
+            }
         }
     }
 
@@ -391,8 +356,13 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.home, menu)
+
+        val notfnOption = menu.findItem(R.id.notfn_option)
+
+        notfnOption.isVisible = (notfnCount > 0)
+
+        if (notfnCount > 0) { notfnOption.icon = UtilityFunctions.convertLayoutToImage(this@HomeActivity, notfnCount, R.drawable.ic_notifications_white_24dp) }
 
         return true
     }
@@ -430,6 +400,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         finish()
 
                     }, {})
+
+        } else if (id == R.id.notfn_option) {
+            val intent = Intent(this@HomeActivity, NotificationsListActivity::class.java)
+            intent.putExtra("loaded", true)
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)
@@ -440,17 +415,31 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (id == R.id.nav_settings) {
             startActivity(Intent(this@HomeActivity, SettingsActivity::class.java))
-        }
 
-        if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_feedback) {
+            startActivity(Intent(this@HomeActivity, FeedbackActivity::class.java))
+
+        } else if (id == R.id.nav_feedback_list) {
+            val intent = Intent(this@HomeActivity, ShowFeedbackListActivity::class.java)
+            intent.putExtra("isCommon", false)
+            startActivity(intent)
+
+        } else if (id == R.id.nav_comm_feedback_list) {
+            val intent = Intent(this@HomeActivity, ShowFeedbackListActivity::class.java)
+            intent.putExtra("isCommon", true)
+            startActivity(intent)
+
+        } else if (id == R.id.nav_faq) {
+            startActivity(Intent(this@HomeActivity, FaqListActivity::class.java))
+
+        } else if (id == R.id.nav_share) {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.ShareMessage) + " " + sharedPreferences.getString(Constants.PREFS_SHARE_URL, ""))
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
-        }
 
-        if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             UtilityFunctions.showAlertOnActivity(this@HomeActivity,
                     resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
                     resources.getString(R.string.No).toString(), true, false,
@@ -488,7 +477,12 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class UpdateLatLongDMBackground internal constructor(internal var status: String) : AsyncTask<Void, Void, JSONObject>() {
+    private inner class UpdateLatLongDMBackground internal constructor(internal var status: String, internal var showDialog: Boolean) : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            if (showDialog) { UtilityFunctions.showProgressDialog (this@HomeActivity) }
+        }
 
         override fun doInBackground(vararg param: Void): JSONObject? {
             val jsonParser = JsonParser()
@@ -496,11 +490,11 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             gpsTracker.getLocation()
 
-            params.put("ArgUsrId", sharedPreferences.getString(Constants.PREFS_USER_ID, "en"))
-            params.put("ArgLat", gpsTracker.getLatitude().toString() + "")
-            params.put("ArgLng", gpsTracker.getLongitude().toString() + "")
-            params.put("ArgTripStatus", status)
-            params.put("ArgDmLoginToken", sharedPreferences.getString(Constants.PREFS_USER_CONSTANT, ""))
+            params["ArgUsrId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "")
+            params["ArgLat"] = gpsTracker.getLatitude().toString() + ""
+            params["ArgLng"] = gpsTracker.getLongitude().toString() + ""
+            params["ArgTripStatus"] = status
+            params["ArgDmLoginToken"] = sharedPreferences.getString(Constants.PREFS_USER_CONSTANT, "")
 
             var BASE_URL = Constants.BASE_URL_EN + "UpdateLatLongDM"
 
@@ -512,6 +506,8 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         override fun onPostExecute(response: JSONObject?) {
+            if (showDialog) { UtilityFunctions.dismissProgressDialog() }
+
             if (response != null) {
                 try {
                     if (response.getBoolean("status")) {
@@ -571,7 +567,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"))
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDIsNotifiedList"
 
@@ -592,43 +588,43 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             for (i in 0 until ordersJSONArray.length()) {
                                 val order = Order()
 
-                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim { it <= ' ' }
-                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim { it <= ' ' }
-                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim { it <= ' ' }
-                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim { it <= ' ' }
-                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim { it <= ' ' }
+                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim()
+                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim()
+                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim()
+                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim()
+                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim()
                                 try {
                                     order.tripFromSelf = ordersJSONArray.getJSONObject(i).getString("TripMFromIsSelf").trim().toBoolean()
                                 } catch (e: Exception) {
                                     order.tripFromSelf = false
                                 }
 
-                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim { it <= ' ' }
-                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim { it <= ' ' }
-                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim { it <= ' ' }
-                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim { it <= ' ' }
-                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim { it <= ' ' }
+                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim()
+                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim()
+                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim()
+                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim()
+                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim()
                                 try {
                                     order.tripToSelf = ordersJSONArray.getJSONObject(i).getString("TripMToIsSelf").trim().toBoolean()
                                 } catch (e: Exception) {
                                     order.tripToSelf = false
                                 }
 
-                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim { it <= ' ' }
-                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim { it <= ' ' }
-                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim { it <= ' ' }
-                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim { it <= ' ' }
-                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim { it <= ' ' }
-                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim { it <= ' ' }
-                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim { it <= ' ' }
-                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim { it <= ' ' }
-                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim { it <= ' ' }
-                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim { it <= ' ' }
-                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim { it <= ' ' }
-                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim { it <= ' ' }
-                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim { it <= ' ' }
-                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim { it <= ' ' }
-                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim { it <= ' ' }
+                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim()
+                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim()
+                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim()
+                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim()
+                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim()
+                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim()
+                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim()
+                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim()
+                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim()
+                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim()
+                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim()
+                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim()
+                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim()
+                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim()
+                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim()
 
                                 val intent = Intent(this@HomeActivity, ReplyActivity::class.java)
                                 intent.putExtra("alarm", true)
@@ -696,6 +692,55 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     @SuppressLint("StaticFieldLeak")
+    private inner class GetDmTripStatusBackground : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun doInBackground(vararg param: Void): JSONObject? {
+            val jsonParser = JsonParser()
+            val params = HashMap<String, String>()
+
+            params["ArgDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "")
+
+            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "GetDmTripStatus", "POST", params)
+        }
+
+        override fun onPostExecute(response: JSONObject?) {
+            if (response != null) {
+                try {
+                    if (response.getBoolean("status")) {
+                        val dmTripStatus = response.getJSONArray("data").getJSONObject(0).getString("DmTripStatus").trim()
+
+                        if (dmTripStatus == "2") {
+                            online = false
+
+                            val editor = sharedPreferences.edit()
+                            editor.putString(Constants.PREFS_ONLINE_STATUS, "offline")
+                            editor.commit()
+
+                            make_online_button.text = resources.getString(R.string.MakeOffline)
+                            make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.button_red_rounded)
+                            make_online_button.clearAnimation()
+
+                            if (UploadLocationThread != null) UploadLocationThread!!.interrupt()
+
+                        } else {
+                            gpsTracker.getLocation()
+
+                            if (gpsTracker.canGetLocation()) {
+                                makeOnline(false)
+                            } else {
+                                makeOffline(false)
+                                gpsTracker.showSettingsAlert()
+                            }
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
     private inner class TripDetailsMasterListCountBackground internal constructor(internal var fromGlass: Boolean) : AsyncTask<Void, Void, JSONObject>() {
 
         override fun doInBackground(vararg param: Void): JSONObject? {
@@ -703,27 +748,21 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val params = HashMap<String, String>()
 
             if (fromGlass) {
-                params.put("ArgTripMCustId", "1")
-                params.put("ArgExcludeCustId", "0")
+                params["ArgTripMCustId"] = "1"
+                params["ArgExcludeCustId"] = "0"
 
             } else {
-                params.put("ArgTripMCustId", "0")
-                params.put("ArgExcludeCustId", "1")
+                params["ArgTripMCustId"] = "0"
+                params["ArgExcludeCustId"] = "1"
             }
 
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"))
-            params.put("ArgTripMID", "0")
-            params.put("ArgTripDID", "0")
-            params.put("ArgTripMStatus", "0")
-            params.put("ArgTripDStatus", "0")
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
+            params["ArgTripMID"] = "0"
+            params["ArgTripDID"] = "0"
+            params["ArgTripMStatus"] = "0"
+            params["ArgTripDStatus"] = "0"
 
-            var BASE_URL = Constants.BASE_URL_EN + "TripDetailsMasterListCount"
-
-            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                BASE_URL = Constants.BASE_URL_AR + "TripDetailsMasterListCount"
-            }
-
-            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "TripDetailsMasterListCount", "POST", params)
         }
 
         override fun onPostExecute(response: JSONObject?) {
@@ -741,7 +780,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         if (fromGlass && count > 0) {
                             glass_fact_count.visibility = View.VISIBLE
                             glass_fact_count.text = String.format(Locale.getDefault(), "%d", count)
-                            glass_fact_count.startAnimation(blinkAnimation)
+                            glass_fact_count.startAnimation(UtilityFunctions.blinkAnimation)
 
                         } else if (fromGlass && count <= 0) {
                             glass_fact_count.visibility = View.GONE
@@ -750,7 +789,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         } else if (!fromGlass && count > 0) {
                             other_cus_count.visibility = View.VISIBLE
                             other_cus_count.text = String.format(Locale.getDefault(), "%d", count)
-                            other_cus_count.startAnimation(blinkAnimation)
+                            other_cus_count.startAnimation(UtilityFunctions.blinkAnimation)
 
                         } else if (!fromGlass && count <= 0) {
                             other_cus_count.visibility = View.GONE
@@ -770,21 +809,15 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripMCustId", sharedPreferences.getString(Constants.PREFS_CUST_ID, "0"))
-            params.put("ArgTripDDmId", "0")
-            params.put("ArgTripMID", "0")
-            params.put("ArgTripDID", "0")
-            params.put("ArgTripMStatus", "0")
-            params.put("ArgTripDStatus", "0")
-            params.put("ArgExcludeCustId", "0")
+            params["ArgTripMCustId"] = sharedPreferences.getString(Constants.PREFS_CUST_ID, "0")
+            params["ArgTripDDmId"] = "0"
+            params["ArgTripMID"] = "0"
+            params["ArgTripDID"] = "0"
+            params["ArgTripMStatus"] = "0"
+            params["ArgTripDStatus"] = "0"
+            params["ArgExcludeCustId"] = "0"
 
-            var BASE_URL = Constants.BASE_URL_EN + "TripDetailsMasterListCountCust"
-
-            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                BASE_URL = Constants.BASE_URL_AR + "TripDetailsMasterListCountCust"
-            }
-
-            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "TripDetailsMasterListCountCust", "POST", params)
         }
 
         override fun onPostExecute(response: JSONObject?) {
@@ -802,7 +835,7 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         if (count > 0) {
                             my_booked_count.visibility = View.VISIBLE
                             my_booked_count.text = String.format(Locale.getDefault(), "%d", count)
-                            my_booked_count.startAnimation(blinkAnimation)
+                            my_booked_count.startAnimation(UtilityFunctions.blinkAnimation)
 
                         } else {
                             my_booked_count.visibility = View.GONE
@@ -815,4 +848,65 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    private inner class GetNotificationsListByCustIdBackground : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun doInBackground(vararg param: Void): JSONObject? {
+            val jsonParser = JsonParser()
+            val params = HashMap<String, String>()
+
+            params["ArgNfUserId"] = "39" //sharedPreferences.getString(Constants.PREFS_USER_ID, "")
+
+            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "GetNotificationsListByCustId", "POST", params)
+        }
+
+        override fun onPostExecute(response: JSONObject?) {
+            if (response != null) {
+                try {
+                    if (response.getBoolean("status")) {
+                        val jsonArray = response.getJSONArray("data")
+
+                        notfnCount = jsonArray.length()
+                        invalidateOptionsMenu()
+
+                        notnModels = ArrayList()
+                        var gotoNoti = false
+
+                        for (i in 0 until jsonArray.length()) {
+                            val notnModel = NotnModel()
+
+                            if (sharedPreferences.getInt(Constants.PREFS_NOTFN_ID,0) < jsonArray.getJSONObject(i).getString("NfId").trim().toInt()) {
+                                gotoNoti = true
+                                val editor = sharedPreferences.edit()
+                                editor.putInt(Constants.PREFS_NOTFN_ID, jsonArray.getJSONObject(i).getString("NfId").trim().toInt())
+                                editor.commit()
+                            }
+
+                            notnModel.nfId = jsonArray.getJSONObject(i).getString("NfId").trim()
+                            notnModel.nfUserId = jsonArray.getJSONObject(i).getString("NfUserId").trim()
+                            notnModel.nfTripMId = jsonArray.getJSONObject(i).getString("NfTripMId").trim()
+                            notnModel.nfTitle = jsonArray.getJSONObject(i).getString("NfTitle").trim()
+                            notnModel.nfBody = jsonArray.getJSONObject(i).getString("NfBody").trim()
+                            notnModel.nfcategory = jsonArray.getJSONObject(i).getString("Nfcategory").trim()
+                            notnModel.nfReadStatus = jsonArray.getJSONObject(i).getString("NfReadStatus").trim()
+                            notnModel.nfActive = jsonArray.getJSONObject(i).getString("NfActive").trim()
+                            notnModel.nfCreateDtTime = jsonArray.getJSONObject(i).getString("NfCreateDtTime").trim()
+                            notnModel.nfReadDtTime = jsonArray.getJSONObject(i).getString("NfReadDtTime").trim()
+
+                            (notnModels as ArrayList<NotnModel>).add(notnModel)
+                        }
+
+                        if (gotoNoti) {
+                            NotificationsListActivity.notnModels = notnModels
+                            val intent = Intent(this@HomeActivity, NotificationsListActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+    }
 }

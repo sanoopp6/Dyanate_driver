@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.AdminHomeActivity" >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:background="@color/colorAdminHomeTop"
+                android:layout_height="140dp" />
+
+            <LinearLayout
+                android:background="@color/colorAdminHomeBottom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView_nav_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/Welcome"
+                android:textColor="@color/whiteColor"
+                android:textAlignment="center"
+                android:layout_marginTop="50dp"
+                style="@style/FontBoldSixteen" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/user_admin"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_height="100dp">
+
+                <FrameLayout
+                    android:id="@+id/layout_registrations"
+                    android:background="@color/colorAdminMenu"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/new_user"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp" />
+
+                    <TextView
+                        android:layout_gravity="bottom"
+                        android:textAlignment="center"
+                        android:layout_width="match_parent"
+                        style="@style/FontSizeTwelve"
+                        android:text="@string/Registrations"
+                        android:textColor="@color/whiteColor"
+                        android:textAllCaps="true"
+                        android:layout_height="25dp" />
+
+                    <TextView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="end|top"
+                        android:id="@+id/textView_registrations"
+                        style="@style/FontSizeTwelve"
+                        android:visibility="gone"
+                        android:textAlignment="center"
+                        android:textColor="@color/whiteColor"
+                        android:background="@drawable/layout_round_marker_red"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp" />
+
+                </FrameLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent" />
+
+                <FrameLayout
+                    android:id="@+id/layout_feedbacks"
+                    android:background="@color/colorAdminMenu"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:padding="8dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/feedback_admin"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp" />
+
+                    <TextView
+                        android:layout_gravity="bottom"
+                        android:textAlignment="center"
+                        android:layout_width="match_parent"
+                        style="@style/FontSizeTwelve"
+                        android:text="@string/Feedback"
+                        android:textAllCaps="true"
+                        android:textColor="@color/whiteColor"
+                        android:layout_height="25dp" />
+
+                    <TextView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="end|top"
+                        android:id="@+id/textView_feedbacks"
+                        style="@style/FontSizeTwelve"
+                        android:visibility="gone"
+                        android:textAlignment="center"
+                        android:textColor="@color/whiteColor"
+                        android:background="@drawable/layout_round_marker_red"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp" />
+
+                </FrameLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent" />
+
+                <FrameLayout
+                    android:id="@+id/layout_settings"
+                    android:background="@color/colorAdminMenu"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/settings_admin"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp" />
+
+                    <TextView
+                        android:layout_gravity="bottom"
+                        android:textAlignment="center"
+                        android:layout_width="match_parent"
+                        style="@style/FontSizeTwelve"
+                        android:textAllCaps="true"
+                        android:text="@string/Settings"
+                        android:textColor="@color/whiteColor"
+                        android:layout_height="25dp" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:scaleType="fitEnd"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/logo_2" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
+
+</LinearLayout>

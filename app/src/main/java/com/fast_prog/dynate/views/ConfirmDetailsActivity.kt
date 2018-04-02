@@ -107,29 +107,29 @@ class ConfirmDetailsActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripMCustId", sharedPreferences.getString(Constants.PREFS_CUST_ID, ""))
-            params.put("ArgTripMScheduleDate", Ride.instance.date)
-            params.put("ArgTripMScheduleTime", Ride.instance.time)
-            params.put("ArgTripMFromLat", Ride.instance.pickUpLatitude!!)
-            params.put("ArgTripMFromLng", Ride.instance.pickUpLongitude!!)
-            params.put("ArgTripMFromAddress", Ride.instance.pickUpLocation!!)
-            params.put("ArgTripMFromIsSelf", Ride.instance.isFromSelf.toString())
-            params.put("ArgTripMFromName", Ride.instance.fromName)
-            params.put("ArgTripMFromMob", Ride.instance.fromMobile)
-            params.put("ArgTripMToLat", Ride.instance.dropOffLatitude!!)
-            params.put("ArgTripMToLng", Ride.instance.dropOffLongitude!!)
-            params.put("ArgTripMToAddress", Ride.instance.dropOffLocation!!)
-            params.put("ArgTripMToIsSelf", Ride.instance.isToSelf.toString())
-            params.put("ArgTripMToName", Ride.instance.toName)
-            params.put("ArgTripMToMob", Ride.instance.toMobile)
-            params.put("ArgTripMSubject", Ride.instance.subject)
-            params.put("ArgTripMNotes", Ride.instance.shipment)
-            params.put("ArgTripMVsId", Ride.instance.vehicleSizeId!!)
-            params.put("ArgTripMCustLat", "0")
-            params.put("ArgTripMCustLng", "0")
-            params.put("ArgTripMNoOfDrivers", "0")
-            params.put("ArgTripMDistanceRadiusKm", "0")
-            params.put("ArgTripMDistanceString", Ride.instance.distanceStr!!)
+            params["ArgTripMCustId"] = sharedPreferences.getString(Constants.PREFS_CUST_ID, "")
+            params["ArgTripMScheduleDate"] = Ride.instance.date
+            params["ArgTripMScheduleTime"] = Ride.instance.time
+            params["ArgTripMFromLat"] = Ride.instance.pickUpLatitude!!
+            params["ArgTripMFromLng"] = Ride.instance.pickUpLongitude!!
+            params["ArgTripMFromAddress"] = Ride.instance.pickUpLocation!!
+            params["ArgTripMFromIsSelf"] = Ride.instance.isFromSelf.toString()
+            params["ArgTripMFromName"] = Ride.instance.fromName
+            params["ArgTripMFromMob"] = Ride.instance.fromMobile
+            params["ArgTripMToLat"] = Ride.instance.dropOffLatitude!!
+            params["ArgTripMToLng"] = Ride.instance.dropOffLongitude!!
+            params["ArgTripMToAddress"] = Ride.instance.dropOffLocation!!
+            params["ArgTripMToIsSelf"] = Ride.instance.isToSelf.toString()
+            params["ArgTripMToName"] = Ride.instance.toName
+            params["ArgTripMToMob"] = Ride.instance.toMobile
+            params["ArgTripMSubject"] = Ride.instance.subject
+            params["ArgTripMNotes"] = Ride.instance.shipment
+            params["ArgTripMVsId"] = Ride.instance.vehicleSizeId!!
+            params["ArgTripMCustLat"] = "0"
+            params["ArgTripMCustLng"] = "0"
+            params["ArgTripMNoOfDrivers"] = "0"
+            params["ArgTripMDistanceRadiusKm"] = "0"
+            params["ArgTripMDistanceString"] = Ride.instance.distanceStr!!
 
             var BASE_URL = Constants.BASE_URL_EN + "AddTripMaster"
 
@@ -176,10 +176,10 @@ class ConfirmDetailsActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripDMID", tripID!!)
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, ""))
-            params.put("ArgTripDRate", "0")
-            params.put("ArgTripDIsNegotiable", "false")
+            params["ArgTripDMID"] = tripID!!
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "")
+            params["ArgTripDRate"] = "0"
+            params["ArgTripDIsNegotiable"] = "false"
 
             var BASE_URL = Constants.BASE_URL_EN + "AddTripDetails"
 
@@ -223,7 +223,7 @@ class ConfirmDetailsActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"))
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDIsNotifiedList"
 
@@ -246,43 +246,43 @@ class ConfirmDetailsActivity : AppCompatActivity() {
                             for (i in 0 until ordersJSONArray.length()) {
                                 val order = Order()
 
-                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim { it <= ' ' }
-                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim { it <= ' ' }
-                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim { it <= ' ' }
-                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim { it <= ' ' }
-                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim { it <= ' ' }
+                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim()
+                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim()
+                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim()
+                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim()
+                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim()
                                 try {
                                     order.tripFromSelf = java.lang.Boolean.parseBoolean(ordersJSONArray.getJSONObject(i).getString("TripMFromIsSelf"))
                                 } catch (e: Exception) {
                                     order.tripFromSelf = false
                                 }
 
-                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim { it <= ' ' }
-                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim { it <= ' ' }
-                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim { it <= ' ' }
-                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim { it <= ' ' }
-                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim { it <= ' ' }
+                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim()
+                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim()
+                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim()
+                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim()
+                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim()
                                 try {
                                     order.tripToSelf = java.lang.Boolean.parseBoolean(ordersJSONArray.getJSONObject(i).getString("TripMToIsSelf"))
                                 } catch (e: Exception) {
                                     order.tripToSelf = false
                                 }
 
-                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim { it <= ' ' }
-                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim { it <= ' ' }
-                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim { it <= ' ' }
-                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim { it <= ' ' }
-                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim { it <= ' ' }
-                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim { it <= ' ' }
-                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim { it <= ' ' }
-                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim { it <= ' ' }
-                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim { it <= ' ' }
-                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim { it <= ' ' }
-                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim { it <= ' ' }
-                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim { it <= ' ' }
-                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim { it <= ' ' }
-                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim { it <= ' ' }
-                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim { it <= ' ' }
+                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim()
+                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim()
+                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim()
+                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim()
+                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim()
+                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim()
+                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim()
+                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim()
+                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim()
+                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim()
+                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim()
+                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim()
+                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim()
+                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim()
+                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim()
 
                                 val intent = Intent(this@ConfirmDetailsActivity, ReplyActivity::class.java)
                                 intent.putExtra("alarm", true)

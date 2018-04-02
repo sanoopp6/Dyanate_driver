@@ -320,7 +320,7 @@ class RegisterActivity : AppCompatActivity() {
             if (!hasFocus) {
                 val numericPattern = "^[0-9]*$"
                 val alphaPattern = "^[a-zA-Z0-9]*$"
-                val username = editText_username.text.toString().trim { it <= ' ' }
+                val username = editText_username.text.toString().trim()
 
                 if (username.isEmpty()) {
                     textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.InvalidUsername)
@@ -353,7 +353,7 @@ class RegisterActivity : AppCompatActivity() {
                 isFilled = true
 
                 val alphanumericPattern = "^[A-Za-z0-9_@./#&+-]*$"
-                val password = editText_password.text.toString().trim { it <= ' ' }
+                val password = editText_password.text.toString().trim()
 
                 if (password.isEmpty()) {
                     textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.InvalidPassword)
@@ -592,7 +592,7 @@ class RegisterActivity : AppCompatActivity() {
             return false
         }
 
-        if (address!!.trim().isEmpty() || latitude == null || longitude == null) {
+        if (address?.trim().isNullOrEmpty() || latitude == null || longitude == null) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
                     resources.getText(R.string.InvalidAddress).toString(), resources.getString(R.string.Ok).toString(),
                     "", false, false,
@@ -788,8 +788,8 @@ class RegisterActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgVmoVMId", vMakeId.toString() + "")
-            params.put("ArgVmoVsId", vSizeId.toString() + "")
+            params["ArgVmoVMId"] = vMakeId.toString() + ""
+            params["ArgVmoVsId"] = vSizeId.toString() + ""
 
             var BASE_URL = Constants.BASE_URL_EN + "ListVehicleModel"
 
@@ -837,9 +837,9 @@ class RegisterActivity : AppCompatActivity() {
             val params = HashMap<String, String>()
 
             if (isUsername!!) {
-                params.put("ArgUserName", username!!)
+                params["ArgUserName"] = username!!
             } else {
-                params.put("ArgUserName", mobile!!)
+                params["ArgUserName"] = mobile!!
             }
 
             var BASE_URL = Constants.BASE_URL_EN + "CheckUserIDOrMobileNoExist"

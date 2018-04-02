@@ -50,7 +50,7 @@
                     android:layout_marginRight="30dp"
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
-                    android:background="@drawable/btn_lightblue_rounded"
+                    android:background="@drawable/button_lightblue_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -83,7 +83,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_black_rounded"
+                    android:background="@drawable/button_black_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -116,7 +116,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_grey_rounded"
+                    android:background="@drawable/button_grey_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -149,7 +149,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_saddlebrown_rounded"
+                    android:background="@drawable/button_saddlebrown_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -182,7 +182,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_orange_rounded"
+                    android:background="@drawable/button_orange_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -215,7 +215,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_red_rounded"
+                    android:background="@drawable/button_red_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -248,7 +248,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_green_rounded"
+                    android:background="@drawable/button_green_rounded"
                     android:clipChildren="false">
 
                     <Button

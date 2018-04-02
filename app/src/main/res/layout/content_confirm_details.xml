@@ -184,7 +184,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="33dp"
-                        android:background="@drawable/btn_green_rounded"
+                        android:background="@drawable/button_green_rounded"
                         android:text="@string/ConfirmTrip"
                         android:textColor="@color/whiteColor"
                         style="@style/FontBoldSixteen" />
@@ -198,7 +198,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="33dp"
-                        android:background="@drawable/btn_grey_rounded"
+                        android:background="@drawable/button_grey_rounded"
                         android:text="@string/EditOrder"
                         android:textColor="@color/whiteColor"
                         style="@style/FontBoldSixteen" />

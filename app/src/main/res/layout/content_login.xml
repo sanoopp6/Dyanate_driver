@@ -139,7 +139,7 @@
                             app:ccp_autoDetectLanguage="true"
                             app:ccp_defaultNameCode="SA"
                             android:textColor="@color/blackColor"
-                            android:background="@drawable/layout_border_grey_transparent_squre"
+                            android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                             android:id="@+id/countryCodePicker"
                             android:layout_width="75dp"
                             android:layout_height="match_parent" />
@@ -156,7 +156,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="35dp"
                             style="@style/FontSizeFifteen"
-                            android:background="@drawable/layout_border_grey_transparent_squre"
+                            android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                             android:textAlignment="center"
                             android:singleLine="true"
                             android:inputType="text" />
@@ -167,7 +167,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginTop="10dp"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:clipChildren="false">
 
                         <EditText
@@ -199,7 +199,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
                         android:layout_marginTop="20dp"
-                        android:background="@drawable/btn_green_rounded"
+                        android:background="@drawable/button_green_rounded"
                         android:text="@string/Login"
                         android:textColor="@color/whiteColor"
                         style="@style/FontBoldSixteen" />

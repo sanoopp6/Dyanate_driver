@@ -115,7 +115,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="top"
                 android:layout_marginTop="-55dp"
-                android:background="@drawable/btn_black_rounded"
+                android:background="@drawable/button_black_rounded"
                 android:visibility="gone">
 
                 <LinearLayout
@@ -229,7 +229,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center"
-        android:background="@drawable/btn_black_rounded"
+        android:background="@drawable/button_black_rounded"
         android:id="@+id/btn_select_location"
         style="@style/FontBoldSixteen"
         android:textColor="@color/whiteColor"

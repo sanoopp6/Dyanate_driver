@@ -491,15 +491,14 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
         override fun doInBackground(vararg voids: Void): JSONArray? {
             val locationNameParser = JsonParser()
-
             val params = HashMap<String, String>()
 
-            params.put("latlng", latitude.toString() + "," + longitude)
-            params.put("sensor", "true")
-            params.put("key", Constants.GOOGLE_API_KEY)
+            params["latlng"] = latitude.toString() + "," + longitude
+            params["sensor"] = "true"
+            params["key"] = Constants.GOOGLE_API_KEY
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                params.put("language", "ar")
+                params["language"] = "ar"
             }
 
             val locationNameObject = locationNameParser.makeHttpRequest(Constants.GOOGLE_LOCATION_NAME_URL, "GET", params)
@@ -534,7 +533,7 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
                         if (types.getString(0).equals("route", ignoreCase = true) || types.getString(0).equals("locality", ignoreCase = true) || types.length() > 1 && types.getString(1).equals("sublocality", ignoreCase = true)) {
 
-                            if (locationName.trim { it <= ' ' }.length > 0) {
+                            if (locationName.trim().length > 0) {
                                 locationName = locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
 
                             } else {

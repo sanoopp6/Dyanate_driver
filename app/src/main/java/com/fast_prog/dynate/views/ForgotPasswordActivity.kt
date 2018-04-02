@@ -62,7 +62,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                 number = countryCodePicker.selectedCountryCodeWithPlus + edt_mobile.text.removePrefix("0")
 
                 if (ConnectionDetector.isConnectedOrConnecting(applicationContext)) {
-                    SendOTPDMBackground().execute()
+                    ForgotPasswordDMBackground().execute()
                 } else {
                     ConnectionDetector.errorSnackbar(coordinator_layout)
                 }
@@ -77,7 +77,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class SendOTPDMBackground : AsyncTask<Void, Void, JSONObject>() {
+    private inner class ForgotPasswordDMBackground : AsyncTask<Void, Void, JSONObject>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -88,13 +88,12 @@ class ForgotPasswordActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgMobNo", "966" + number)
-            params.put("ArgIsDB", "true")
+            params["ArgMobNo"] = number
 
-            var BASE_URL = Constants.BASE_URL_EN + "SendOTPDM"
+            var BASE_URL = Constants.BASE_URL_EN + "ForgotPasswordDM"
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                BASE_URL = Constants.BASE_URL_AR + "SendOTPDM"
+                BASE_URL = Constants.BASE_URL_AR + "ForgotPasswordDM"
             }
 
             return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
@@ -110,15 +109,6 @@ class ForgotPasswordActivity : AppCompatActivity() {
                                 resources.getString(R.string.Send), resources.getString(R.string.Ok).toString(),
                                 "", false, false,
                                 { finish() }, {})
-
-//                        val intent = Intent(this@ForgotPasswordActivity, ResetPasswordActivity::class.java)
-//                        intent.putExtra("MobNo", number)
-//                        intent.putExtra("OTP", response.getJSONArray("data").getJSONObject(0).getString("OTP"))
-//                        intent.putExtra("UserId", response.getJSONArray("data").getJSONObject(0).getString("DmId"))
-//                        ActivityCompat.finishAffinity(this@ForgotPasswordActivity)
-//                        startActivity(intent)
-//                        finish()
-
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@ForgotPasswordActivity,
                                 response.getString("message"), resources.getString(R.string.Ok).toString(),

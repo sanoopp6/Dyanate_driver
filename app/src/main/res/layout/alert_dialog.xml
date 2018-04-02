@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/txt_alert"
+        android:textColor="@color/blackColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -16,6 +17,7 @@
 
     <TextView
         android:visibility="gone"
+        android:textColor="@color/blackColor"
         android:id="@+id/txt_alert1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,6 +26,7 @@
         style="@style/FontBoldSixteen" />
 
     <TextView
+        android:textColor="@color/blackColor"
         android:visibility="gone"
         android:id="@+id/txt_alert2"
         android:layout_width="wrap_content"
@@ -44,7 +47,7 @@
             android:id="@+id/btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:background="@drawable/btn_green_rounded"
+            android:background="@drawable/button_green_rounded"
             android:text="@string/Yes"
             style="@style/FontSizeFourteen"
             android:textColor="@color/whiteColor" />
@@ -54,7 +57,7 @@
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:background="@drawable/btn_red_rounded"
+            android:background="@drawable/button_red_rounded"
             android:text="@string/No"
             style="@style/FontSizeFourteen"
             android:textColor="@color/whiteColor" />

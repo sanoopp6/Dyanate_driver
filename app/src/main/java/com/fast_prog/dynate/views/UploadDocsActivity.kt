@@ -138,8 +138,8 @@ class UploadDocsActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgMobNo", registerUser.mobile!!)
-            params.put("ArgIsDB", "false")
+            params["ArgMobNo"] = registerUser.mobile!!
+            params["ArgIsDB"] = "false"
 
             var BASE_URL = Constants.BASE_URL_EN + "SendOTPDM"
 

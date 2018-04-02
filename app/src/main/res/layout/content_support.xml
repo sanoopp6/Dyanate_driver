@@ -43,7 +43,7 @@
                     android:gravity="center"
                     android:padding="20dp"
                     android:orientation="vertical"
-                    android:background="@drawable/btn_lightblue_rounded"
+                    android:background="@drawable/button_lightblue_rounded"
                     android:layout_height="wrap_content">
 
                     <ImageView

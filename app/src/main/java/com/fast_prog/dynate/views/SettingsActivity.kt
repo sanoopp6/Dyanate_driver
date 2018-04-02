@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar
 import android.widget.TextView
 import com.fast_prog.dynate.R
 import com.fast_prog.dynate.utilities.Constants
+import com.fast_prog.dynate.utilities.UtilityFunctions
 import kotlinx.android.synthetic.main.content_settings.*
 import java.util.*
 
@@ -43,25 +45,36 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar?.customView = titleTextView
 
         btn_change_lang.setOnClickListener {
-            var lang = "ar"
+            UtilityFunctions.showProgressDialog(this@SettingsActivity)
 
-            if (sharedPreferences.getString(Constants.PREFS_LANG, "")!!.equals("ar", ignoreCase = true)) {
-                lang = "en"
-            }
+            Handler().postDelayed({
+                UtilityFunctions.dismissProgressDialog()
 
-            val locale = Locale(lang)
-            Locale.setDefault(locale)
-            val confg = Configuration()
-            confg.locale = locale
-            baseContext.resources.updateConfiguration(confg, baseContext.resources.displayMetrics)
+                var lang = "ar"
 
-            val editor = sharedPreferences.edit()
-            editor.putString(Constants.PREFS_LANG, lang)
-            editor.commit()
+                if (sharedPreferences.getString(Constants.PREFS_LANG, "").equals("ar", true)) {
+                    lang = "en"
+                }
 
-            startActivity(Intent(this@SettingsActivity, HomeActivity::class.java))
-            ActivityCompat.finishAffinity(this@SettingsActivity)
-            finish()
+                val locale = Locale(lang)
+                Locale.setDefault(locale)
+                val confg = Configuration()
+                confg.locale = locale
+                baseContext.resources.updateConfiguration(confg, baseContext.resources.displayMetrics)
+
+                val editor = sharedPreferences.edit()
+                editor.putString(Constants.PREFS_LANG, lang)
+                editor.commit()
+
+                if (sharedPreferences.getString(Constants.PREFS_USER_TYPE, "").equals(Constants.USER_TYPE_CONST_ADMIN, true)) {
+                    startActivity(Intent(this@SettingsActivity, AdminHomeActivity::class.java))
+                } else {
+                    startActivity(Intent(this@SettingsActivity, HomeActivity::class.java))
+                }
+
+                ActivityCompat.finishAffinity(this@SettingsActivity)
+                finish()
+            }, 2000)
         }
     }
 }

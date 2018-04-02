@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">داينا</string>
+    <!--<string name="app_name">السائق</string>-->
+    <string name="app_name">سائق دينا</string>
     <string name="navigation_drawer_close">درج إغلاق الملاحة</string>
     <string name="navigation_drawer_open">درج الملاحة المفتوحة</string>
     <string name="com_facebook_loginview_log_out_button">فيس بوك</string>

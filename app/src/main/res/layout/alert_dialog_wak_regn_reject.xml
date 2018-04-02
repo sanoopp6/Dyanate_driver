@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ReasonToReject"
+                android:textColor="@color/blackColor"
+                style="@style/FontSizeFifteen" />
+
+            <EditText
+                android:id="@+id/editText_rej_reason"
+                android:inputType="text|textMultiLine"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:padding="2dp"
+                android:background="@drawable/layout_border_black_rounded_white_squre"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:textColor="@color/blackColor"
+                style="@style/FontSizeFifteen" />
+
+            <TextView
+                android:id="@+id/textView_reason_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/redColor"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                style="@style/FontSizeTwelve" />
+
+            <Button
+                android:id="@+id/button_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="33dp"
+                android:layout_marginTop="10dp"
+                style="@style/FontSizeTwelve"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/button_red_rounded"
+                android:text="@string/Confirm"
+                android:textColor="@color/whiteColor" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

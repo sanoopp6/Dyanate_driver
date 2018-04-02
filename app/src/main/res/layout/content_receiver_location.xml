@@ -118,7 +118,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="top"
                 android:layout_marginTop="-55dp"
-                android:background="@drawable/btn_black_rounded"
+                android:background="@drawable/button_black_rounded"
                 android:visibility="gone">
 
                 <LinearLayout

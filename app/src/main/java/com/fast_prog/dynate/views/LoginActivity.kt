@@ -175,8 +175,8 @@ class LoginActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgDmUserId", username)
-            params.put("ArgDmPassWord", password)
+            params["ArgDmUserId"] = username
+            params["ArgDmPassWord"] = password
 
             var BASE_URL = Constants.BASE_URL_EN + "CheckDriverLogin"
 

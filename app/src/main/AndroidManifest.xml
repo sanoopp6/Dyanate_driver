@@ -121,7 +121,37 @@
         <activity
             android:name=".views.UploadDocsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".views.InstructionsActivity"></activity>
+        <activity
+            android:name=".views.InstructionsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.AdminHomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.NotificationsListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.FeedbackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.ShowFeedbackListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.FeedbackDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.ShowPDFImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.FaqListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.DriverListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".views.DriverDetailsActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

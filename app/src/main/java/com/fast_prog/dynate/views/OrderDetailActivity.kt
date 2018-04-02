@@ -161,7 +161,7 @@ class OrderDetailActivity : AppCompatActivity() {
 
         btn_replies.setOnClickListener {
             val intent = Intent(this@OrderDetailActivity, DriverRepliesActivity::class.java)
-            intent.putExtra("item", order)
+            intent.putExtra("tripID", order!!.tripId!!.toInt())
             startActivity(intent)
         }
 
@@ -192,8 +192,8 @@ class OrderDetailActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripDMId", tripId)
-            params.put("ArgTripDIsNotifiedCust", "true")
+            params["ArgTripDMId"] = tripId
+            params["ArgTripDIsNotifiedCust"] = "true"
 
             var BASE_URL = Constants.BASE_URL_EN + "UpdateTripNotifiedCustStatus"
 
@@ -413,8 +413,8 @@ class OrderDetailActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripMID", tripDMId)
-            params.put("ArgTripMStatus", "4")
+            params["ArgTripMID"] = tripDMId
+            params["ArgTripMStatus"] = "4"
 
             var BASE_URL = Constants.BASE_URL_EN + "TripMasterStatusUpdate"
 

@@ -7,7 +7,9 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Environment
 import android.support.v7.app.AlertDialog
 import android.text.Html
@@ -18,14 +20,19 @@ import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import com.fast_prog.dynate.R
 import com.fast_prog.dynate.R.id.circular_progress_bar
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.util.*
 
 /**
  * Created by sarathk on 8/13/17.
@@ -34,26 +41,26 @@ import java.io.FileNotFoundException
 class UtilityFunctions {
 
     companion object {
-        private lateinit var dialog: Dialog
-        private lateinit var anim: ObjectAnimator
+        private var dialog: Dialog? = null
+        private var anim: ObjectAnimator? = null
 
         fun showProgressDialog(context: Context) {
             dialog = Dialog(context)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setContentView(R.layout.layout_circular_progress_dialog)
-            dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog!!.setContentView(R.layout.layout_circular_progress_dialog)
+            dialog!!.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             anim = ObjectAnimator.ofInt(circular_progress_bar, "progress", 0, 100)
-            anim.interpolator = DecelerateInterpolator()
-            anim.repeatCount = ValueAnimator.INFINITE
-            anim.duration = 2000
-            anim.start()
-            dialog.setCancelable(false)
-            dialog.show()
+            anim!!.interpolator = DecelerateInterpolator()
+            anim!!.repeatCount = ValueAnimator.INFINITE
+            anim!!.duration = 2000
+            anim!!.start()
+            dialog!!.setCancelable(false)
+            dialog!!.show()
         }
 
         fun dismissProgressDialog() {
-            dialog.dismiss()
-            anim.end()
+            if (dialog != null && dialog!!.isShowing) { dialog!!.dismiss() }
+            if (anim != null) { anim!!.end() }
         }
 
         fun showAlertOnActivity(context: Context, message: String, okButtonMsg: String, cancelButtonMsg: String,
@@ -164,6 +171,41 @@ class UtilityFunctions {
             }
             textView.movementMethod = LinkMovementMethod.getInstance()
             textView.setText(spannableString, TextView.BufferType.SPANNABLE)
+        }
+
+        val blinkAnimation: Animation
+            get() {
+                val animation = AlphaAnimation(1f, 0f)
+                animation.duration = 300
+                animation.interpolator = LinearInterpolator()
+                animation.repeatCount = -1
+                animation.repeatMode = Animation.REVERSE
+
+                return animation
+            }
+
+        fun convertLayoutToImage(mContext: Context, count: Int, drawableId: Int): Drawable {
+            val inflater = LayoutInflater.from(mContext)
+            val view = inflater.inflate(R.layout.badge_icon_layout, null)
+            (view.findViewById<View>(R.id.icon_badge) as ImageView).setImageResource(drawableId)
+
+            if (count == 0) {
+                val counterTextPanel = view.findViewById<View>(R.id.counterValuePanel)
+                counterTextPanel.visibility = View.GONE
+            } else {
+                val textView = view.findViewById<View>(R.id.count) as TextView
+                textView.text = String.format(Locale.getDefault(), "%d", count)
+            }
+
+            view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+            view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+
+            view.isDrawingCacheEnabled = true
+            view.drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+            val bitmap = Bitmap.createBitmap(view.drawingCache)
+            view.isDrawingCacheEnabled = false
+
+            return BitmapDrawable(mContext.resources, bitmap)
         }
     }
 }

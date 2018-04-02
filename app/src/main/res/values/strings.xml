@@ -271,4 +271,45 @@
     <string name="SendMail">Send Mail</string>
     <string name="ThereAreNoEmailClients">There are no email clients!</string>
 
+    <string name="Feedback">Feedback</string>
+    <string name="Registrations">Registrations</string>
+    <string name="Notifications">Notifications</string>
+    <string name="ClearAll">Clear All</string>
+    <string name="MyFeedbacks">My Feedbacks</string>
+    <string name="Suggections">Suggestions</string>
+    <string name="Complaints">Complaints</string>
+    <string name="SuggectionEmpty">Suggestions Empty!</string>
+    <string name="ComplaintEmpty">Complaints Empty!</string>
+    <string name="FeedbackUpdated">Your feedback updated.</string>
+    <string name="AttachAFile">Attach a File</string>
+    <string name="Attachment">Attachment</string>
+    <string name="SuggectionComplaintEmpty">Suggestion and Complaint both empty</string>
+    <string name="CommonFeedback">Set as Common</string>
+    <string name="ShowFeedbacks">Show Feedbacks</string>
+    <string name="FeedbackDetail">Feedback Detail</string>
+    <string name="Message">Message</string>
+    <string name="Reply">Reply</string>
+    <string name="TypeYourReply">Type your reply</string>
+    <string name="ReplyIsEmpty">Reply is empty!</string>
+    <string name="ReplyUpdated">Reply updated</string>
+    <string name="CommonFeedbacks">Common Feedbacks</string>
+    <string name="SlNo">Sl.No.</string>
+    <string name="Topic">Topic</string>
+    <string name="AttachmentIns">Attachments</string>
+    <string name="Q">Q</string>
+    <string name="FAQ">FAQ</string>
+    <string name="ExpandList">Expand List</string>
+    <string name="DriversList">Drivers List</string>
+    <string name="ListEmpty">List Empty!</string>
+    <string name="UploadedFiles">Uploaded Documents</string>
+    <string name="FullName">Full Name</string>
+    <string name="LicenseNo">License No.</string>
+    <string name="Reject">Reject</string>
+    <string name="Remarks">Remarks</string>
+    <string name="Nil">nil</string>
+    <string name="ReasonToReject">Reason to deny account</string>
+    <string name="Confirm">Confirm</string>
+    <string name="PleaseEnterReason">Please enter the reason</string>
+    <string name="DriverApproved">Driver registration approved.</string>
+
 </resources>

@@ -57,7 +57,7 @@
                         android:id="@+id/edit_subject"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:layout_height="match_parent"
                         android:singleLine="true"
                         style="@style/FontSizeFifteen" />
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content" />
 
                 <EditText
-                    android:background="@drawable/layout_border_grey_transparent_squre"
+                    android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                     android:id="@+id/edit_shipment"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/btn_lightblue_rounded"
+                    android:background="@drawable/button_lightblue_rounded"
                     android:text="@string/Continue"
                     style="@style/FontBoldSixteen"
                     android:textColor="@color/whiteColor" />

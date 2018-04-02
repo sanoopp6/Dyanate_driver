@@ -189,21 +189,21 @@ class VerifyOTPActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgDmName", registerUserExtra!!.name!!)
-            params.put("ArgDmNameAr", registerUserExtra!!.nameArabic!!)
-            params.put("ArgDmMobNumber", registerUserExtra!!.mobile!!)
-            params.put("ArgDmEmailId", registerUserExtra!!.mail!!)
-            params.put("ArgDmAddress", registerUserExtra!!.address!!)
-            params.put("ArgDmLatitude", registerUserExtra!!.latitude!!)
-            params.put("ArgDmLongitude", registerUserExtra!!.longitude!!)
-            params.put("ArgDmUserId", registerUserExtra!!.username!!)
-            params.put("ArgDmPassWord", registerUserExtra!!.password!!)
-            params.put("ArgDmVmoId", registerUserExtra!!.vModelId!!)
-            params.put("ArgDmLicenseNo", registerUserExtra!!.licenseNo!!)
-            params.put("ArgDmLicenseNoAr", registerUserExtra!!.licenseNoArabic!!)
-            params.put("ArgDmIsFactory", registerUserExtra!!.withGlass.toString())
-            params.put("ArgDmLoginType", registerUserExtra!!.loginMethod!!)
-            params.put("ArgVcId", registerUserExtra!!.vCompId!!)
+            params["ArgDmName"] = registerUserExtra!!.name!!
+            params["ArgDmNameAr"] = registerUserExtra!!.nameArabic!!
+            params["ArgDmMobNumber"] = registerUserExtra!!.mobile!!
+            params["ArgDmEmailId"] = registerUserExtra!!.mail!!
+            params["ArgDmAddress"] = registerUserExtra!!.address!!
+            params["ArgDmLatitude"] = registerUserExtra!!.latitude!!
+            params["ArgDmLongitude"] = registerUserExtra!!.longitude!!
+            params["ArgDmUserId"] = registerUserExtra!!.username!!
+            params["ArgDmPassWord"] = registerUserExtra!!.password!!
+            params["ArgDmVmoId"] = registerUserExtra!!.vModelId!!
+            params["ArgDmLicenseNo"] = registerUserExtra!!.licenseNo!!
+            params["ArgDmLicenseNoAr"] = registerUserExtra!!.licenseNoArabic!!
+            params["ArgDmIsFactory"] = registerUserExtra!!.withGlass.toString()
+            params["ArgDmLoginType"] = registerUserExtra!!.loginMethod!!
+            params["ArgVcId"] = registerUserExtra!!.vCompId!!
 
             var BASE_URL = Constants.BASE_URL_EN + "AddDriverMaster"
 
@@ -260,33 +260,33 @@ class VerifyOTPActivity : AppCompatActivity() {
 
             var params = HashMap<String, String>()
 
-            params.put("ArgBase64", uploadFiles!!.base64Encoded1!!)
-            params.put("ArgRFCaption", uploadFiles!!.imageName1!!)
-            params.put("ArgRFDmId", custID.toString() + "")
+            params["ArgBase64"] = uploadFiles!!.base64Encoded1!!
+            params["ArgRFCaption"] = uploadFiles!!.imageName1!!
+            params["ArgRFDmId"] = custID.toString() + ""
 
             json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params)
 
             params = HashMap()
 
-            params.put("ArgBase64", uploadFiles!!.base64Encoded2!!)
-            params.put("ArgRFCaption", uploadFiles!!.imageName2!!)
-            params.put("ArgRFDmId", custID.toString() + "")
+            params["ArgBase64"] = uploadFiles!!.base64Encoded2!!
+            params["ArgRFCaption"] = uploadFiles!!.imageName2!!
+            params["ArgRFDmId"] = custID.toString() + ""
 
             json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params)
 
             params = HashMap()
 
-            params.put("ArgBase64", uploadFiles!!.base64Encoded3!!)
-            params.put("ArgRFCaption", uploadFiles!!.imageName3!!)
-            params.put("ArgRFDmId", custID.toString() + "")
+            params["ArgBase64"] = uploadFiles!!.base64Encoded3!!
+            params["ArgRFCaption"] = uploadFiles!!.imageName3!!
+            params["ArgRFDmId"] = custID.toString() + ""
 
             json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params)
 
             params = HashMap()
 
-            params.put("ArgBase64", uploadFiles!!.base64Encoded4!!)
-            params.put("ArgRFCaption", uploadFiles!!.imageName4!!)
-            params.put("ArgRFDmId", custID.toString() + "")
+            params["ArgBase64"] = uploadFiles!!.base64Encoded4!!
+            params["ArgRFCaption"] = uploadFiles!!.imageName4!!
+            params["ArgRFDmId"] = custID.toString() + ""
 
             json = jsonParser.makeHttpRequest(BASE_URL + "", "POST", params)
 
@@ -330,8 +330,8 @@ class VerifyOTPActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgMobNo", registerUserExtra!!.mobile!!)
-            params.put("ArgIsDB", "false")
+            params["ArgMobNo"] = registerUserExtra!!.mobile!!
+            params["ArgIsDB"] = "false"
 
             var BASE_URL = Constants.BASE_URL_EN + "SendOTPDM"
 

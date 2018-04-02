@@ -83,7 +83,7 @@
                     style="@style/FontSizeTwelve"
                     android:layout_marginTop="5dp"
                     android:text="@string/VersionUpdateAvailable"
-                    android:background="@drawable/btn_blue_rounded"
+                    android:background="@drawable/button_blue_rounded"
                     android:textColor="@color/whiteColor" />
 
             </LinearLayout>

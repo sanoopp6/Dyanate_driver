@@ -24,9 +24,9 @@ import java.util.*
 
 class ShipmentDetActivity : AppCompatActivity() {
 
-    internal lateinit var orderList: List<Order>
+    private lateinit var orderList: List<Order>
 
-    internal lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

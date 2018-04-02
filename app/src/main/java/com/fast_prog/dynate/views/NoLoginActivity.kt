@@ -1,19 +1,26 @@
 package com.fast_prog.dynate.views
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
+import com.fast_prog.dynate.utilities.JsonParser
 import kotlinx.android.synthetic.main.activity_no_login.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 class NoLoginActivity : AppCompatActivity() {
@@ -58,6 +65,17 @@ class NoLoginActivity : AppCompatActivity() {
 
         button_instructions.setOnClickListener {
             startActivity(Intent(this@NoLoginActivity, InstructionsActivity::class.java))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (ConnectionDetector.isConnectedOrConnecting(applicationContext)) {
+            AppInstructionsCountBackground().execute()
+            IsAppLiveBackground().execute()
+        } else {
+            ConnectionDetector.errorSnackbar(coordinator_layout)
         }
     }
 
@@ -125,6 +143,72 @@ class NoLoginActivity : AppCompatActivity() {
         //System.exit(0);
         //not granted
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class IsAppLiveBackground : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun doInBackground(vararg param: Void): JSONObject? {
+            val jsonParser = JsonParser()
+            val params = HashMap<String, String>()
+
+            params["ArgAppPackageName"] = Constants.APP_NAME
+            params["ArgAppVersionNo"] = Constants.APP_VERSION
+
+            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "IsAppLive", "POST", params)
+        }
+
+        override fun onPostExecute(response: JSONObject?) {
+            if (response != null) {
+                try {
+                    if (!response.getBoolean("status")) {
+                        ActivityCompat.finishAffinity(this@NoLoginActivity)
+                        val intent = Intent(this@NoLoginActivity, UpdateActivity::class.java)
+                        intent.putExtra("message", response.getString("data"))
+                        startActivity(intent)
+                        finish()
+                    }
+                } catch (e: JSONException) { e.printStackTrace() }
+            }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private inner class AppInstructionsCountBackground : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun doInBackground(vararg param: Void): JSONObject? {
+            val jsonParser = JsonParser()
+            val params = HashMap<String, String>()
+
+            params["ArgStartDBId"] = sharedPreferences.getString(Constants.LAST_INSTRUCTION_ID,"0")
+
+            var BASE_URL = Constants.BASE_URL_EN + "AppInstructionsCount"
+
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                BASE_URL = Constants.BASE_URL_AR + "AppInstructionsCount"
+            }
+
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+        }
+
+        override fun onPostExecute(response: JSONObject?) {
+
+            if (response != null) {
+                try {
+                    if (response.getBoolean("status")) {
+                        val count = response.getString("data").trim().toIntOrNull()
+                        if (count!! > 0) {
+                            textView_instructions.visibility = View.VISIBLE
+                            textView_instructions.text = count.toString()
+                        } else {
+                            textView_instructions.visibility = View.GONE
+                        }
+                    } else {
+                        textView_instructions.visibility = View.GONE
+                    }
+                } catch (e: JSONException) { e.printStackTrace() }
+            }
         }
     }
 

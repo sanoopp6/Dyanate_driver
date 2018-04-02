@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.Editable
-import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
@@ -42,6 +41,7 @@ class ReplyActivity : AppCompatActivity() {
     internal var rate: Double = 0.toDouble()
     internal var alarmOn: Boolean = false
     internal var fromTripAdd: Boolean = false
+    internal var isEditingStarted: Boolean = false
 
     private var alarmController: AlarmController? = null
 
@@ -142,6 +142,7 @@ class ReplyActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                isEditingStarted = true
                 if (s.toString().trim().equals("0", true)) {
                     edit_price.setText("")
                 }
@@ -199,10 +200,15 @@ class ReplyActivity : AppCompatActivity() {
                     alarmController!!.stopSound()
                     alarmController = null
                 }
+                if (!isEditingStarted) { finish() }
             }, SPLASH_TIME_OUT.toLong())
         }
 
         edit_price.filters += DecimalDigitsInputFilter(5,2)
+    }
+
+    override fun onBackPressed() {
+        if (!fromTripAdd) { super.onBackPressed() }
     }
 
     override fun onPause() {
@@ -226,9 +232,9 @@ class ReplyActivity : AppCompatActivity() {
 
             var params = HashMap<String, String>()
 
-            params.put("ArgTripDID", "0")
-            params.put("ArgTripDMID", order!!.tripId!!)
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"))
+            params["ArgTripDID"] = "0"
+            params["ArgTripDMID"] = order!!.tripId!!
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
                 jsonObjectOne = jsonParserOne.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsList", "POST", params)
@@ -239,8 +245,8 @@ class ReplyActivity : AppCompatActivity() {
 
             params = HashMap()
 
-            params.put("ArgTripDId", order!!.tripDId!!)
-            params.put("ArgTripDIsNotified", "true")
+            params["ArgTripDId"] = order!!.tripDId!!
+            params["ArgTripDIsNotified"] = "true"
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
                 jsonObjectTwo = jsonParserTwo.makeHttpRequest(Constants.BASE_URL_AR + "UpdateTripNotifiedStatus", "POST", params)
@@ -313,9 +319,9 @@ class ReplyActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripDID", tripDId!!)
-            params.put("ArgTripDRate", price.toString() + "")
-            params.put("ArgTripDIsNegotiable", negotiable!!.toString() + "")
+            params["ArgTripDID"] = tripDId!!
+            params["ArgTripDRate"] = price.toString() + ""
+            params["ArgTripDIsNegotiable"] = negotiable!!.toString() + ""
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDetailsUpdate"
 
@@ -373,8 +379,8 @@ class ReplyActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripDID", tripDId!!)
-            params.put("ArgTripDStatus", "5")
+            params["ArgTripDID"] = tripDId!!
+            params["ArgTripDStatus"] = "5"
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDetailsStatusUpdate"
 

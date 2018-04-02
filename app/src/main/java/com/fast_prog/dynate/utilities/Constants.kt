@@ -23,9 +23,17 @@ object Constants {
     val PREFS_IS_FACTORY = "dynate_is_factory"
     val PREFS_FCM_TOKEN = "dyna_fcm_token"
     val PREFS_SAVED_USERNAME = "dyna_saved_username"
+    val PREFS_NOTFN_ID = "dyna_notfn_id"
+
+    val PREFS_USER_TYPE = "dyna_user_type"
+    val USER_TYPE_CONST_ADMIN = "admin"
+    val USER_TYPE_CONST_DRIVER = "driver"
+
+    val LAST_INSTRUCTION_ID = "last_instruction_id"
 
     val BASE_URL_EN = "https://dyanate.fast-prog.com/ServiceEn.asmx/"
     val BASE_URL_AR = "https://dyanate.fast-prog.com/ServiceAr.asmx/"
+    val IMG_URL = "https://dyanate.fast-prog.com/"
 
     val APP_NAME = "dynadriver"
     val APP_VERSION = "1.4"
@@ -38,11 +46,6 @@ object Constants {
     val PREFS_SEARCH_LOCATION_AREA = "0"
 
     val LOG_CONST_NORMAL = "normal"
-    val LOG_CONST_FACEBOOK = "facebook"
-    val LOG_CONST_TWITTER = "twitter"
-
-    val TWITTER_KEY = "plICkD5KfYDqQG1v6uXj9MVMy"
-    val TWITTER_SECRET = "TydPl7KySin7xNDXgIIbcKb3sCkP2BXfQsnZZldi6yxkNI3RwZ"
 
     val STAT_CONST_ONLINE = "online"
     val STAT_CONST_OFFLINE = "offline"
@@ -51,5 +54,4 @@ object Constants {
     val DYNA_DB_KEY = "dyna_db_placeItem"
 
     val FILTER_COLOR = "#FF27AB3D"
-
 }

@@ -12,13 +12,11 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import com.fast_prog.dynate.R
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
+import com.fast_prog.dynate.utilities.UtilityFunctions
 import kotlinx.android.synthetic.main.content_all_orders.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -29,17 +27,6 @@ class AllOrdersActivity : AppCompatActivity() {
     internal lateinit var glassExtra: String
 
     internal lateinit var sharedPreferences: SharedPreferences
-
-    val blinkAnimation: Animation
-        get() {
-            val animation = AlphaAnimation(1f, 0f)
-            animation.duration = 300
-            animation.interpolator = LinearInterpolator()
-            animation.repeatCount = -1
-            animation.repeatMode = Animation.REVERSE
-
-            return animation
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +67,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "1")
-            intent.putExtra("modeStr", accepted_by_me_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", accepted_by_me_button.text.toString().trim())
             startActivity(intent)
         }
 
@@ -88,7 +75,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "2")
-            intent.putExtra("modeStr", customer_accepted_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", customer_accepted_button.text.toString().trim())
             startActivity(intent)
         }
 
@@ -96,7 +83,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "3")
-            intent.putExtra("modeStr", customer_rejected_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", customer_rejected_button.text.toString().trim())
             startActivity(intent)
         }
 
@@ -104,7 +91,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "4")
-            intent.putExtra("modeStr", customer_cancelled_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", customer_cancelled_button.text.toString().trim())
             startActivity(intent)
         }
 
@@ -112,7 +99,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "5")
-            intent.putExtra("modeStr", rejected_by_me_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", rejected_by_me_button.text.toString().trim())
             startActivity(intent)
         }
 
@@ -120,7 +107,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "6")
-            intent.putExtra("modeStr", completed_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", completed_button.text.toString().trim())
             startActivity(intent)
         }
 
@@ -128,7 +115,7 @@ class AllOrdersActivity : AppCompatActivity() {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
             intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "7")
-            intent.putExtra("modeStr", new_trips_button.text.toString().trim { it <= ' ' })
+            intent.putExtra("modeStr", new_trips_button.text.toString().trim())
             startActivity(intent)
         }
     }
@@ -152,19 +139,19 @@ class AllOrdersActivity : AppCompatActivity() {
             val params = HashMap<String, String>()
 
             if (glassExtra.equals("true", ignoreCase = true)) {
-                params.put("ArgTripMCustId", "1")
-                params.put("ArgExcludeCustId", "0")
+                params["ArgTripMCustId"] = "1"
+                params["ArgExcludeCustId"] = "0"
 
             } else {
-                params.put("ArgTripMCustId", "0")
-                params.put("ArgExcludeCustId", "1")
+                params["ArgTripMCustId"] = "0"
+                params["ArgExcludeCustId"] = "1"
             }
 
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"))
-            params.put("ArgTripMID", "0")
-            params.put("ArgTripDID", "0")
-            params.put("ArgTripMStatus", "0")
-            params.put("ArgTripDStatus", status)
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
+            params["ArgTripMID"] = "0"
+            params["ArgTripDID"] = "0"
+            params["ArgTripMStatus"] = "0"
+            params["ArgTripDStatus"] = status
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDetailsMasterListCount"
 
@@ -190,7 +177,7 @@ class AllOrdersActivity : AppCompatActivity() {
                         if (count > 0) {
                             view.visibility = View.VISIBLE
                             view.text = String.format(Locale.getDefault(), "%d", count)
-                            view.startAnimation(blinkAnimation)
+                            view.startAnimation(UtilityFunctions.blinkAnimation)
 
                         } else {
                             view.visibility = View.GONE

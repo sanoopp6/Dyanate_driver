@@ -394,7 +394,7 @@ class SenderReceiverActivity : AppCompatActivity(), GregorianDatePickerDialog.On
         cal.add(Calendar.MINUTE, 5)
         val date = cal.time
         var temp: String
-        val getMyDateTime = txt_datepicker1.text.toString().trim { it <= ' ' }
+        val getMyDateTime = txt_datepicker1.text.toString().trim()
 
         if (getMyDateTime.isNotEmpty()) {
             var getMyDate: Date? = null
@@ -525,7 +525,7 @@ class SenderReceiverActivity : AppCompatActivity(), GregorianDatePickerDialog.On
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("data", dateString)
+            params["data"] = dateString
 
             var BASE_URL = "https://dyanate.fast-prog.com/JBLCalendarWebService.asmx/GetGregorianJson"
 

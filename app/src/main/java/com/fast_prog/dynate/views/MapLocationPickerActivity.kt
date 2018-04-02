@@ -224,10 +224,13 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
 
         btn_select_location.setOnClickListener {
             if (!type_location_text_view.text.toString().equals(resources.getString(R.string.TypeYourLocation), true)) {
+                val placeItem = PlaceItem()
+                placeItem.plName = type_location_text_view.text.toString()
+                placeItem.pLatitude = userLocation!!.latitude.toString()
+                placeItem.pLongitude = userLocation!!.longitude.toString()
+
                 val intent = Intent()
-                intent.putExtra("location", type_location_text_view.text)
-                intent.putExtra("latitude", userLocation!!.latitude)
-                intent.putExtra("longitude", userLocation!!.longitude)
+                intent.putExtra("PlaceItem", placeItem)
                 setResult(RESULT_OK, intent)
                 finish()
             }
@@ -438,12 +441,12 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
             val locationNameParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("latlng", latitude.toString() + "," + longitude)
-            params.put("sensor", "true")
-            params.put("key", Constants.GOOGLE_API_KEY)
+            params["latlng"] = latitude.toString() + "," + longitude
+            params["sensor"] = "true"
+            params["key"] = Constants.GOOGLE_API_KEY
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                params.put("language", "ar")
+                params["language"] = "ar"
             }
             val locationNameObject = locationNameParser.makeHttpRequest(Constants.GOOGLE_LOCATION_NAME_URL, "GET", params)
 
@@ -477,7 +480,7 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
 
                         if (types.getString(0).equals("route", ignoreCase = true) || types.getString(0).equals("locality", ignoreCase = true) || types.length() > 1 && types.getString(1).equals("sublocality", ignoreCase = true)) {
 
-                            if (locationName.trim { it <= ' ' }.length > 0) {
+                            if (locationName.trim().length > 0) {
                                 locationName = locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
 
                             } else {

@@ -69,7 +69,7 @@
                     android:textAlignment="center"
                     style="@style/FontSizeFifteen"
                     android:hint="@string/Name"
-                    android:background="@drawable/layout_border_grey_white_squre"
+                    android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                     android:inputType="text"
                     android:singleLine="true" />
 
@@ -91,7 +91,7 @@
                         app:ccp_autoDetectLanguage="true"
                         app:ccp_defaultNameCode="SA"
                         android:textColor="@color/blackColor"
-                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                         android:id="@+id/countryCodePicker_from"
                         android:layout_width="75dp"
                         android:layout_height="match_parent" />
@@ -103,7 +103,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_white_squre" >
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre" >
 
                         <EditText
                             android:gravity="center"
@@ -153,7 +153,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                         android:clipChildren="false">
 
                         <Button
@@ -178,7 +178,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                         android:clipChildren="false">
 
                         <Button
@@ -222,7 +222,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                         android:clipChildren="false">
 
                         <Button
@@ -277,7 +277,7 @@
                     android:layout_height="33dp"
                     android:textAlignment="center"
                     android:hint="@string/Name"
-                    android:background="@drawable/layout_border_grey_white_squre"
+                    android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                     android:inputType="text"
                     android:singleLine="true"
                     style="@style/FontSizeFifteen" />
@@ -300,7 +300,7 @@
                         app:ccp_autoDetectLanguage="true"
                         app:ccp_defaultNameCode="SA"
                         android:textColor="@color/blackColor"
-                        android:background="@drawable/layout_border_grey_white_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre"
                         android:id="@+id/countryCodePicker_to"
                         android:layout_width="75dp"
                         android:layout_height="match_parent" />
@@ -312,7 +312,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_white_squre" >
+                        android:background="@drawable/layout_border_dark_grey_rounded_white_squre" >
 
                         <EditText
                             android:gravity="center"
@@ -349,7 +349,7 @@
                     android:layout_height="33dp"
                     style="@style/FontBoldSixteen"
                     android:textColor="@color/whiteColor"
-                    android:background="@drawable/btn_lightblue_rounded"
+                    android:background="@drawable/button_lightblue_rounded"
                     android:text="@string/Continue" />
 
             </LinearLayout>

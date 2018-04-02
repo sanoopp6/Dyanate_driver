@@ -320,7 +320,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/layout_border_grey_transparent_squre"
+                android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                 android:orientation="horizontal"
                 android:padding = "4dp"
                 android:gravity="center_vertical">
@@ -331,7 +331,7 @@
                     android:layout_height="33dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_green_rounded"
+                    android:background="@drawable/button_green_rounded"
                     android:text="@string/ShowRoute"
                     android:textColor="@color/whiteColor" />
 
@@ -345,7 +345,7 @@
                     android:layout_height="33dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_blue_rounded"
+                    android:background="@drawable/button_blue_rounded"
                     android:text="@string/ShowReplies"
                     android:textColor="@color/whiteColor" />
 
@@ -359,7 +359,7 @@
                     android:layout_height="33dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:background="@drawable/btn_red_rounded"
+                    android:background="@drawable/button_red_rounded"
                     android:text="@string/CancelTrip"
                     android:textColor="@color/whiteColor" />
 

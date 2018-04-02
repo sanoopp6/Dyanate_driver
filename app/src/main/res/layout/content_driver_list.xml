@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:scaleType="fitEnd"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:alpha="0.5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:src="@drawable/logo_1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/linearLayout_top"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/layout_border_orange_white_squre"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="330dp">
+
+                <TextView
+                    android:id="@+id/textView_all_drivers"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@drawable/button_black_rounded"
+                    android:gravity="center"
+                    style="@style/FontSizeFifteen"
+                    android:textColor="@color/whiteColor" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_drivers_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginTop="5dp"
+                    android:scrollbars="vertical" />
+
+                <Button
+                    android:textAllCaps="false"
+                    android:id="@+id/button_expand_list"
+                    android:text="@string/ExpandList"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/FontSizeFifteen"
+                    android:visibility="gone"
+                    android:textColor="@color/whiteColor"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/button_green_rounded"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
+
+</LinearLayout>

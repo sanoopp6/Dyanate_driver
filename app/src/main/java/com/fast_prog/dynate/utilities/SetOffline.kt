@@ -14,13 +14,12 @@ class SetOffline(private val userId: String) : AsyncTask<Void, Void, JSONObject>
 
     override fun doInBackground(vararg param: Void): JSONObject? {
         val jsonParser = JsonParser()
-
         val params = HashMap<String, String>()
 
-        params.put("ArgUsrId", userId)
-        params.put("ArgLat", "0")
-        params.put("ArgLng", "0")
-        params.put("ArgTripStatus", "2")
+        params["ArgUsrId"] = userId
+        params["ArgLat"] = "0"
+        params["ArgLng"] = "0"
+        params["ArgTripStatus"] = "2"
 
         return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "UpdateLatLongDM", "POST", params)
     }

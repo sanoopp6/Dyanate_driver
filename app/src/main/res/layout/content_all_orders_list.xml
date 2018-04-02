@@ -2,14 +2,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/content_cart"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBG"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".views.AllOrdersListActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <View
         android:layout_width="match_parent"
@@ -39,7 +37,7 @@
                 android:id="@+id/top_layout"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
-                android:background="@drawable/layout_border_black_white_squre"
+                android:background="@drawable/layout_border_orange_white_squre"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
@@ -50,7 +48,7 @@
                     android:id="@+id/enter_port_priority_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="33dp"
-                    android:background="@drawable/btn_black_bottom_rounded"
+                    android:background="@drawable/button_black_rounded"
                     android:textAlignment="center"
                     android:text="@string/Order"
                     android:textColor="@color/whiteColor"
@@ -75,7 +73,7 @@
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/btn_orange_rounded"
+                    android:background="@drawable/button_orange_rounded"
                     android:textAlignment="center"
                     android:text="@string/ShowAll"
                     android:textAllCaps="true"

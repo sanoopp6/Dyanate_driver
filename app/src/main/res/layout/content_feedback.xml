@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".views.FeedbackActivity" >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:scaleType="fitEnd"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:alpha="0.5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:src="@drawable/logo_1" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/button_suggestions"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/FontSizeFourteen"
+                    android:background="@drawable/button_black_rounded"
+                    android:text="@string/Suggections"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />
+
+                <EditText
+                    android:id="@+id/editText_suggestions"
+                    android:inputType="text|textMultiLine"
+                    android:minLines="5"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    android:padding="2dp"
+                    android:background="@drawable/layout_border_orange_white_squre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blackColor"
+                    style="@style/FontSizeFourteen" />
+
+                <Button
+                    android:id="@+id/button_complaints"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    style="@style/FontSizeFourteen"
+                    android:background="@drawable/button_black_rounded"
+                    android:text="@string/Complaints"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />
+
+                <EditText
+                    android:id="@+id/editText_complaints"
+                    android:inputType="text|textMultiLine"
+                    android:minLines="5"
+                    android:layout_marginTop="5dp"
+                    android:visibility="gone"
+                    android:padding="2dp"
+                    android:background="@drawable/layout_border_orange_white_squre"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blackColor"
+                    style="@style/FontSizeFourteen" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_green_rounded"
+                    android:clipChildren="false">
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:textColor="@color/whiteColor"
+                        android:text="@string/AttachAFile"
+                        android:textAllCaps="false"
+                        android:background="@android:color/transparent"
+                        style="@style/FontSizeFourteen"
+                        android:id="@+id/button_attach_images"/>
+
+                    <ImageView
+                        android:src="@drawable/ic_attachment"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:gravity="center"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/whiteColor"
+                        android:layout_marginEnd="15dp"
+                        android:layout_marginRight="15dp" />
+
+                </FrameLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView_feedbacks_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:scrollbars="horizontal" />
+
+                <CheckBox
+                    android:background="@drawable/button_whitesmoke_rounded"
+                    android:text="@string/CommonFeedback"
+                    android:id="@+id/checkBox_common"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dp" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/whiteColor"
+                    android:text="@string/Submit"
+                    android:background="@drawable/button_black_rounded"
+                    style="@style/FontSizeFifteen"
+                    android:id="@+id/button_submit"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorBorder" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/colorFooter" />
+
+</LinearLayout>

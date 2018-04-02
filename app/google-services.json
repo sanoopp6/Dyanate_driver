@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "26295802905",
+    "firebase_url": "https://dynate-a8d60.firebaseio.com",
+    "project_id": "dynate-a8d60",
+    "storage_bucket": "dynate-a8d60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26295802905:android:c456b22c48accaae",
+        "android_client_info": {
+          "package_name": "com.fast_prog.dynate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26295802905-sbbc6gj47plego7ul44oijndav7jtsl6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu0L-ZDx6XiLf2y_bE1jcn5HVv1On5XpM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:26295802905:android:a6cfaf1f257b367d",
+        "android_client_info": {
+          "package_name": "com.ralhawameer.fastprogramming.dyna"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "26295802905-sbbc6gj47plego7ul44oijndav7jtsl6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu0L-ZDx6XiLf2y_bE1jcn5HVv1On5XpM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

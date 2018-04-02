@@ -162,7 +162,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
                         android:maxLines="1"
@@ -237,7 +237,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:maxLines="1"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
                         android:inputType="text"
@@ -320,7 +320,7 @@
                             app:ccp_autoDetectLanguage="true"
                             app:ccp_defaultNameCode="SA"
                             android:textColor="@color/blackColor"
-                            android:background="@drawable/layout_border_grey_transparent_squre"
+                            android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                             android:id="@+id/countryCodePicker"
                             android:layout_width="75dp"
                             android:layout_height="match_parent" />
@@ -333,7 +333,7 @@
                             android:textColor="@color/blackColor"
                             android:paddingLeft="2dp"
                             android:paddingRight="2dp"
-                            android:background="@drawable/layout_border_grey_transparent_squre"
+                            android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                             android:id="@+id/editText_mobile"
                             android:layout_width="match_parent"
                             android:textAlignment="center"
@@ -411,7 +411,7 @@
                         android:layout_weight="1"
                         android:layout_height="match_parent"
                         android:maxLines="1"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
                         android:inputType="textEmailAddress"
@@ -482,7 +482,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:clipChildren="false">
 
                         <EditText
@@ -575,7 +575,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:background="@drawable/layout_border_grey_transparent_squre"
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
                         android:maxLines="1"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
@@ -645,7 +645,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_transparent_squre">
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre">
 
                         <Spinner
                             android:id="@+id/spnr_vehicleSize"
@@ -728,7 +728,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_transparent_squre">
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre">
 
                         <Spinner
                             android:id="@+id/spnr_vehicleMake"
@@ -811,7 +811,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_transparent_squre">
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre">
 
                         <Spinner
                             android:id="@+id/spnr_vehicleModel"
@@ -931,7 +931,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/layout_border_grey_transparent_squre">
+                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre">
 
                         <Spinner
                             android:id="@+id/spnr_withCompany"
@@ -1077,7 +1077,7 @@
                     android:layout_marginTop="10dp"
                     style="@style/FontBoldSixteen"
                     android:textColor="@color/whiteColor"
-                    android:background="@drawable/btn_lightblue_rounded"
+                    android:background="@drawable/button_lightblue_rounded"
                     android:text="@string/Register" />
 
             </LinearLayout>

@@ -99,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="33dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/btn_grey_rounded"
+                    android:background="@drawable/button_grey_rounded"
                     android:text="@string/ShowDetails"
                     style="@style/FontBoldSixteen"
                     android:textColor="@color/whiteColor" />
@@ -111,7 +111,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@drawable/btn_green_rounded"
+                    android:background="@drawable/button_green_rounded"
                     android:text="@string/ConfirmTrip"
                     style="@style/FontBoldSixteen"
                     android:textColor="@color/whiteColor"  />

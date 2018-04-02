@@ -53,7 +53,7 @@
                         android:id="@+id/enter_port_priority_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="33dp"
-                        android:background="@drawable/btn_black_bottom_rounded"
+                        android:background="@drawable/button_black_bottom_rounded"
                         android:textAlignment="center"
                         style="@style/FontSizeFifteen"
                         android:textColor="@color/whiteColor"
@@ -97,6 +97,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:gravity="center_vertical"
                         style="@style/FontSizeFourteen" />
 
@@ -128,6 +129,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         style="@style/FontSizeFourteen"
                         android:gravity="center_vertical" />
 
@@ -159,6 +161,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         style="@style/FontSizeFourteen"
                         android:gravity="center_vertical" />
 
@@ -190,6 +193,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:gravity="center_vertical"
                         style="@style/FontSizeFourteen" />
 
@@ -221,6 +225,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:gravity="center_vertical"
                         style="@style/FontSizeFourteen" />
 
@@ -252,6 +257,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:gravity="center_vertical"
                         style="@style/FontSizeFourteen" />
 
@@ -283,6 +289,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:gravity="center_vertical"
                         style="@style/FontSizeFourteen" />
 
@@ -314,8 +321,8 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:gravity="center_vertical"
-                        android:paddingStart="10dp"
                         style="@style/FontSizeFourteen" />
 
                 </LinearLayout>
@@ -345,6 +352,7 @@
                         android:id="@+id/status_value_text_view"
                         android:layout_width="0dp"
                         android:layout_weight="1"
+                        android:paddingStart="3dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         style="@style/FontSizeFourteen" />
@@ -357,7 +365,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="33dp"
                     android:layout_margin="10dp"
-                    android:background="@drawable/btn_saddlebrown_rounded"
+                    android:background="@drawable/button_saddlebrown_rounded"
                     android:text="@string/ShowDetails"
                     style="@style/FontBoldSixteen"
                     android:textColor="@color/whiteColor" />

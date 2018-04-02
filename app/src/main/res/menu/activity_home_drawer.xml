@@ -12,6 +12,22 @@
         android:icon="@drawable/ic_settings_24"
         android:title="@string/Settings" />
     <item
+        android:id="@+id/nav_feedback"
+        android:icon="@drawable/ic_feedback_24dp"
+        android:title="@string/Feedback" />
+    <item
+        android:id="@+id/nav_feedback_list"
+        android:icon="@drawable/ic_feedback_list"
+        android:title="@string/MyFeedbacks" />
+    <item
+        android:id="@+id/nav_comm_feedback_list"
+        android:icon="@drawable/ic_feedback_list"
+        android:title="@string/CommonFeedbacks" />
+    <item
+        android:id="@+id/nav_faq"
+        android:icon="@drawable/ic_questionmark_24dp"
+        android:title="@string/FAQ" />
+    <item
         android:id="@+id/nav_share"
         android:icon="@drawable/ic_share_24"
         android:title="@string/Share" />

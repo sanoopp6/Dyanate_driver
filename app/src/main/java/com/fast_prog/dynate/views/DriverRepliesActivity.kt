@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -31,20 +32,19 @@ import java.util.*
 
 class DriverRepliesActivity : AppCompatActivity() {
 
-    internal var order: Order? = null
-
-    internal var rate: String = ""
-    internal var negotiable: String? = null
+    internal var rate: Double = 0.0
 
     internal var orderList: MutableList<Order>? = null
 
-    internal lateinit var showDetailLayoutManager: LinearLayoutManager
+    internal var selectedIndex : Int? = null
+
+    internal var tripID = 0
+
+    private lateinit var showDetailLayoutManager: LinearLayoutManager
 
     internal lateinit var mShowDetailAdapter: RecyclerView.Adapter<*>
 
     internal lateinit var sharedPreferences: SharedPreferences
-
-    internal var selectedIndex : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,8 +72,7 @@ class DriverRepliesActivity : AppCompatActivity() {
         titleTextView.setTextColor(Color.WHITE)
         supportActionBar?.customView = titleTextView
 
-        order = intent.getSerializableExtra("item") as Order?
-        if (order == null) finish()
+        tripID = intent.getIntExtra("tripID", 0)
 
         recycler_show_details.setHasFixedSize(true)
         showDetailLayoutManager = LinearLayoutManager(this@DriverRepliesActivity)
@@ -81,32 +80,38 @@ class DriverRepliesActivity : AppCompatActivity() {
         mShowDetailAdapter = ShowDetailAdapter()
         recycler_show_details.adapter = mShowDetailAdapter
 
-        if (ConnectionDetector.isConnected(applicationContext)) {
-            TripDetailsMasterListBackground().execute()
+        if (tripID > 0) {
+            if (ConnectionDetector.isConnected(applicationContext)) {
+                TripDetailsMasterListBackground(true).execute()
+            } else {
+                ConnectionDetector.errorSnackbar(coordinator_layout)
+            }
         } else {
-            ConnectionDetector.errorSnackbar(coordinator_layout)
+            finish()
         }
+
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class TripDetailsMasterListBackground : AsyncTask<Void, Void, JSONObject>() {
+    private inner class TripDetailsMasterListBackground internal constructor(internal var showDialog: Boolean) : AsyncTask<Void, Void, JSONObject>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            UtilityFunctions.showProgressDialog (this@DriverRepliesActivity)
+            if (showDialog) { UtilityFunctions.showProgressDialog (this@DriverRepliesActivity) }
         }
 
         override fun doInBackground(vararg param: Void): JSONObject? {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params.put("ArgTripMCustId", "0")
-            params.put("ArgTripDDmId", "0")
-            params.put("ArgTripMID", order!!.tripId!!)
-            params.put("ArgTripDID", "0")
-            params.put("ArgTripMStatus", "0")
-            params.put("ArgTripDStatus", "0")
-            params.put("ArgExcludeCustId", "0")
+            params["ArgTripMCustId"] = "0"
+            params["ArgTripDDmId"] = "0"
+            params["ArgTripMID"] = tripID.toString()
+            params["ArgTripDID"] = "0"
+            params["ArgTripMStatus"] = "0"
+            params["ArgTripDStatus"] = "0"
+            params["ArgExcludeCustId"] = "0"
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDetailsMasterList"
 
@@ -118,7 +123,7 @@ class DriverRepliesActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(response: JSONObject?) {
-            UtilityFunctions.dismissProgressDialog()
+            if (showDialog) { UtilityFunctions.dismissProgressDialog() }
 
             if (response != null) {
                 try {
@@ -130,55 +135,55 @@ class DriverRepliesActivity : AppCompatActivity() {
                             if (!ordersJSONArray.getJSONObject(i).getString("TripDStatus").trim().equals("7", true)) {
                                 val order = Order()
 
-                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim { it <= ' ' }
-                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim { it <= ' ' }
-                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim { it <= ' ' }
-                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim { it <= ' ' }
-                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim { it <= ' ' }
+                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim()
+                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim()
+                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim()
+                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim()
+                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim()
                                 try {
                                     order.tripFromSelf = ordersJSONArray.getJSONObject(i).getString("TripMFromIsSelf").trim().toBoolean()
                                 } catch (e: Exception) {
                                     order.tripFromSelf = false
                                 }
 
-                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim { it <= ' ' }
-                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim { it <= ' ' }
-                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim { it <= ' ' }
-                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim { it <= ' ' }
-                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim { it <= ' ' }
+                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim()
+                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim()
+                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim()
+                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim()
+                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim()
                                 try {
                                     order.tripToSelf = ordersJSONArray.getJSONObject(i).getString("TripMToIsSelf").trim().toBoolean()
                                 } catch (e: Exception) {
                                     order.tripToSelf = false
                                 }
 
-                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim { it <= ' ' }
-                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim { it <= ' ' }
-                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim { it <= ' ' }
-                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim { it <= ' ' }
-                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim { it <= ' ' }
-                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim { it <= ' ' }
-                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim { it <= ' ' }
-                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim { it <= ' ' }
-                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim { it <= ' ' }
-                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim { it <= ' ' }
-                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim { it <= ' ' }
-                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim { it <= ' ' }
-                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim { it <= ' ' }
-                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim { it <= ' ' }
-                                order.tripDNo = ordersJSONArray.getJSONObject(i).getString("TripDNo").trim { it <= ' ' }
-                                order.tripDStatus = ordersJSONArray.getJSONObject(i).getString("TripDStatus").trim { it <= ' ' }
-                                order.tripDDmId = ordersJSONArray.getJSONObject(i).getString("TripDDmId").trim { it <= ' ' }
-                                order.tripDIsNegotiable = ordersJSONArray.getJSONObject(i).getString("TripDIsNegotiable").trim { it <= ' ' }
-                                order.tripDRate = ordersJSONArray.getJSONObject(i).getString("TripDRate").trim { it <= ' ' }
-                                order.tripDDateTime = ordersJSONArray.getJSONObject(i).getString("TripDDateTime").trim { it <= ' ' }
-                                order.tripDFilterName = ordersJSONArray.getJSONObject(i).getString("TripDFilterName").trim { it <= ' ' }
-                                order.dmName = ordersJSONArray.getJSONObject(i).getString("DmName").trim { it <= ' ' }
-                                order.dmMobNumber = ordersJSONArray.getJSONObject(i).getString("DmMobNumber").trim { it <= ' ' }
-                                order.distanceKm = ordersJSONArray.getJSONObject(i).getString("DistanceKm").trim { it <= ' ' }
-                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim { it <= ' ' }
+                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim()
+                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim()
+                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim()
+                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim()
+                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim()
+                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim()
+                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim()
+                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim()
+                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim()
+                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim()
+                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim()
+                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim()
+                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim()
+                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim()
+                                order.tripDNo = ordersJSONArray.getJSONObject(i).getString("TripDNo").trim()
+                                order.tripDStatus = ordersJSONArray.getJSONObject(i).getString("TripDStatus").trim()
+                                order.tripDDmId = ordersJSONArray.getJSONObject(i).getString("TripDDmId").trim()
+                                order.tripDIsNegotiable = ordersJSONArray.getJSONObject(i).getString("TripDIsNegotiable").trim()
+                                order.tripDRate = ordersJSONArray.getJSONObject(i).getString("TripDRate").trim()
+                                order.tripDDateTime = ordersJSONArray.getJSONObject(i).getString("TripDDateTime").trim()
+                                order.tripDFilterName = ordersJSONArray.getJSONObject(i).getString("TripDFilterName").trim()
+                                order.dmName = ordersJSONArray.getJSONObject(i).getString("DmName").trim()
+                                order.dmMobNumber = ordersJSONArray.getJSONObject(i).getString("DmMobNumber").trim()
+                                order.distanceKm = ordersJSONArray.getJSONObject(i).getString("DistanceKm").trim()
+                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim()
 
-                                orderList!!.add(order)
+                                (orderList as ArrayList<Order>).add(order)
                             }
                         }
 
@@ -230,13 +235,12 @@ class DriverRepliesActivity : AppCompatActivity() {
 
             if (orderList!![position].tripDIsNegotiable!!.equals("true", true)) {
                 holder.textNegotiable.text = resources.getString(R.string.Yes)
-                holder.edittextRate.visibility = View.GONE
-                if (tripDStatus!!.matches("1".toRegex())) { holder.edittextRate.isEnabled = true }
-
-            } else {
-                holder.textNegotiable.text = resources.getString(R.string.No)
-                holder.edittextRate.isEnabled = false
-            }
+                if (tripDStatus!!.matches("1".toRegex())) {
+                    holder.edittextRate.isEnabled = true
+                    holder.edittextRate.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    holder.edittextRate.background = ContextCompat.getDrawable(applicationContext, R.drawable.layout_border_black_rounded_white_squre)
+                }
+            } else { holder.textNegotiable.text = resources.getString(R.string.No) }
 
             if (!tripDStatus!!.equals("1", true)) {
                 holder.btnApprove.visibility = View.GONE
@@ -248,9 +252,8 @@ class DriverRepliesActivity : AppCompatActivity() {
                         resources.getString(R.string.No).toString(), true, false,
                         {
                             selectedIndex = position
-                            rate = holder.edittextRate.text.toString().trim()
-                            negotiable = orderList!![selectedIndex].tripDIsNegotiable
-                            TripDetailsBackground(orderList!![selectedIndex].tripDId!!).execute()
+                            rate = holder.edittextRate.text.toString().trim().toDouble()
+                            TripDetailsBackground().execute()
                         }, {})
             }
         }
@@ -261,7 +264,7 @@ class DriverRepliesActivity : AppCompatActivity() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class TripDetailsBackground internal constructor(internal var tripDId: String) : AsyncTask<Void, Void, JSONObject>() {
+    private inner class TripDetailsBackground : AsyncTask<Void, Void, JSONObject>() {
         internal var jsonStatus: JSONObject? = null
         internal var jsonDetails: JSONObject? = null
 
@@ -276,9 +279,9 @@ class DriverRepliesActivity : AppCompatActivity() {
 
             var params = HashMap<String, String>()
 
-            params.put("ArgTripDID", tripDId)
-            params.put("ArgTripDRate", rate)
-            params.put("ArgTripDIsNegotiable", negotiable!!)
+            params["ArgTripDID"] = orderList!![selectedIndex!!].tripDId!!
+            params["ArgTripDRate"] = rate.toString()
+            params["ArgTripDIsNegotiable"] = orderList!![selectedIndex!!].tripDIsNegotiable!!
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
                 jsonDetails = jsonParserDetails.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsUpdate", "POST", params)
@@ -288,8 +291,8 @@ class DriverRepliesActivity : AppCompatActivity() {
 
             params = HashMap()
 
-            params.put("ArgTripDID", tripDId)
-            params.put("ArgTripDStatus", "2")
+            params["ArgTripDID"] = orderList!![selectedIndex!!].tripDId!!
+            params["ArgTripDStatus"] = "2"
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
                 jsonStatus = jsonParserStatus.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsStatusUpdate", "POST", params)
@@ -307,14 +310,14 @@ class DriverRepliesActivity : AppCompatActivity() {
                 try {
                     if (jsonDetails!!.getBoolean("status") && jsonStatus!!.getBoolean("status")) {
                         UtilityFunctions.showAlertOnActivity(this@DriverRepliesActivity,
-                                resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                                resources.getString(R.string.No).toString(), true, false,
+                                resources.getString(R.string.YourReplyUpdated), resources.getString(R.string.Ok).toString(),
+                                "", false, false,
                                 {
-                                    orderList!![selectedIndex].tripDStatus =  "2"
-                                    orderList!![selectedIndex].tripDIsNegotiable = rate
-                                    orderList!![selectedIndex].tripDRate = negotiable
+                                    //orderList[selectedIndex!!].tripDStatus =  "2"
+                                    //orderList[selectedIndex!!].tripDRate = rate.toString()
+                                    //mShowDetailAdapter.notifyDataSetChanged()
 
-                                    mShowDetailAdapter.notifyDataSetChanged()
+                                    TripDetailsMasterListBackground(false).execute()
                                 }, {})
 
                     } else {

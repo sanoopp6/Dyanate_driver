@@ -54,7 +54,7 @@
                     android:text="@string/AddATrip"
                     android:textAllCaps="true"
                     style="@style/FontBoldSixteen"
-                    android:background="@drawable/btn_lightblue_rounded"
+                    android:background="@drawable/button_lightblue_rounded"
                     android:id="@+id/add_new_button"/>
 
                 <FrameLayout
@@ -63,7 +63,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_black_rounded"
+                    android:background="@drawable/button_black_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -97,7 +97,7 @@
                     android:id="@+id/glass_fact_frame"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_blue_rounded"
+                    android:background="@drawable/button_blue_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -130,7 +130,7 @@
                     android:layout_marginLeft="30dp"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_orange_rounded"
+                    android:background="@drawable/button_orange_rounded"
                     android:clipChildren="false">
 
                     <Button
@@ -172,7 +172,7 @@
                     android:textAllCaps="true"
                     style="@style/FontBoldSixteen"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/btn_red_rounded"
+                    android:background="@drawable/button_red_rounded"
                     android:id="@+id/make_online_button"/>
 
             </LinearLayout>

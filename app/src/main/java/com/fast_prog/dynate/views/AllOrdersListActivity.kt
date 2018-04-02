@@ -120,19 +120,19 @@ class AllOrdersListActivity : AppCompatActivity() {
             val params = HashMap<String, String>()
 
             if (glassExtra.equals("true", true)) {
-                params.put("ArgTripMCustId", "1")
-                params.put("ArgExcludeCustId", "0")
+                params["ArgTripMCustId"] = "1"
+                params["ArgExcludeCustId"] = "0"
 
             } else {
-                params.put("ArgTripMCustId", "0")
-                params.put("ArgExcludeCustId", "1")
+                params["ArgTripMCustId"] = "0"
+                params["ArgExcludeCustId"] = "1"
             }
 
-            params.put("ArgTripDDmId", sharedPreferences.getString(Constants.PREFS_USER_ID, "0"))
-            params.put("ArgTripMID", "0")
-            params.put("ArgTripDID", "0")
-            params.put("ArgTripMStatus", "0")
-            params.put("ArgTripDStatus", modeExtra)
+            params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
+            params["ArgTripMID"] = "0"
+            params["ArgTripDID"] = "0"
+            params["ArgTripMStatus"] = "0"
+            params["ArgTripDStatus"] = modeExtra
 
             var BASE_URL = Constants.BASE_URL_EN + "TripDetailsMasterList"
 
@@ -161,43 +161,43 @@ class AllOrdersListActivity : AppCompatActivity() {
                             for (i in 0 until ordersJSONArray.length()) {
                                 val order = Order()
 
-                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim { it <= ' ' }
-                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim { it <= ' ' }
-                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim { it <= ' ' }
-                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim { it <= ' ' }
-                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim { it <= ' ' }
+                                order.tripId = ordersJSONArray.getJSONObject(i).getString("TripMID").trim()
+                                order.tripNo = ordersJSONArray.getJSONObject(i).getString("TripMNo").trim()
+                                order.tripFromAddress = ordersJSONArray.getJSONObject(i).getString("TripMFromAddress").trim()
+                                order.tripFromLat = ordersJSONArray.getJSONObject(i).getString("TripMFromLat").trim()
+                                order.tripFromLng = ordersJSONArray.getJSONObject(i).getString("TripMFromLng").trim()
                                 try {
                                     order.tripFromSelf = java.lang.Boolean.parseBoolean(ordersJSONArray.getJSONObject(i).getString("TripMFromIsSelf"))
                                 } catch (e: Exception) {
                                     order.tripFromSelf = false
                                 }
 
-                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim { it <= ' ' }
-                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim { it <= ' ' }
-                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim { it <= ' ' }
-                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim { it <= ' ' }
-                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim { it <= ' ' }
+                                order.tripFromName = ordersJSONArray.getJSONObject(i).getString("TripMFromName").trim()
+                                order.tripFromMob = ordersJSONArray.getJSONObject(i).getString("TripMFromMob").trim()
+                                order.tripToAddress = ordersJSONArray.getJSONObject(i).getString("TripMToAddress").trim()
+                                order.tripToLat = ordersJSONArray.getJSONObject(i).getString("TripMToLat").trim()
+                                order.tripToLng = ordersJSONArray.getJSONObject(i).getString("TripMToLng").trim()
                                 try {
                                     order.tripToSelf = java.lang.Boolean.parseBoolean(ordersJSONArray.getJSONObject(i).getString("TripMToIsSelf"))
                                 } catch (e: Exception) {
                                     order.tripToSelf = false
                                 }
 
-                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim { it <= ' ' }
-                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim { it <= ' ' }
-                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim { it <= ' ' }
-                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim { it <= ' ' }
-                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim { it <= ' ' }
-                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim { it <= ' ' }
-                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim { it <= ' ' }
-                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim { it <= ' ' }
-                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim { it <= ' ' }
-                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim { it <= ' ' }
-                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim { it <= ' ' }
-                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim { it <= ' ' }
-                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim { it <= ' ' }
-                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim { it <= ' ' }
-                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim { it <= ' ' }
+                                order.tripToName = ordersJSONArray.getJSONObject(i).getString("TripMToName").trim()
+                                order.tripToMob = ordersJSONArray.getJSONObject(i).getString("TripMToMob").trim()
+                                order.vehicleModel = ordersJSONArray.getJSONObject(i).getString("VMName").trim()
+                                order.vehicleType = ordersJSONArray.getJSONObject(i).getString("VmoName").trim()
+                                order.scheduleDate = ordersJSONArray.getJSONObject(i).getString("TripMScheduleDate").trim()
+                                order.scheduleTime = ordersJSONArray.getJSONObject(i).getString("TripMScheduleTime").trim()
+                                order.userName = ordersJSONArray.getJSONObject(i).getString("UsrName").trim()
+                                order.userMobile = ordersJSONArray.getJSONObject(i).getString("UsrMobNumber").trim()
+                                order.tripFilter = ordersJSONArray.getJSONObject(i).getString("TripMFilterName").trim()
+                                order.tripStatus = ordersJSONArray.getJSONObject(i).getString("TripMStatus").trim()
+                                order.tripSubject = ordersJSONArray.getJSONObject(i).getString("TripMSubject").trim()
+                                order.tripNotes = ordersJSONArray.getJSONObject(i).getString("TripMNotes").trim()
+                                order.vehicleImage = ordersJSONArray.getJSONObject(i).getString("VmoURL").trim()
+                                order.tripDId = ordersJSONArray.getJSONObject(i).getString("TripDID").trim()
+                                order.distance = ordersJSONArray.getJSONObject(i).getString("TripMDistanceString").trim()
 
                                 ordersArrayList!!.add(order)
                             }

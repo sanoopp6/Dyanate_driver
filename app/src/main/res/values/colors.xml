@@ -8,10 +8,17 @@
     <color name="blackColor">#000000</color>
     <color name="whiteColor">#FFFFFF</color>
     <color name="white10">#1Affffff</color>
-    <color name="redColor">#ef0b2d</color>
+    <color name="redColor">#c80a0a</color>
+    <color name="blueColor">#0a0ac8</color>
+    <color name="lightBlueColor">#3183b9</color>
+    <color name="greenColor">#0ac80a</color>
+    <color name="orangeColor">#f7a21f</color>
+    <color name="saddleBrownColor">#c27738</color>
+    <color name="whiteSmokeColor">#F1F1F2</color>
 
     <color name="edit_text_focused_color">#2E3191</color>
     <color name="darkest_gray">#6e6e6e</color>
+    <color name="light_gray">#BCBDC0</color>
     <color name="lighter_gray">#DEE3E6</color>
 
     <color name="colorBG">#F7F7F8</color>
@@ -27,5 +34,9 @@
 
     <color name="twitterColor">#399de5</color>
     <color name="facebookColor">#26346c</color>
+
+    <color name="colorAdminMenu">#515252</color>
+    <color name="colorAdminHomeTop">#429ee4</color>
+    <color name="colorAdminHomeBottom">#686a68</color>
 
 </resources>
