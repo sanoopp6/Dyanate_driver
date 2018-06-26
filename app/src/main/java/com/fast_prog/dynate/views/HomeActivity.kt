@@ -255,51 +255,46 @@ class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         make_online_button.background = ContextCompat.getDrawable(this@HomeActivity, R.drawable.button_green_rounded)
         make_online_button.startAnimation(UtilityFunctions.blinkAnimation)
 
-        if (UploadLocationThread != null) {
-            UploadLocationThread?.interrupt()
-            UploadLocationThread = null
-        }
+        if (UploadLocationThread != null) { UploadLocationThread?.interrupt() }
 
         online = true
 
         UpdateLatLongDMBackground(if (showDialog) "1" else "0", showDialog).execute()
 
-        if (UploadLocationThread == null) {
-            UploadLocationThread = Thread(object : Runnable {
+        UploadLocationThread = Thread(object : Runnable {
+            internal var handler: Handler = @SuppressLint("HandlerLeak")
 
-                internal var handler: Handler = @SuppressLint("HandlerLeak")
-                object : Handler() {
-                    override fun handleMessage(msg: Message) {
-                        super.handleMessage(msg)
-                        updateTime()
-                        UpdateLatLongDMBackground("0", false).execute()
+            object : Handler() {
+                override fun handleMessage(msg: Message) {
+                    super.handleMessage(msg)
+                    updateTime()
+                    UpdateLatLongDMBackground("0", false).execute()
+                }
+            }
+
+            override fun run() {
+                while (online) {
+                    threadMsg("track")
+
+                    try { Thread.sleep(5000)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
                     }
                 }
+            }
 
-                override fun run() {
-                    while (online) {
-                        threadMsg("track")
-
-                        try { Thread.sleep(5000)
-                        } catch (e: InterruptedException) {
-                            e.printStackTrace()
-                        }
-                    }
+            private fun threadMsg(msg: String) {
+                if (msg != "") {
+                    val msgObj = handler.obtainMessage()
+                    val b = Bundle()
+                    b.putString("message", msg)
+                    msgObj.data = b
+                    handler.sendMessage(msgObj)
                 }
+            }
+        })
 
-                private fun threadMsg(msg: String) {
-                    if (msg != "") {
-                        val msgObj = handler.obtainMessage()
-                        val b = Bundle()
-                        b.putString("message", msg)
-                        msgObj.data = b
-                        handler.sendMessage(msgObj)
-                    }
-                }
-            })
-
-            UploadLocationThread!!.start()
-        }
+        UploadLocationThread!!.start()
     }
 
     @SuppressLint("StaticFieldLeak")
