@@ -4,16 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
+import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
 import com.fast_prog.dynate.utilities.UtilityFunctions
@@ -24,8 +23,6 @@ import java.util.*
 
 class AllOrdersActivity : AppCompatActivity() {
 
-    internal lateinit var glassExtra: String
-
     internal lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,101 +31,110 @@ class AllOrdersActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        glassExtra = intent.getStringExtra("glass")
+        customTitle(resources.getString(R.string.TripsFromOthers))
 
-        val title: String
-        if (glassExtra.equals("true", ignoreCase = true)) {
-            title = resources.getString(R.string.TripsFromGlass)
-        } else {
-            title = resources.getString(R.string.TripsFromOthers)
-        }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = title
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@AllOrdersActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
-
-        accepted_by_me_button.setOnClickListener {
+        newTripButton.setOnClickListener {
             val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
-            intent.putExtra("mode", "1")
-            intent.putExtra("modeStr", accepted_by_me_button.text.toString().trim())
-            startActivity(intent)
-        }
-
-        customer_accepted_button.setOnClickListener {
-            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
-            intent.putExtra("mode", "2")
-            intent.putExtra("modeStr", customer_accepted_button.text.toString().trim())
-            startActivity(intent)
-        }
-
-        customer_rejected_button.setOnClickListener {
-            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
-            intent.putExtra("mode", "3")
-            intent.putExtra("modeStr", customer_rejected_button.text.toString().trim())
-            startActivity(intent)
-        }
-
-        customer_cancelled_button.setOnClickListener {
-            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
-            intent.putExtra("mode", "4")
-            intent.putExtra("modeStr", customer_cancelled_button.text.toString().trim())
-            startActivity(intent)
-        }
-
-        rejected_by_me_button.setOnClickListener {
-            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
-            intent.putExtra("mode", "5")
-            intent.putExtra("modeStr", rejected_by_me_button.text.toString().trim())
-            startActivity(intent)
-        }
-
-        completed_button.setOnClickListener {
-            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
-            intent.putExtra("mode", "6")
-            intent.putExtra("modeStr", completed_button.text.toString().trim())
-            startActivity(intent)
-        }
-
-        new_trips_button.setOnClickListener {
-            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
-            intent.putExtra("glass", glassExtra)
             intent.putExtra("mode", "7")
-            intent.putExtra("modeStr", new_trips_button.text.toString().trim())
+            intent.putExtra("modeStr", resources.getString(R.string.NewOrders))
             startActivity(intent)
         }
+
+        rejectedByMeButton.setOnClickListener {
+            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
+            intent.putExtra("mode", "5")
+            intent.putExtra("modeStr", resources.getString(R.string.TripsRejectedByMe))
+            startActivity(intent)
+        }
+
+        acceptedByMeButton.setOnClickListener {
+            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
+            intent.putExtra("mode", "1")
+            intent.putExtra("modeStr", resources.getString(R.string.TripsAcceptedByMe))
+            startActivity(intent)
+        }
+
+        customerRejectedButton.setOnClickListener {
+            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
+            intent.putExtra("mode", "3")
+            intent.putExtra("modeStr", resources.getString(R.string.RejectedByCustomer))
+            startActivity(intent)
+        }
+
+        customerAcceptedButton.setOnClickListener {
+            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
+            intent.putExtra("mode", "2")
+            intent.putExtra("modeStr", resources.getString(R.string.AcceptedByCustomer))
+            startActivity(intent)
+        }
+
+        customerCancelledButton.setOnClickListener {
+            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
+            intent.putExtra("mode", "4")
+            intent.putExtra("modeStr", resources.getString(R.string.CancelledByCustomer))
+            startActivity(intent)
+        }
+
+        completedButton.setOnClickListener {
+            val intent = Intent(this@AllOrdersActivity, AllOrdersListActivity::class.java)
+            intent.putExtra("mode", "6")
+            intent.putExtra("modeStr", resources.getString(R.string.CompletedTrips))
+            startActivity(intent)
+        }
+
+        tabLayout_feedback.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                hideAllFrames()
+
+                when {
+                    tab.position == 0 -> {
+                        newTripFrameLayout.visibility = View.VISIBLE
+                    }
+                    tab.position == 1 -> {
+                        acceptedByMeFrameLayout.visibility = View.VISIBLE
+                        customerAcceptedFrameLayout.visibility = View.VISIBLE
+                        completedFrameLayout.visibility = View.VISIBLE
+                    }
+                    tab.position == 2 -> {
+                        customerRejectedFrameLayout.visibility = View.VISIBLE
+                        customerCancelledFrameLayout.visibility = View.VISIBLE
+                        rejectedByMeFrameLayout.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) { }
+            override fun onTabReselected(tab: TabLayout.Tab) { }
+        })
+    }
+
+    private fun hideAllFrames() {
+        newTripFrameLayout.visibility = View.GONE
+        rejectedByMeFrameLayout.visibility = View.GONE
+        acceptedByMeFrameLayout.visibility = View.GONE
+        customerRejectedFrameLayout.visibility = View.GONE
+        customerAcceptedFrameLayout.visibility = View.GONE
+        customerCancelledFrameLayout.visibility = View.GONE
+        completedFrameLayout.visibility = View.GONE
     }
 
     override fun onResume() {
         super.onResume()
-        TripDetailsMasterListCountBackground("1", accepted_by_me_count).execute()
-        TripDetailsMasterListCountBackground("2", customer_accepted_count).execute()
-        TripDetailsMasterListCountBackground("3", customer_rejected_count).execute()
-        TripDetailsMasterListCountBackground("4", customer_cancelled_count).execute()
-        TripDetailsMasterListCountBackground("5", rejected_by_me_count).execute()
-        TripDetailsMasterListCountBackground("6", completed_count).execute()
-        TripDetailsMasterListCountBackground("7", new_trips_count).execute()
+        TripDetailsMasterListCountBackground("1", acceptedByMeTextView).execute()
+        TripDetailsMasterListCountBackground("2", customerAcceptedTextView).execute()
+        TripDetailsMasterListCountBackground("3", customerRejectedTextView).execute()
+        TripDetailsMasterListCountBackground("4", customerCancelledTextView).execute()
+        TripDetailsMasterListCountBackground("5", rejectedByMeTextView).execute()
+        TripDetailsMasterListCountBackground("6", completedTextView).execute()
+        TripDetailsMasterListCountBackground("7", newTripTextView).execute()
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -138,15 +144,13 @@ class AllOrdersActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            if (glassExtra.equals("true", ignoreCase = true)) {
-                params["ArgTripMCustId"] = "1"
-                params["ArgExcludeCustId"] = "0"
+            //if (glassExtra.equals("true", ignoreCase = true)) {
+            //params["ArgTripMCustId"] = "1"
+            //params["ArgExcludeCustId"] = "0"
+            //} else {
 
-            } else {
-                params["ArgTripMCustId"] = "0"
-                params["ArgExcludeCustId"] = "1"
-            }
-
+            params["ArgTripMCustId"] = "0"
+            params["ArgExcludeCustId"] = "0"
             params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
             params["ArgTripMID"] = "0"
             params["ArgTripDID"] = "0"

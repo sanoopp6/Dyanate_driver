@@ -13,7 +13,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/layout_border_orange_white_squre"
+            android:background="@drawable/layout_rect_orange_white_bottom_rounded"
             android:clipChildren="false">
 
             <ImageView
@@ -43,7 +43,7 @@
                 android:layout_marginTop="5dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/delete" />
+                android:src="@drawable/ic_delete" />
 
         </FrameLayout>
 

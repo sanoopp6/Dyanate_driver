@@ -9,16 +9,14 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.PlaceItem
 import com.fast_prog.dynate.models.Ride
 import com.fast_prog.dynate.utilities.*
@@ -42,7 +40,8 @@ import org.json.JSONArray
 import org.json.JSONException
 import java.util.*
 
-class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     internal val REQUEST_CODE_AUTOCOMPLETE = 1
 
@@ -72,27 +71,16 @@ class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleAp
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sender_location)
 
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.SelectPickUpLocation)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@SenderLocationActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.SelectPickUpLocation))
 
         try {
             Ride.instance
@@ -124,8 +112,8 @@ class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleAp
         bookmark_location_image_view.setOnClickListener {
             if (placeItemSelectedKey.isNullOrEmpty()) {
                 UtilityFunctions.showAlertOnActivity(this@SenderLocationActivity,
-                        resources.getText(R.string.BookmarkLocation).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.BookmarkLocation), resources.getString(R.string.Yes),
+                        resources.getString(R.string.No), true, false,
                         {
                             placeItem = PlaceItem()
                             placeItem.pLatitude = userLocation?.latitude.toString()
@@ -150,8 +138,8 @@ class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleAp
 
             } else {
                 UtilityFunctions.showAlertOnActivity(this@SenderLocationActivity,
-                        resources.getText(R.string.DeleteBookmarkedLocation).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.DeleteBookmarkedLocation), resources.getString(R.string.Yes),
+                        resources.getString(R.string.No), true, false,
                         {
                             try {
                                 val snappyDB = DBFactory.open(this@SenderLocationActivity, Constants.DYNA_DB)
@@ -231,11 +219,15 @@ class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleAp
 
         btn_select_location.setOnClickListener {
             UtilityFunctions.showAlertOnActivity(this@SenderLocationActivity,
-                    resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     {
                         if (!type_location_text_view.text.toString().equals(resources.getString(R.string.TypeYourLocation), true)) {
-                            Ride.instance.pickUpLocation = type_location_text_view.text.toString()
+                            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                                Ride.instance.pickUpLocation = text_view_province.text.toString() + " ،" + type_location_text_view.text.toString()
+                            } else {
+                                Ride.instance.pickUpLocation = type_location_text_view.text.toString() + ", " + text_view_province.text.toString()
+                            }
                             Ride.instance.pickUpLatitude = userLocation!!.latitude.toString()
                             Ride.instance.pickUpLongitude = userLocation!!.longitude.toString()
 
@@ -467,7 +459,7 @@ class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleAp
             val locationNameParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params["latlng"] = latitude.toString() + "," + longitude
+            params["latlng"] = latitude.toString() + "," + longitude.toString()
             params["sensor"] = "true"
             params["key"] = Constants.GOOGLE_API_KEY
 
@@ -506,15 +498,14 @@ class SenderLocationActivity : AppCompatActivity(), OnMapReadyCallback, GoogleAp
 
                         if (types.getString(0).equals("route", ignoreCase = true) || types.getString(0).equals("locality", ignoreCase = true) || types.length() > 1 && types.getString(1).equals("sublocality", ignoreCase = true)) {
 
-                            if (locationName.trim().length > 0) {
-                                locationName = locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
-
-                            } else {
-                                locationName = addressComponents.getJSONObject(i).getString("long_name")
-                            }
-
-                            if (types.getString(0).equals("locality", ignoreCase = true)) {
-                                provinceName = addressComponents.getJSONObject(i).getString("long_name")
+                            when {
+                                types.getString(0).equals("locality", true) -> provinceName = addressComponents.getJSONObject(i).getString("long_name")
+                                locationName.trim().isNotEmpty() -> locationName = if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                                    addressComponents.getJSONObject(i).getString("long_name") + " ،" + locationName
+                                } else {
+                                    locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
+                                }
+                                else -> locationName = addressComponents.getJSONObject(i).getString("long_name")
                             }
                         }
                     }

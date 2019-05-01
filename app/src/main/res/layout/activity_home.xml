@@ -43,7 +43,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:background="@color/colorFooter"
+        android:background="@drawable/background_menu"
         app:menu="@menu/activity_home_drawer"
         app:itemTextAppearance="@style/FontSizeFourteen"
         app:itemTextColor="@color/whiteColor"

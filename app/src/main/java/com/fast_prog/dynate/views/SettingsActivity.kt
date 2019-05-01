@@ -4,15 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.UtilityFunctions
 import kotlinx.android.synthetic.main.content_settings.*
@@ -28,53 +26,46 @@ class SettingsActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Settings)
-        titleTextView.textSize = 16f
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Settings))
 
         btn_change_lang.setOnClickListener {
-            UtilityFunctions.showProgressDialog(this@SettingsActivity)
+            UtilityFunctions.showAlertOnActivity(this@SettingsActivity,
+                    resources.getText(R.string.ChangeLanguageRestart).toString(), resources.getString(R.string.Yes).toString(),
+                    resources.getString(R.string.No).toString(), true, false,
+                    {
+                        UtilityFunctions.showProgressDialog(this@SettingsActivity)
 
-            Handler().postDelayed({
-                UtilityFunctions.dismissProgressDialog()
+                        Handler().postDelayed({
+                            UtilityFunctions.dismissProgressDialog()
 
-                var lang = "ar"
+                            var lang = "ar"
 
-                if (sharedPreferences.getString(Constants.PREFS_LANG, "").equals("ar", true)) {
-                    lang = "en"
-                }
+                            if (sharedPreferences.getString(Constants.PREFS_LANG, "").equals("ar", true)) {
+                                lang = "en"
+                            }
 
-                val locale = Locale(lang)
-                Locale.setDefault(locale)
-                val confg = Configuration()
-                confg.locale = locale
-                baseContext.resources.updateConfiguration(confg, baseContext.resources.displayMetrics)
+                            val locale = Locale(lang)
+                            Locale.setDefault(locale)
+                            val confg = Configuration()
+                            confg.locale = locale
+                            baseContext.resources.updateConfiguration(confg, baseContext.resources.displayMetrics)
 
-                val editor = sharedPreferences.edit()
-                editor.putString(Constants.PREFS_LANG, lang)
-                editor.commit()
+                            val editor = sharedPreferences.edit()
+                            editor.putString(Constants.PREFS_LANG, lang)
+                            editor.commit()
 
-                if (sharedPreferences.getString(Constants.PREFS_USER_TYPE, "").equals(Constants.USER_TYPE_CONST_ADMIN, true)) {
-                    startActivity(Intent(this@SettingsActivity, AdminHomeActivity::class.java))
-                } else {
-                    startActivity(Intent(this@SettingsActivity, HomeActivity::class.java))
-                }
-
-                ActivityCompat.finishAffinity(this@SettingsActivity)
-                finish()
-            }, 2000)
+                            startActivity(Intent(this@SettingsActivity, HomeActivity::class.java))
+                            ActivityCompat.finishAffinity(this@SettingsActivity)
+                            finish()
+                        }, 2000)
+                    }, {})
         }
     }
 }

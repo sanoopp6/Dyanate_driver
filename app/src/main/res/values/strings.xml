@@ -148,7 +148,6 @@
     <string name="Negotiable">Negotiable</string>
     <string name="NewOrders">New Orders</string>
     <string name="NewTripRequests">New Trip Requests</string>
-    <string name="NewUserRegister">New User? Register Now!</string>
     <string name="No">No</string>
     <string name="NoMobileNumber">Mobile number empty!</string>
     <string name="NotAgree">Not Agree</string>
@@ -216,7 +215,6 @@
     <string name="StopPoint">Ending Point</string>
     <string name="Subject">Subject</string>
     <string name="Submit">Submit</string>
-    <string name="SwitchLang">Switch language to عربي</string>
     <string name="Tabuk">Tabuk</string>
     <string name="Taif">Taif</string>
     <string name="TakePhoto">Take Photo</string>
@@ -313,5 +311,27 @@
     <string name="UploadedFiles">Uploaded Documents</string>
     <string name="UsernameAndPasswordSame">Username and Password should not be the same!</string>
     <string name="VehicleSizeNotSelected">Vehicle size not selected!</string>
+
+    <string name="NewUserRegister">New User? Register Now!</string>
+    <string name="Admin">Admin</string>
+    <string name="UpdateNow">Goto Store and Update</string>
+    <string name="DateAndTime">Date and Time</string>
+    <string name="EnterMessage">Type a message</string>
+    <string name="SAR">SAR</string>
+    <string name="Details">Details</string>
+    <string name="ChangeLanguageRestart">Change the language will restart the application, are you sure ?</string>
+    <string name="AppName">Dynate</string>
+    <string name="HomeText">Through the application and without a headache can you define the shipping location, location of receipt, date and time of shipment and after you have agreed to the price, then the shipment can be tracked from your mobile.</string>
+    <string name="VerifyOTP">Verify OTP</string>
+    <string name="NoFeedbacks">No suggestions found!</string>
+    <string name="NoComplaints">No complaints found!</string>
+    <string name="NoNotifications">No notifications found!</string>
+    <string name="SwitchLang">Switch Language</string>
+    <string name="Completed">Completed</string>
+    <string name="New">New</string>
+    <string name="Accepted">Accepted</string>
+    <string name="Rejected">Rejected</string>
+    <string name="Location">Location</string>
+    <string name="RejectionSuccess">Rejected successfully.</string>
 
 </resources>

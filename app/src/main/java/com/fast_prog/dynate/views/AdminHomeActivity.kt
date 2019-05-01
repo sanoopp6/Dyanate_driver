@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -18,8 +17,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.*
 import kotlinx.android.synthetic.main.activity_admin_home.*
 import kotlinx.android.synthetic.main.content_admin_home.*
@@ -38,25 +37,15 @@ class AdminHomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_home)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Home)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@AdminHomeActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Home))
 
         val MyVersion = Build.VERSION.SDK_INT
 
@@ -122,8 +111,8 @@ class AdminHomeActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         UtilityFunctions.showAlertOnActivity(this@AdminHomeActivity,
-                resources.getString(R.string.DoYouWantToExit).toString(), resources.getString(R.string.Yes).toString(),
-                resources.getString(R.string.No).toString(), true, false,
+                resources.getString(R.string.DoYouWantToExit), resources.getString(R.string.Yes),
+                resources.getString(R.string.No), true, false,
                 {
                     ActivityCompat.finishAffinity(this@AdminHomeActivity)
                     finish()
@@ -141,8 +130,8 @@ class AdminHomeActivity : AppCompatActivity() {
 
         if (id == R.id.exit_option) {
             UtilityFunctions.showAlertOnActivity(this@AdminHomeActivity,
-                    resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     {
                         val editor = sharedPreferences.edit()
 
@@ -160,7 +149,7 @@ class AdminHomeActivity : AppCompatActivity() {
                         editor.putString(Constants.PREFS_LATITUDE, "")
                         editor.putString(Constants.PREFS_LONGITUDE, "")
                         editor.putString(Constants.PREFS_USER_CONSTANT, "")
-                        editor.putString(Constants.PREFS_IS_FACTORY, "")
+                        //editor.putString(Constants.PREFS_IS_FACTORY, "")
                         editor.commit()
 
                         val intent = Intent(this@AdminHomeActivity, NoLoginActivity::class.java)

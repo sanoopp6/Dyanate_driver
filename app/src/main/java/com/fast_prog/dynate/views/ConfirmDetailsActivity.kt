@@ -4,16 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.widget.TextView
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.Order
 import com.fast_prog.dynate.models.Ride
 import com.fast_prog.dynate.utilities.ConnectionDetector
@@ -38,25 +40,14 @@ class ConfirmDetailsActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.ConfirmDetail)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@ConfirmDetailsActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.ConfirmDetail))
 
         try {
             Ride.instance
@@ -64,24 +55,50 @@ class ConfirmDetailsActivity : AppCompatActivity() {
             Ride.instance = Ride()
         }
 
-        sub_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Subject), Ride.instance.subject)
-        ship_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Shipment), Ride.instance.shipment)
-        model_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Size), Ride.instance.vehicleSizeName)
-        text_from_name.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Name), Ride.instance.fromName)
-        text_from_mobile.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Mobile), Ride.instance.fromMobile.trimStart{ it <= '+'})
-        date_title.text = String.format(Locale.getDefault(), "%s : %s - %s", resources.getString(R.string.Date), Ride.instance.date, Ride.instance.hijriDate)
-        time_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Time), Ride.instance.time)
-        text_to_name.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Name), Ride.instance.toName)
-        text_to_mobile.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Mobile), Ride.instance.toMobile.trimStart{ it <= '+'})
+        shipmentTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Shipment))
+        fromNameTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Name))
+        fromMobTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Mobile))
+        engDateTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Date))
+        arDateTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Date))
+        timeTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Time))
+        toNameTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Name))
+        toMobTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Mobile))
 
-        btn_confirm_route.setOnClickListener {
+        val flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        val colorSpan = ForegroundColorSpan(ContextCompat.getColor(this@ConfirmDetailsActivity, R.color.lightBlueColor))
+        val builder = SpannableStringBuilder()
+
+        val spannableString = SpannableString(resources.getString(R.string.Subject) + " : ")
+        spannableString.setSpan(colorSpan, 0, spannableString.length, flag)
+        builder.append(spannableString)
+        builder.append(Ride.instance.subject)
+        subjectTextView.text = builder
+
+        shipmentTextView.text = Ride.instance.shipment
+
+        //builder = SpannableStringBuilder()
+        //spannableString = SpannableString(resources.getString(R.string.Size) + " : ")
+        //spannableString.setSpan(colorSpan, 0, spannableString.length, flag)
+        //builder.append(spannableString)
+        //builder.append(Ride.instance.vehicleSizeName)
+        //vehicleTextView.text = builder
+
+        fromNameTextView.text = Ride.instance.fromName
+        fromMobTextView.text = Ride.instance.fromMobile.trimStart{ it <= '+'}
+        engDateTextView.text = Ride.instance.date
+        arDateTextView.text = Ride.instance.hijriDate
+        timeTextView.text = Ride.instance.time
+        toNameTextView.text = Ride.instance.toName
+        toMobTextView.text = Ride.instance.toMobile.trimStart{ it <= '+'}
+
+        confirmTripButton.setOnClickListener {
             UtilityFunctions.showAlertOnActivity(this@ConfirmDetailsActivity,
-                    resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     {
                         UtilityFunctions.showAlertOnActivity(this@ConfirmDetailsActivity,
-                                resources.getText(R.string.TripWillbeAssignedToYou).toString(), resources.getString(R.string.Yes).toString(),
-                                resources.getString(R.string.No).toString(), true, false,
+                                resources.getString(R.string.TripWillbeAssignedToYou), resources.getString(R.string.Yes),
+                                resources.getString(R.string.No), true, false,
                                 {
                                     if (ConnectionDetector.isConnected(this@ConfirmDetailsActivity)) {
                                         AddTripMasterBackground().execute()
@@ -92,7 +109,7 @@ class ConfirmDetailsActivity : AppCompatActivity() {
                     }, {})
         }
 
-        btn_edit_details.setOnClickListener { startActivity(Intent(this@ConfirmDetailsActivity, ShipmentDetActivity::class.java)) }
+        //btn_edit_details.setOnClickListener { startActivity(Intent(this@ConfirmDetailsActivity, ShipmentDetActivity::class.java)) }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -113,13 +130,13 @@ class ConfirmDetailsActivity : AppCompatActivity() {
             params["ArgTripMFromLat"] = Ride.instance.pickUpLatitude!!
             params["ArgTripMFromLng"] = Ride.instance.pickUpLongitude!!
             params["ArgTripMFromAddress"] = Ride.instance.pickUpLocation!!
-            params["ArgTripMFromIsSelf"] = Ride.instance.isFromSelf.toString()
+            params["ArgTripMFromIsSelf"] = "false"
             params["ArgTripMFromName"] = Ride.instance.fromName
             params["ArgTripMFromMob"] = Ride.instance.fromMobile
             params["ArgTripMToLat"] = Ride.instance.dropOffLatitude!!
             params["ArgTripMToLng"] = Ride.instance.dropOffLongitude!!
             params["ArgTripMToAddress"] = Ride.instance.dropOffLocation!!
-            params["ArgTripMToIsSelf"] = Ride.instance.isToSelf.toString()
+            params["ArgTripMToIsSelf"] = "false"
             params["ArgTripMToName"] = Ride.instance.toName
             params["ArgTripMToMob"] = Ride.instance.toMobile
             params["ArgTripMSubject"] = Ride.instance.subject
@@ -152,7 +169,7 @@ class ConfirmDetailsActivity : AppCompatActivity() {
                     } else {
                         UtilityFunctions.dismissProgressDialog()
                         UtilityFunctions.showAlertOnActivity(this@ConfirmDetailsActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 
@@ -199,7 +216,7 @@ class ConfirmDetailsActivity : AppCompatActivity() {
                     } else {
                         UtilityFunctions.dismissProgressDialog()
                         UtilityFunctions.showAlertOnActivity(this@ConfirmDetailsActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 

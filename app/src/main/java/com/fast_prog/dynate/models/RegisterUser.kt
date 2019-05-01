@@ -13,8 +13,8 @@ class RegisterUser : Serializable {
     var mobile: String? = null
     var mail: String? = null
     var address: String? = null
-    var username: String? = null
-    var password: String? = null
+    //var username: String? = null
+    //var password: String? = null
     var latitude: String? = null
     var longitude: String? = null
     var loginMethod: String? = null

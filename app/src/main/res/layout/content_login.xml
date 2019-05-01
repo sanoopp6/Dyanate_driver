@@ -1,236 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorBG"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".views.LoginActivity">
+    tools:context=".views.LoginActivity"
+    android:baselineAligned="false">
 
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="125dp">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:src="@drawable/background_login"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ImageView
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_parking_worker"
+                android:layout_width="75dp"
+                android:layout_height="75dp" />
+
+        </FrameLayout>
 
         <ImageView
-            android:scaleType="fitCenter"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:alpha="0.2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:src="@drawable/logo_1" />
+            android:layout_marginTop="35dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_blue_triangle"
+            android:layout_width="50dp"
+            android:layout_height="25dp" />
 
-        <ScrollView
+        <TextView
+            android:id="@+id/userTypeTextView"
+            android:layout_marginTop="-60dp"
+            android:textAllCaps="true"
+            android:gravity="center"
+            style="@style/FontSizeFifteen"
+            android:textColor="@color/whiteColor"
+            android:text="@string/Driver"
+            android:background="@color/blueColor"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="40dp" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:padding="15dp">
+        <TextView
+            android:layout_marginTop="11dp"
+            android:textAllCaps="true"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            style="@style/FontSizeSixteen"
+            android:textColor="@color/blueColor"
+            android:text="@string/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+        <LinearLayout
+            android:layoutDirection="ltr"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                    <!--<LinearLayout-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_marginTop="30dp">-->
+            <com.hbb20.CountryCodePicker
+                app:ccp_showNameCode = "false"
+                app:ccp_showFlag="false"
+                app:ccp_textSize="15sp"
+                app:ccp_autoFormatNumber="false"
+                app:ccp_autoDetectCountry="false"
+                app:ccp_autoDetectLanguage="true"
+                app:ccp_defaultNameCode="SA"
+                android:textColor="@color/blackColor"
+                android:background="@android:color/transparent"
+                android:id="@+id/countryCodePicker"
+                android:layout_width="75dp"
+                android:layout_height="match_parent" />
 
-                        <!--<com.twitter.sdk.android.core.identity.TwitterLoginButton-->
-                            <!--android:id="@+id/button_twitter_login"-->
-                            <!--android:visibility="gone"-->
-                            <!--android:layout_height="0dp"-->
-                            <!--android:layout_width="0dp" />-->
+            <View
+                android:id="@+id/view_border"
+                android:layout_width="5dp"
+                android:layout_height="match_parent" />
 
-                        <!--<FrameLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="35dp"-->
-                            <!--android:background="@drawable/button_twitter_layout"-->
-                            <!--android:clipChildren="false">-->
+            <EditText
+                android:hint="051 234 5678"
+                android:id="@+id/edt_username"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                style="@style/FontSizeFifteen"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:background="@android:color/transparent"
+                android:textAlignment="textStart"
+                android:singleLine="true"
+                android:inputType="phone" />
 
-                            <!--<Button-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:textColor="@color/whiteColor"-->
-                                <!--android:text="@string/Twitter"-->
-                                <!--android:textAllCaps="false"-->
-                                <!--android:background="@android:color/transparent"-->
-                                <!--style="@style/FontSizeTwelve"-->
-                                <!--android:id="@+id/button_twitter"/>-->
+        </LinearLayout>
 
-                            <!--<ImageView-->
-                                <!--android:layout_width="22dp"-->
-                                <!--android:layout_height="22dp"-->
-                                <!--android:layout_gravity="start|center_vertical"-->
-                                <!--android:gravity="center"-->
-                                <!--android:src="@drawable/ic_twitter_32"-->
-                                <!--android:layout_marginStart="15dp"-->
-                                <!--android:layout_marginLeft="15dp" />-->
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="2dp">
 
-                        <!--</FrameLayout>-->
+            <View
+                android:background="@color/lighter_gray"
+                android:layout_width="75dp"
+                android:layout_height="match_parent" />
 
-                        <!--<View-->
-                            <!--android:layout_width="10dp"-->
-                            <!--android:layout_height="match_parent" />-->
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent" />
 
-                        <!--<com.facebook.login.widget.LoginButton-->
-                            <!--android:id="@+id/button_facebook_login"-->
-                            <!--android:visibility="gone"-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_height="0dp" />-->
+            <View
+                android:background="@color/lighter_gray"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-                        <!--<FrameLayout-->
-                            <!--android:layout_width="0dp"-->
-                            <!--android:layout_weight="1"-->
-                            <!--android:layout_height="35dp"-->
-                            <!--android:background="@drawable/button_facebook_layout"-->
-                            <!--android:clipChildren="false">-->
+        </LinearLayout>
 
-                            <!--<Button-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="match_parent"-->
-                                <!--android:textColor="@color/whiteColor"-->
-                                <!--android:text="@string/Facebook"-->
-                                <!--android:textAllCaps="false"-->
-                                <!--android:background="@android:color/transparent"-->
-                                <!--style="@style/FontSizeTwelve"-->
-                                <!--android:id="@+id/button_facebook"/>-->
+        <Button
+            android:layout_margin="30dp"
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/layout_rect_blue_rounded"
+            android:text="@string/Login"
+            android:textColor="@color/whiteColor"
+            style="@style/FontSizeSixteen" />
 
-                            <!--<ImageView-->
-                                <!--android:layout_width="22dp"-->
-                                <!--android:layout_height="22dp"-->
-                                <!--android:layout_gravity="start|center_vertical"-->
-                                <!--android:gravity="center"-->
-                                <!--android:src="@drawable/ic_facebook_32"-->
-                                <!--android:layout_marginStart="15dp"-->
-                                <!--android:layout_marginLeft="15dp" />-->
+    </LinearLayout>
 
-                        <!--</FrameLayout>-->
-
-                    <!--</LinearLayout>-->
-
-                    <LinearLayout
-                        android:layout_marginTop="40dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <com.hbb20.CountryCodePicker
-                            android:visibility="gone"
-                            app:ccp_showNameCode = "false"
-                            app:ccp_showFlag="false"
-                            app:ccp_textSize="15sp"
-                            app:ccp_autoFormatNumber="false"
-                            app:ccp_autoDetectCountry="false"
-                            app:ccp_autoDetectLanguage="true"
-                            app:ccp_defaultNameCode="SA"
-                            android:textColor="@color/blackColor"
-                            android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
-                            android:id="@+id/countryCodePicker"
-                            android:layout_width="75dp"
-                            android:layout_height="match_parent" />
-
-                        <View
-                            android:visibility="gone"
-                            android:id="@+id/view_border"
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent" />
-
-                        <EditText
-                            android:hint="@string/UsernameOrMobile"
-                            android:id="@+id/edt_username"
-                            android:layout_width="match_parent"
-                            android:layout_height="35dp"
-                            style="@style/FontSizeFifteen"
-                            android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
-                            android:textAlignment="center"
-                            android:singleLine="true"
-                            android:inputType="text" />
-
-                    </LinearLayout>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/layout_border_dark_grey_rounded_transparent_squre"
-                        android:clipChildren="false">
-
-                        <EditText
-                            android:textColor="@color/blackColor"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            style="@style/FontSizeFifteen"
-                            android:background="@android:color/transparent"
-                            android:hint="@string/Password"
-                            android:inputType="textPassword"
-                            android:textAlignment="center"
-                            android:maxLines="1"
-                            android:id="@+id/edt_password"/>
-
-                        <ImageView
-                            android:id="@+id/button_password_visibility"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="end|center_vertical"
-                            android:gravity="center"
-                            android:src="@drawable/ic_visibility_off"
-                            android:layout_marginEnd="15dp"
-                            android:layout_marginRight="15dp" />
-
-                    </FrameLayout>
-
-                    <Button
-                        android:id="@+id/btn_login"
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/button_green_rounded"
-                        android:text="@string/Login"
-                        android:textColor="@color/whiteColor"
-                        style="@style/FontBoldSixteen" />
-
-                    <TextView
-                        android:layout_marginTop="5dp"
-                        android:id="@+id/txt_forgot"
-                        android:layout_width="match_parent"
-                        android:textAlignment="center"
-                        android:background="@color/white10"
-                        android:layout_height="match_parent"
-                        android:text="@string/ForgotPassword"
-                        style="@style/FontSizeTwelve"
-                        android:textColor="@color/edit_text_focused_color"  />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-        </ScrollView>
-
-    </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/colorFooter" />
-
-
-</LinearLayout>
+</ScrollView>

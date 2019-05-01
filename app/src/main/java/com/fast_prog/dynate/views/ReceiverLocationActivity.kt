@@ -9,16 +9,14 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.PlaceItem
 import com.fast_prog.dynate.models.Ride
 import com.fast_prog.dynate.utilities.*
@@ -74,25 +72,14 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.SelectDropOffLocation)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@ReceiverLocationActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar!!.customView = titleTextView
+        customTitle(resources.getString(R.string.SelectDropOffLocation))
 
         try {
             Ride.instance
@@ -124,8 +111,8 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
         bookmark_location_image_view.setOnClickListener {
             if (placeItemSelectedKey.isNullOrEmpty()) {
                 UtilityFunctions.showAlertOnActivity(this@ReceiverLocationActivity,
-                        resources.getText(R.string.BookmarkLocation).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.BookmarkLocation), resources.getString(R.string.Yes),
+                        resources.getString(R.string.No), true, false,
                         {
                             placeItem = PlaceItem()
                             placeItem.pLatitude = userLocation?.latitude.toString()
@@ -150,8 +137,8 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
             } else {
                 UtilityFunctions.showAlertOnActivity(this@ReceiverLocationActivity,
-                        resources.getText(R.string.DeleteBookmarkedLocation).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.DeleteBookmarkedLocation), resources.getString(R.string.Yes),
+                        resources.getString(R.string.No), true, false,
                         {
                             try {
                                 val snappyDB = DBFactory.open(this@ReceiverLocationActivity, Constants.DYNA_DB)
@@ -230,11 +217,15 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
         btn_preview.setOnClickListener {
             UtilityFunctions.showAlertOnActivity(this@ReceiverLocationActivity,
-                    resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     {
                         if (!type_location_text_view.text.toString().equals(resources.getString(R.string.TypeYourLocation), true)) {
-                            Ride.instance.dropOffLocation = type_location_text_view.text.toString()
+                            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                                Ride.instance.dropOffLocation = text_view_province.text.toString() + " ،" + type_location_text_view.text.toString()
+                            } else {
+                                Ride.instance.dropOffLocation = type_location_text_view.text.toString() + ", " + text_view_province.text.toString()
+                            }
                             Ride.instance.dropOffLatitude = userLocation!!.latitude.toString()
                             Ride.instance.dropOffLongitude = userLocation!!.longitude.toString()
 
@@ -260,13 +251,13 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
                             if (distanceInMeters < 1000.0) {
                                 UtilityFunctions.showAlertOnActivity(this@ReceiverLocationActivity,
-                                        resources.getText(R.string.DistanceWithinAKM).toString(), resources.getString(R.string.Yes).toString(),
-                                        resources.getString(R.string.No).toString(), true, false,
+                                        resources.getString(R.string.DistanceWithinAKM), resources.getString(R.string.Yes),
+                                        resources.getString(R.string.No), true, false,
                                         {
-                                            startActivity(Intent(this@ReceiverLocationActivity, ConfirmFromToActivity::class.java))
+                                            startActivity(Intent(this@ReceiverLocationActivity, ShipmentDetActivity::class.java))
                                         }, {})
                             } else {
-                                startActivity(Intent(this@ReceiverLocationActivity, ConfirmFromToActivity::class.java))
+                                startActivity(Intent(this@ReceiverLocationActivity, ShipmentDetActivity::class.java))
                             }
                         }
                     }, {})
@@ -493,7 +484,7 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
             val locationNameParser = JsonParser()
             val params = HashMap<String, String>()
 
-            params["latlng"] = latitude.toString() + "," + longitude
+            params["latlng"] = latitude.toString() + "," + longitude.toString()
             params["sensor"] = "true"
             params["key"] = Constants.GOOGLE_API_KEY
 
@@ -533,15 +524,14 @@ class ReceiverLocationActivity : AppCompatActivity(), OnMapReadyCallback, Google
 
                         if (types.getString(0).equals("route", ignoreCase = true) || types.getString(0).equals("locality", ignoreCase = true) || types.length() > 1 && types.getString(1).equals("sublocality", ignoreCase = true)) {
 
-                            if (locationName.trim().length > 0) {
-                                locationName = locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
-
-                            } else {
-                                locationName = addressComponents.getJSONObject(i).getString("long_name")
-                            }
-
-                            if (types.getString(0).equals("locality", ignoreCase = true)) {
-                                provinceName = addressComponents.getJSONObject(i).getString("long_name")
+                            when {
+                                types.getString(0).equals("locality", true) -> provinceName = addressComponents.getJSONObject(i).getString("long_name")
+                                locationName.trim().isNotEmpty() -> locationName = if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                                    addressComponents.getJSONObject(i).getString("long_name") + " ،" + locationName
+                                } else {
+                                    locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
+                                }
+                                else -> locationName = addressComponents.getJSONObject(i).getString("long_name")
                             }
                         }
                     }

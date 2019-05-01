@@ -9,21 +9,18 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Base64
 import android.widget.LinearLayout
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.RegisterUser
 import com.fast_prog.dynate.models.UploadFiles
 import com.fast_prog.dynate.utilities.ConnectionDetector
@@ -62,10 +59,8 @@ class UploadDocsActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -73,16 +68,7 @@ class UploadDocsActivity : AppCompatActivity() {
 
         toolbar.setNavigationOnClickListener { backPressed() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Register)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@UploadDocsActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Register))
 
         button_id.setOnClickListener {
             selected = "id"
@@ -121,8 +107,8 @@ class UploadDocsActivity : AppCompatActivity() {
 
     private fun backPressed() {
         UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                resources.getString(R.string.FilledDataWillBeLost).toString(), resources.getString(R.string.Yes).toString(),
-                resources.getString(R.string.No).toString(), true, false,
+                resources.getString(R.string.FilledDataWillBeLost), resources.getString(R.string.Yes),
+                resources.getString(R.string.No), true, false,
                 { finish() }, {})
     }
 
@@ -156,14 +142,14 @@ class UploadDocsActivity : AppCompatActivity() {
             if (response != null) {
                 try {
                     if (response.getBoolean("status")) {
-                        VerifyOTPActivity.otpExtra = response.getJSONArray("data").getJSONObject(0).getString("OTP").trim()
-                        VerifyOTPActivity.registerUserExtra = registerUser
-                        VerifyOTPActivity.uploadFiles = uploadFiles
+                        VerifyOTPActivity.otp = response.getJSONArray("data").getJSONObject(0).getString("OTP").trim()
+                        //VerifyOTPActivity.registerUserExtra = registerUser
+                        //VerifyOTPActivity.uploadFiles = uploadFiles
                         startActivity(Intent(this@UploadDocsActivity, VerifyOTPActivity::class.java))
 
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 
@@ -180,7 +166,7 @@ class UploadDocsActivity : AppCompatActivity() {
 
         if (uploadFiles.imageName1 == null || uploadFiles.imageName1!!.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                    resources.getText(R.string.IDNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.IDNotSelected), resources.getString(R.string.Ok),
                     "", false, false, {}, {})
 
             return false
@@ -188,7 +174,7 @@ class UploadDocsActivity : AppCompatActivity() {
 
         if (uploadFiles.imageName2 == null || uploadFiles.imageName2!!.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                    resources.getText(R.string.CarFormNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.CarFormNotSelected), resources.getString(R.string.Ok),
                     "", false, false, {}, {})
 
             return false
@@ -196,7 +182,7 @@ class UploadDocsActivity : AppCompatActivity() {
 
         if (uploadFiles.imageName3 == null || uploadFiles.imageName3!!.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                    resources.getText(R.string.CardNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.CardNotSelected), resources.getString(R.string.Ok),
                     "", false, false, {}, {})
 
             return false
@@ -204,7 +190,7 @@ class UploadDocsActivity : AppCompatActivity() {
 
         if (uploadFiles.imageName4 == null || uploadFiles.imageName4!!.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                    resources.getText(R.string.OtherNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.OtherNotSelected), resources.getString(R.string.Ok),
                     "", false, false, {}, {})
 
             return false
@@ -232,7 +218,7 @@ class UploadDocsActivity : AppCompatActivity() {
 
             } else {
                 UtilityFunctions.showAlertOnActivity(this@UploadDocsActivity,
-                        resources.getString(R.string.ShootClearly).toString(), resources.getString(R.string.Ok).toString(),
+                        resources.getString(R.string.ShootClearly), resources.getString(R.string.Ok),
                         "", false, false,
                         {
                             val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)

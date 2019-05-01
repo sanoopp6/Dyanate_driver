@@ -9,16 +9,14 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.PlaceItem
 import com.fast_prog.dynate.utilities.*
 import com.google.android.gms.common.ConnectionResult
@@ -35,12 +33,12 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.snappydb.DBFactory
 import com.snappydb.SnappydbException
-import kotlinx.android.synthetic.main.content_map_location_picker.*
+import kotlinx.android.synthetic.main.content_sender_location.*
 import org.json.JSONArray
 import org.json.JSONException
-import java.util.*
 
-class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     internal val REQUEST_CODE_AUTOCOMPLETE = 1
 
@@ -70,29 +68,18 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_map_location_picker)
+        setContentView(R.layout.activity_sender_location)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.SelectAddress)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@MapLocationPickerActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.SelectAddress))
 
         mapViewSatellite = false
 
@@ -137,7 +124,6 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
                                 bookmark_location_image_view.setColorFilter(Color.parseColor(Constants.FILTER_COLOR))
 
                             } catch (e: SnappydbException) {
-                                Log.e("", e.message)
                                 e.printStackTrace()
                             }
                         }, {})
@@ -225,7 +211,11 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
         btn_select_location.setOnClickListener {
             if (!type_location_text_view.text.toString().equals(resources.getString(R.string.TypeYourLocation), true)) {
                 val placeItem = PlaceItem()
-                placeItem.plName = type_location_text_view.text.toString()
+                if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                    placeItem.plName = text_view_province.text.toString() + " ،" + type_location_text_view.text.toString()
+                } else {
+                    placeItem.plName = type_location_text_view.text.toString() + ", " + text_view_province.text.toString()
+                }
                 placeItem.pLatitude = userLocation!!.latitude.toString()
                 placeItem.pLongitude = userLocation!!.longitude.toString()
 
@@ -480,15 +470,14 @@ class MapLocationPickerActivity : AppCompatActivity(), OnMapReadyCallback, Googl
 
                         if (types.getString(0).equals("route", ignoreCase = true) || types.getString(0).equals("locality", ignoreCase = true) || types.length() > 1 && types.getString(1).equals("sublocality", ignoreCase = true)) {
 
-                            if (locationName.trim().length > 0) {
-                                locationName = locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
-
-                            } else {
-                                locationName = addressComponents.getJSONObject(i).getString("long_name")
-                            }
-
-                            if (types.getString(0).equals("locality", ignoreCase = true)) {
-                                provinceName = addressComponents.getJSONObject(i).getString("long_name")
+                            when {
+                                types.getString(0).equals("locality", true) -> provinceName = addressComponents.getJSONObject(i).getString("long_name")
+                                locationName.trim().isNotEmpty() -> locationName = if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+                                    addressComponents.getJSONObject(i).getString("long_name") + " ،" + locationName
+                                } else {
+                                    locationName + ", " + addressComponents.getJSONObject(i).getString("long_name")
+                                }
+                                else -> locationName = addressComponents.getJSONObject(i).getString("long_name")
                             }
                         }
                     }

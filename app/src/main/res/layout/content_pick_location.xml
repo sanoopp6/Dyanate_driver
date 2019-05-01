@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/button_grey_rounded" />
+        android:background="@drawable/layout_rect_grey_rounded" />
 
     <LinearLayout
         android:id="@+id/top_layout"
@@ -59,7 +59,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="@drawable/button_grey_rounded" />
+        android:background="@drawable/layout_rect_grey_rounded" />
 
     <ListView
         android:id="@+id/listView_results"

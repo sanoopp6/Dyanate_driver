@@ -10,17 +10,15 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.RelativeLayout
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.Order
 import com.fast_prog.dynate.models.Ride
 import com.fast_prog.dynate.utilities.*
@@ -57,6 +55,7 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
     internal lateinit var bounds: LatLngBounds
 
     private var tripID: String? = null
+    private var goingBack: Boolean = false
 
     internal var distanceStr = ""
     internal var durationStr = ""
@@ -69,25 +68,14 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.ConfirmTrip)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@ConfirmFromToActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.ConfirmTrip))
 
         try {
             Ride.instance
@@ -106,12 +94,12 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btn_confirm_route.setOnClickListener {
             UtilityFunctions.showAlertOnActivity(this@ConfirmFromToActivity,
-                    resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     {
                         UtilityFunctions.showAlertOnActivity(this@ConfirmFromToActivity,
-                                resources.getText(R.string.TripWillbeAssignedToYou).toString(), resources.getString(R.string.Yes).toString(),
-                                resources.getString(R.string.No).toString(), true, false,
+                                resources.getString(R.string.TripWillbeAssignedToYou), resources.getString(R.string.Yes),
+                                resources.getString(R.string.No), true, false,
                                 {
                                     if (ConnectionDetector.isConnected(this@ConfirmFromToActivity)) {
                                         AddTripMasterBackground().execute()
@@ -146,6 +134,19 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
                 mMap!!.uiSettings.isMapToolbarEnabled = false
             }
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (tripID != null && Integer.parseInt(tripID!!) > 0) {
+            if (ConnectionDetector.isConnected(this@ConfirmFromToActivity)) {
+                goingBack = true
+                TripMasterStatusUpdateBackground("4").execute()
+            } else {
+                ConnectionDetector.errorSnackbar(coordinator_layout)
+            }
+        } else { finish() }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -213,7 +214,8 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
         val str_origin = "origin=" + origin.latitude + "," + origin.longitude
         val str_dest = "destination=" + dest.latitude + "," + dest.longitude
         val sensor = "sensor=false"
-        val parameters = "$str_origin&$str_dest&$sensor"
+        val key = "key=" + Constants.GOOGLE_API_KEY
+        val parameters = "$str_origin&$str_dest&$sensor&$key"
         val output = "json"
 
         return "https://maps.googleapis.com/maps/api/directions/$output?$parameters"
@@ -258,7 +260,6 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
 
             try {
                 data = downloadUrl(url[0])
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -368,13 +369,13 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
             params["ArgTripMFromLat"] = Ride.instance.pickUpLatitude!!
             params["ArgTripMFromLng"] = Ride.instance.pickUpLongitude!!
             params["ArgTripMFromAddress"] = Ride.instance.pickUpLocation!!
-            params["ArgTripMFromIsSelf"] = Ride.instance.isFromSelf.toString()
+            params["ArgTripMFromIsSelf"] = "false"
             params["ArgTripMFromName"] = Ride.instance.fromName
             params["ArgTripMFromMob"] = Ride.instance.fromMobile
             params["ArgTripMToLat"] = Ride.instance.dropOffLatitude!!
             params["ArgTripMToLng"] = Ride.instance.dropOffLongitude!!
             params["ArgTripMToAddress"] = Ride.instance.dropOffLocation!!
-            params["ArgTripMToIsSelf"] = Ride.instance.isToSelf.toString()
+            params["ArgTripMToIsSelf"] = "false"
             params["ArgTripMToName"] = Ride.instance.toName
             params["ArgTripMToMob"] = Ride.instance.toMobile
             params["ArgTripMSubject"] = Ride.instance.subject
@@ -405,7 +406,7 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
                     } else {
                         UtilityFunctions.dismissProgressDialog()
                         UtilityFunctions.showAlertOnActivity(this@ConfirmFromToActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 
@@ -452,7 +453,7 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
                     } else {
                         UtilityFunctions.dismissProgressDialog()
                         UtilityFunctions.showAlertOnActivity(this@ConfirmFromToActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 
@@ -545,6 +546,50 @@ class ConfirmFromToActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                     }
 
+                } catch (e: JSONException) { e.printStackTrace() }
+            }
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private inner class TripMasterStatusUpdateBackground internal constructor(internal var status: String) : AsyncTask<Void, Void, JSONObject>() {
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            UtilityFunctions.showProgressDialog (this@ConfirmFromToActivity)
+        }
+
+        override fun doInBackground(vararg param: Void): JSONObject? {
+            val jsonParser = JsonParser()
+            val params = HashMap<String, String>()
+
+            params["ArgTripMID"] = tripID!!
+            params["ArgTripMStatus"] = status
+
+            var BASE_URL = Constants.BASE_URL_EN + "TripMasterStatusUpdate"
+
+            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
+                BASE_URL = Constants.BASE_URL_AR + "TripMasterStatusUpdate"
+            }
+
+            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+        }
+
+        override fun onPostExecute(response: JSONObject?) {
+            UtilityFunctions.dismissProgressDialog()
+
+            if (response != null) {
+                try {
+                    if (response.getBoolean("status")) {
+                        Ride.instance = Ride()
+
+                        if (goingBack) {
+                            finish()
+                        } else {
+                            startActivity(Intent(this@ConfirmFromToActivity, ShipmentDetActivity::class.java))
+                            finish()
+                        }
+                    }
                 } catch (e: JSONException) { e.printStackTrace() }
             }
         }

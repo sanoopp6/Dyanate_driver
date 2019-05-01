@@ -24,7 +24,7 @@
                 android:id="@+id/place_name_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                style="@style/FontBoldSixteen"
+                style="@style/FontSizeSixteen"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:paddingStart="3dp" />

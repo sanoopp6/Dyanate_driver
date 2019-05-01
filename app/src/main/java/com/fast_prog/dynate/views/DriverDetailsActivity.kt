@@ -4,24 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
+import com.fast_prog.dynate.extensions.hideKeyboard
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
@@ -57,28 +55,17 @@ class DriverDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driver_details)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Registrations)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@DriverDetailsActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Registrations))
 
         button_accept.alpha = 0.5f
         button_reject.alpha = 0.5f
@@ -137,22 +124,22 @@ class DriverDetailsActivity : AppCompatActivity() {
             editText_license_no.setText(licenseNo)
 
             button_accept.setOnClickListener {
-                hideSoftKeyboard()
+                hideKeyboard()
 
                 if (validate()) {
                     UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                            resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                            resources.getString(R.string.No).toString(), true, false,
+                            resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                            resources.getString(R.string.No), true, false,
                             { UpdateDriverMasterBackground().execute() }, {})
                 }
             }
 
             button_reject.setOnClickListener {
-                hideSoftKeyboard()
+                hideKeyboard()
 
                 UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                        resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                        resources.getString(R.string.No), true, false,
                         {
                             val builder = AlertDialog.Builder(this@DriverDetailsActivity)
                             val inflater = this@DriverDetailsActivity.layoutInflater
@@ -202,13 +189,6 @@ class DriverDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideSoftKeyboard() {
-        if (currentFocus != null) {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-        }
-    }
-
     @SuppressLint("StaticFieldLeak")
     private inner class RegFilesListBackground : AsyncTask<Void, Void, JSONObject>() {
 
@@ -245,10 +225,10 @@ class DriverDetailsActivity : AppCompatActivity() {
                         cardImgUrl = Constants.IMG_URL + jsonObj.getString("URL").trim()
                         otherImgUrl = Constants.IMG_URL + jsonObj.getString("URL").trim()
 
-                        Picasso.with(this@DriverDetailsActivity).load(idImgUrl).placeholder(R.drawable.image_progress_view).error(R.drawable.logo_1).into(imageView_id)
-                        Picasso.with(this@DriverDetailsActivity).load(carFormImgUrl).placeholder(R.drawable.image_progress_view).error(R.drawable.logo_1).into(imageView_car_form)
-                        Picasso.with(this@DriverDetailsActivity).load(cardImgUrl).placeholder(R.drawable.image_progress_view).error(R.drawable.logo_1).into(imageView_card)
-                        Picasso.with(this@DriverDetailsActivity).load(otherImgUrl).placeholder(R.drawable.image_progress_view).error(R.drawable.logo_1).into(imageView_other)
+                        Picasso.get().load(idImgUrl).placeholder(R.drawable.progress_view).error(R.drawable.dynate_1).into(imageView_id)
+                        Picasso.get().load(carFormImgUrl).placeholder(R.drawable.progress_view).error(R.drawable.dynate_1).into(imageView_car_form)
+                        Picasso.get().load(cardImgUrl).placeholder(R.drawable.progress_view).error(R.drawable.dynate_1).into(imageView_card)
+                        Picasso.get().load(otherImgUrl).placeholder(R.drawable.progress_view).error(R.drawable.dynate_1).into(imageView_other)
 
                         imageView_id.setOnClickListener {
                             ShowPDFImageActivity.imgURL = idImgUrl
@@ -296,14 +276,14 @@ class DriverDetailsActivity : AppCompatActivity() {
 
         if (fullname.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                    resources.getText(R.string.InvalidName).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidName), resources.getString(R.string.Ok),
                     "", false, false, {}, {})
             return false
         }
 
         if (!email.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                    resources.getText(R.string.InvalidEmail).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidEmail), resources.getString(R.string.Ok),
                     "", false, false,
                     { editText_email.requestFocus() }, {})
             return false
@@ -311,7 +291,7 @@ class DriverDetailsActivity : AppCompatActivity() {
 
         if (!countryCodePicker.isValidFullNumber) {
             UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                    resources.getText(R.string.InvalidMobileNumber).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidMobileNumber), resources.getString(R.string.Ok),
                     "", false, false,
                     { editText_mobile.requestFocus() }, {})
             return false
@@ -319,7 +299,7 @@ class DriverDetailsActivity : AppCompatActivity() {
 
         if (licenseNo.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                    resources.getText(R.string.InvalidLicenseNo).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidLicenseNo), resources.getString(R.string.Ok),
                     "", false, false,
                     { editText_license_no.requestFocus() }, {})
             return false
@@ -371,12 +351,12 @@ class DriverDetailsActivity : AppCompatActivity() {
                 try {
                     if (jsonObject.getBoolean("status")) {
                         UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                                resources.getString(R.string.DriverApproved).toString(), resources.getString(R.string.Ok).toString(),
+                                resources.getString(R.string.DriverApproved), resources.getString(R.string.Ok),
                                 "", false, false,
                                 { finish() }, {})
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@DriverDetailsActivity,
-                                jsonObject.getString("message"), resources.getString(R.string.Ok).toString(),
+                                jsonObject.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
                 } catch (e: JSONException) {
@@ -417,12 +397,12 @@ class DriverDetailsActivity : AppCompatActivity() {
 //                try {
 //                    if (jsonObject.getBoolean("status")) {
 //                        UtilityFunctions.showAlertOnActivity(this@WakeelDetailsActivity,
-//                                resources.getString(R.string.WakeelRejected).toString(), resources.getString(R.string.Ok).toString(),
+//                                resources.getString(R.string.WakeelRejected), resources.getString(R.string.Ok),
 //                                "", false, false,
 //                                { finish() }, {})
 //                    } else {
 //                        UtilityFunctions.showAlertOnActivity(this@WakeelDetailsActivity,
-//                                jsonObject.getString("message"), resources.getString(R.string.Ok).toString(),
+//                                jsonObject.getString("message"), resources.getString(R.string.Ok),
 //                                "", false, false, {}, {})
 //                    }
 //                } catch (e: JSONException) {

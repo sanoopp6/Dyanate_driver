@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
@@ -17,12 +15,13 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
 import com.fast_prog.dynate.utilities.UtilityFunctions
+import com.fast_prog.dynate.views.removed.ForgotPasswordActivity
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.content_login.*
 import org.json.JSONException
@@ -31,15 +30,9 @@ import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
-    internal lateinit var loginMethod: String
     internal lateinit var username: String
-    internal lateinit var password: String
-    internal lateinit var name: String
 
     internal lateinit var sharedPreferences: SharedPreferences
-
-    internal var passwordVisible = false
-    internal var mobileVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,117 +40,48 @@ class LoginActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Login)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@LoginActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Login))
 
         countryCodePicker.registerCarrierNumberEditText(edt_username)
 
-        button_password_visibility.setOnClickListener {
-            if (passwordVisible) {
-                edt_password.transformationMethod = null
-                button_password_visibility.setImageDrawable(ContextCompat.getDrawable(this@LoginActivity, R.drawable.ic_visibility))
-            } else {
-                edt_password.transformationMethod = PasswordTransformationMethod()
-                button_password_visibility.setImageDrawable(ContextCompat.getDrawable(this@LoginActivity, R.drawable.ic_visibility_off))
-            }
-
-            passwordVisible = !passwordVisible
-            edt_username.setSelection(edt_username.text.length)
+        if (sharedPreferences.getString(Constants.PREFS_USER_TYPE, "") == Constants.USER_TYPE_CONST_DRIVER) {
+            userTypeTextView.text = resources.getString(R.string.Driver)
+        } else {
+            userTypeTextView.text = resources.getString(R.string.Admin)
         }
-
-        edt_username.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val numeric = p0.toString().trim().matches("-?\\d+(\\d+)?".toRegex())
-
-                if (numeric && p0.toString().trim().length >= 9) {
-                    countryCodePicker.visibility = View.VISIBLE
-                    view_border.visibility = View.VISIBLE
-                    mobileVisible = true
-
-                } else {
-                    countryCodePicker.visibility = View.GONE
-                    view_border.visibility = View.GONE
-                    mobileVisible = false
-                }
-            }
-        })
 
         btn_login.setOnClickListener {
             if (validate()){
-                if (ConnectionDetector.isConnectedOrConnecting(applicationContext)) {
-                    CheckDriverLoginBackground().execute()
-                } else {
-                    ConnectionDetector.errorSnackbar(coordinator_layout)
-                }
+                VerifyOTPActivity.username = username
+                VerifyOTPActivity.otp = "1234"
+                startActivity(Intent(this@LoginActivity, VerifyOTPActivity::class.java))
+//                if (ConnectionDetector.isConnectedOrConnecting(applicationContext)) {
+//                    CheckDriverLoginBackground().execute()
+//                } else {
+//                    ConnectionDetector.errorSnackbar(coordinator_layout)
+//                }
             }
-        }
-
-        txt_forgot.setOnClickListener { startActivity(Intent(this@LoginActivity, ForgotPasswordActivity::class.java)) }
-
-        if (sharedPreferences.getString(Constants.PREFS_SAVED_USERNAME, "").isNotEmpty()) {
-            edt_username.setText(sharedPreferences.getString(Constants.PREFS_SAVED_USERNAME, ""))
         }
     }
 
     private fun validate(): Boolean {
-        username = edt_username.text.toString().trim()
-        password = edt_password.text.toString().trim()
-        loginMethod = Constants.LOG_CONST_NORMAL
+        username = countryCodePicker.selectedCountryCodeWithPlus + edt_username.text.removePrefix("0")
 
-        if (username.isEmpty()) {
+        if (!countryCodePicker.isValidFullNumber) {
             UtilityFunctions.showAlertOnActivity(this@LoginActivity,
-                    resources.getText(R.string.InvalidUsername).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidMobileNumber), resources.getString(R.string.Ok),
                     "", false, false, {}, {})
             edt_username.requestFocus()
             return false
         } else {
             edt_username.error = null
-        }
-
-        if (password.isEmpty()) {
-            UtilityFunctions.showAlertOnActivity(this@LoginActivity,
-                    resources.getText(R.string.InvalidPassword).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false, {}, {})
-            edt_password.requestFocus()
-            return false
-        } else {
-            edt_password.error = null
-        }
-
-        if (mobileVisible) {
-            if (!countryCodePicker.isValidFullNumber) {
-                UtilityFunctions.showAlertOnActivity(this@LoginActivity,
-                        resources.getText(R.string.InvalidMobileNumber).toString(), resources.getString(R.string.Ok).toString(),
-                        "", false, false, {}, {})
-                edt_username.requestFocus()
-                return false
-            } else {
-                username = countryCodePicker.selectedCountryCodeWithPlus + edt_username.text.removePrefix("0")
-                edt_username.error = null
-            }
         }
 
         return true
@@ -176,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
             val params = HashMap<String, String>()
 
             params["ArgDmUserId"] = username
-            params["ArgDmPassWord"] = password
+            params["ArgDmPassWord"] = username
 
             var BASE_URL = Constants.BASE_URL_EN + "CheckDriverLogin"
 
@@ -204,14 +128,9 @@ class LoginActivity : AppCompatActivity() {
                         editor.putString(Constants.PREFS_LONGITUDE, response.getJSONArray("data").getJSONObject(0).getString("DmLongitude"))
                         editor.putString(Constants.PREFS_USER_NAME, response.getJSONArray("data").getJSONObject(0).getString("DmUserId"))
                         editor.putString(Constants.PREFS_USER_CONSTANT, response.getJSONArray("data").getJSONObject(0).getString("DmLoginToken"))
-                        editor.putBoolean(Constants.PREFS_IS_FACTORY, response.getJSONArray("data").getJSONObject(0).getBoolean("DmIsFactory"))
+                        //editor.putBoolean(Constants.PREFS_IS_FACTORY, response.getJSONArray("data").getJSONObject(0).getBoolean("DmIsFactory"))
                         editor.putString(Constants.PREFS_SHARE_URL, "https://goo.gl/i7Qasx")
                         editor.putBoolean(Constants.PREFS_IS_LOGIN, true)
-
-                        if (loginMethod == Constants.LOG_CONST_NORMAL) {
-                            editor.putString(Constants.PREFS_SAVED_USERNAME, response.getJSONArray("data").getJSONObject(0).getString("DmUserId").trim())
-                        }
-
                         editor.commit()
 
                         val intent = Intent(this@LoginActivity, HomeActivity::class.java)
@@ -221,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
 
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@LoginActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 

@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
-            android:src="@drawable/logo_1" />
+            android:src="@drawable/dynate_1" />
 
         <android.support.v7.widget.CardView
             android:layout_gravity="center_vertical"
@@ -43,14 +43,14 @@
                     android:gravity="center"
                     android:padding="20dp"
                     android:orientation="vertical"
-                    android:background="@drawable/button_lightblue_rounded"
+                    android:background="@drawable/layout_rect_lightblue_rounded"
                     android:layout_height="wrap_content">
 
                     <ImageView
                         android:layout_width="80dp"
                         android:layout_height="80dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/logo_1" />
+                        android:src="@drawable/dynate_1" />
 
                     <TextView
                         android:layout_marginTop="5dp"
@@ -77,7 +77,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        style="@style/FontBoldSixteen"
+                        style="@style/FontSizeSixteen"
                         android:textDirection="ltr"
                         android:textColor="@color/whiteColor"
                         android:text="+ 966 5577 69868"
@@ -88,7 +88,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/FontBoldSixteen"
+                        style="@style/FontSizeSixteen"
                         android:textAlignment="center"
                         android:textColor="@color/whiteColor"
                         android:text="info@fast-prog.com"

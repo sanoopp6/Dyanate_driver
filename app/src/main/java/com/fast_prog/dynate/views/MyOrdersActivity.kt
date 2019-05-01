@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,15 +13,17 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.Order
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
 import com.fast_prog.dynate.utilities.UtilityFunctions
 import kotlinx.android.synthetic.main.activity_my_orders.*
-import kotlinx.android.synthetic.main.content_my_orders.*
+import kotlinx.android.synthetic.main.content_all_orders_list.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -33,13 +32,13 @@ class MyOrdersActivity : AppCompatActivity() {
 
     internal var ordersArrayList: MutableList<Order>? = null
 
-    internal lateinit var orderSelected: Order
+    //internal lateinit var orderSelected: Order
 
     internal lateinit var homeLayoutManager: LinearLayoutManager
 
     internal lateinit var mHomeAdapter: RecyclerView.Adapter<*>
 
-    internal var selectedId: String? = null
+    //internal var selectedId: String? = null
 
     internal lateinit var sharedPreferences: SharedPreferences
 
@@ -51,53 +50,42 @@ class MyOrdersActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.app_name)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@MyOrdersActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.MyOrders))
 
-        show_button.setOnClickListener {
-            val intent = Intent(this@MyOrdersActivity, OrderDetailActivity::class.java)
-            intent.putExtra("order", orderSelected)
-            startActivity(intent)
-        }
+        //show_button.setOnClickListener {
+        //    val intent = Intent(this@MyOrdersActivity, OrderDetailActivity::class.java)
+        //    intent.putExtra("order", orderSelected)
+        //    startActivity(intent)
+        //}
+        //
+        //if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
+        //    time_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
+        //    subject_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
+        //    notes_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
+        //    from_addr_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
+        //    to_addr_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
+        //    veh_name_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
+        //} else {
+        //    time_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
+        //    subject_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
+        //    notes_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
+        //    from_addr_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
+        //    to_addr_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
+        //    veh_name_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
+        //}
 
-        if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", true)) {
-            time_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
-            subject_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
-            notes_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
-            from_addr_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
-            to_addr_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
-            veh_name_value_text_view.textDirection = View.TEXT_DIRECTION_RTL
-        } else {
-            time_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
-            subject_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
-            notes_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
-            from_addr_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
-            to_addr_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
-            veh_name_value_text_view.textDirection = View.TEXT_DIRECTION_LTR
-        }
-
-        recycler_my_orders.setHasFixedSize(true)
+        orderListRecyclerView.setHasFixedSize(true)
         homeLayoutManager = LinearLayoutManager(this@MyOrdersActivity)
-        recycler_my_orders.layoutManager = homeLayoutManager
+        orderListRecyclerView.layoutManager = homeLayoutManager
         mHomeAdapter = MyOrdersAdapter()
-        recycler_my_orders.adapter = mHomeAdapter
+        orderListRecyclerView.adapter = mHomeAdapter
     }
 
     override fun onResume() {
@@ -187,27 +175,25 @@ class MyOrdersActivity : AppCompatActivity() {
 
                                 ordersArrayList!!.add(order)
 
-                                if (selectedId != null && selectedId == order.tripId) {
-                                    orderSelected = order
-
-                                    show_button.isEnabled = true
-
-                                    order_no_value_text_view.text = orderSelected.tripNo
-                                    veh_name_value_text_view.text = orderSelected.vehicleModel
-                                    from_addr_value_text_view.text = orderSelected.tripFromAddress
-                                    to_addr_value_text_view.text = orderSelected.tripToAddress
-                                    date_value_text_view.text = orderSelected.scheduleDate
-                                    time_value_text_view.text = orderSelected.scheduleTime
-                                    subject_value_text_view.text = orderSelected.tripSubject
-                                    notes_value_text_view.text = orderSelected.tripNotes
-                                    status_value_text_view.text = orderSelected.tripFilter
-                                }
+                                //if (selectedId != null && selectedId == order.tripId) {
+                                //    orderSelected = order
+                                //    show_button.isEnabled = true
+                                //    order_no_value_text_view.text = orderSelected.tripNo
+                                //    veh_name_value_text_view.text = orderSelected.vehicleModel
+                                //    from_addr_value_text_view.text = orderSelected.tripFromAddress
+                                //    to_addr_value_text_view.text = orderSelected.tripToAddress
+                                //    date_value_text_view.text = orderSelected.scheduleDate
+                                //    time_value_text_view.text = orderSelected.scheduleTime
+                                //    subject_value_text_view.text = orderSelected.tripSubject
+                                //    notes_value_text_view.text = orderSelected.tripNotes
+                                //    status_value_text_view.text = orderSelected.tripFilter
+                                //}
                             }
                             mHomeAdapter.notifyDataSetChanged()
 
                         } else {
                             UtilityFunctions.showAlertOnActivity(this@MyOrdersActivity,
-                                    response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                    response.getString("message"), resources.getString(R.string.Ok),
                                     "", false, false, {}, {})
                         }
                     }
@@ -221,9 +207,9 @@ class MyOrdersActivity : AppCompatActivity() {
     internal inner class MyOrdersAdapter : RecyclerView.Adapter<MyOrdersAdapter.ViewHolder>() {
 
         internal inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            var orderNo: TextView = v.findViewById(R.id.id_text_view) as TextView
-            var address: TextView = v.findViewById(R.id.id_text_from_to) as TextView
-            var view1: TextView = v.findViewById(R.id.show_details) as TextView
+            var priceTextView: TextView = v.findViewById(R.id.priceTextView) as TextView
+            var dateTextView: TextView = v.findViewById(R.id.dateTextView) as TextView
+            var detailsButton: Button = v.findViewById(R.id.detailsButton) as Button
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyOrdersAdapter.ViewHolder {
@@ -232,32 +218,23 @@ class MyOrdersActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            //View view = holder.itemView;
             holder.setIsRecyclable(false)
 
-            holder.orderNo.text = ordersArrayList!![position].tripNo
-            holder.address.text = String.format("%s - %s", ordersArrayList!![position].tripFromAddress, ordersArrayList!![position].tripToAddress)
+            holder.priceTextView.text = "10"
+            holder.dateTextView.text = ordersArrayList!![position].scheduleDate
 
-            holder.view1.setOnClickListener {
-                orderSelected = ordersArrayList!![position]
-                selectedId = orderSelected.tripId
+            holder.detailsButton.setOnClickListener {
+                val order = ordersArrayList!![position]
 
-                show_button.isEnabled = true
-
-                order_no_value_text_view.text = ordersArrayList!![position].tripNo
-                veh_name_value_text_view.text = orderSelected.vehicleModel
-                from_addr_value_text_view.text = orderSelected.tripFromAddress
-                to_addr_value_text_view.text = orderSelected.tripToAddress
-                date_value_text_view.text = orderSelected.scheduleDate
-                time_value_text_view.text = orderSelected.scheduleTime
-                subject_value_text_view.text = orderSelected.tripSubject
-                notes_value_text_view.text = orderSelected.tripNotes
-                status_value_text_view.text = orderSelected.tripFilter
+                val intent = Intent(this@MyOrdersActivity, ShipmentDetailsActivity::class.java)
+                intent.putExtra("order", order)
+                startActivity(intent)
             }
         }
 
         override fun getItemCount(): Int {
-            return if (ordersArrayList != null) ordersArrayList!!.size else 0
+            return ordersArrayList?.size?:0
         }
+
     }
 }

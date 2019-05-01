@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -21,6 +19,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
@@ -29,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_instructions.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import java.util.HashMap
+import java.util.*
 
 class InstructionsActivity : AppCompatActivity() {
 
@@ -44,28 +43,17 @@ class InstructionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instructions)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Instructions)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@InstructionsActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar!!.customView = titleTextView
+        customTitle(resources.getString(R.string.Instructions))
 
         recyclerView_instructions.setHasFixedSize(true)
         linearLayoutManagerInstructions = LinearLayoutManager(this@InstructionsActivity)
@@ -162,9 +150,8 @@ class InstructionsActivity : AppCompatActivity() {
             }
         }
 
-        // Return the size of your dataset (invoked by the layout manager)
         override fun getItemCount(): Int {
-            return if (jsonArrayInstructions != null) jsonArrayInstructions!!.length() else 0
+            return jsonArrayInstructions?.length()?:0
         }
     }
 }

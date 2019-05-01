@@ -5,11 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -18,10 +19,12 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
@@ -49,30 +52,19 @@ class ShowFeedbackListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_feedback_list)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
+
+        sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
         isCommon = intent.getBooleanExtra("isCommon", false)
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = if (isCommon) resources.getString(R.string.CommonFeedbacks) else resources.getString(R.string.ShowFeedbacks)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@ShowFeedbackListActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(if (isCommon) resources.getString(R.string.CommonFeedbacks) else resources.getString(R.string.ShowFeedbacks))
 
         recyclerView_feedbacks_list.setHasFixedSize(true)
         linearLayoutManagerFeedbackList = LinearLayoutManager(this@ShowFeedbackListActivity)
@@ -80,34 +72,47 @@ class ShowFeedbackListActivity : AppCompatActivity() {
         recyclerViewAdapterFeedbackList = FeedbackListAdapter()
         recyclerView_feedbacks_list.adapter = recyclerViewAdapterFeedbackList
 
-        checkBox_complaints.setOnClickListener {
-            checkBox_suggections.isChecked = false
-            checkBox_complaints.isChecked = true
-
-            if (!isComplaint) {
-                isComplaint = true
-
-                if (ConnectionDetector.isConnected(applicationContext)) {
-                    FeedbackListBackground().execute()
+        tabLayout_feedback.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                if (tab.position == 0) {
+                    if (!isComplaint) {
+                        isComplaint = true
+                        reloadFeedback()
+                    }
                 } else {
-                    ConnectionDetector.errorSnackbar(coordinator_layout)
+                    if (isComplaint) {
+                        isComplaint = false
+                        reloadFeedback()
+                    }
                 }
             }
-        }
 
-        checkBox_suggections.setOnClickListener {
-            checkBox_complaints.isChecked = false
-            checkBox_suggections.isChecked = true
+            override fun onTabUnselected(tab: TabLayout.Tab) { }
+            override fun onTabReselected(tab: TabLayout.Tab) { }
+        })
 
+        floatingactionbutton_add.setOnClickListener {
             if (isComplaint) {
-                isComplaint = false
-
-                if (ConnectionDetector.isConnected(applicationContext)) {
-                    FeedbackListBackground().execute()
-                } else {
-                    ConnectionDetector.errorSnackbar(coordinator_layout)
-                }
+                FeedbackActivity.type = "complaints"
+            } else {
+                FeedbackActivity.type = "suggestions"
             }
+
+            startActivity(Intent(this@ShowFeedbackListActivity, FeedbackActivity::class.java))
+        }
+    }
+
+    private fun reloadFeedback() {
+        textView_no_rows.visibility = View.GONE
+        linearLayout_back.visibility = View.GONE
+
+        jsonArrayFeedbackList = JSONArray()
+        recyclerViewAdapterFeedbackList.notifyDataSetChanged()
+
+        if (ConnectionDetector.isConnected(applicationContext)) {
+            FeedbackListBackground().execute()
+        } else {
+            ConnectionDetector.errorSnackbar(coordinator_layout)
         }
     }
 
@@ -165,6 +170,20 @@ class ShowFeedbackListActivity : AppCompatActivity() {
                         jsonArrayFeedbackList = JSONArray()
                         recyclerViewAdapterFeedbackList.notifyDataSetChanged()
                     }
+
+                    if (jsonArrayFeedbackList == null || jsonArrayFeedbackList?.length()!! <= 0) {
+                        textView_no_rows.visibility = View.VISIBLE
+                        linearLayout_back.visibility = View.GONE
+                        if (!isComplaint) {
+                            textView_no_rows.text = resources.getString(R.string.NoFeedbacks)
+                        } else {
+                            textView_no_rows.text = resources.getString(R.string.NoComplaints)
+                        }
+                    } else {
+                        textView_no_rows.visibility = View.GONE
+                        linearLayout_back.visibility = View.VISIBLE
+                    }
+
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
@@ -178,11 +197,10 @@ class ShowFeedbackListActivity : AppCompatActivity() {
     internal inner class FeedbackListAdapter : RecyclerView.Adapter<FeedbackListAdapter.ViewHolder>() {
 
         internal inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            var textViewSlNo: TextView = v.findViewById<View>(R.id.textView_slNo) as TextView
-            var textViewName: TextView = v.findViewById<View>(R.id.textView_name) as TextView
-            var textViewDate: TextView = v.findViewById<View>(R.id.textView_date) as TextView
-            var imageViewAttachment: ImageView = v.findViewById<View>(R.id.imageView_attachment) as ImageView
-            var linearLayoutBack: LinearLayout = v.findViewById<View>(R.id.linearLayout_back) as LinearLayout
+            var textView1Name: TextView = v.findViewById<View>(R.id.textView1_name) as TextView
+            var textView1Mobile: TextView = v.findViewById<View>(R.id.textView1_mobile) as TextView
+            var textView1Date: TextView = v.findViewById<View>(R.id.textView1_date) as TextView
+            var button1View: Button = v.findViewById<View>(R.id.button1_view) as Button
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -194,45 +212,34 @@ class ShowFeedbackListActivity : AppCompatActivity() {
             holder.setIsRecyclable(false)
 
             try {
-                holder.textViewSlNo.text = (position + 1).toString()
-                holder.textViewName.text = jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedUserId")?.trim()
-                holder.textViewDate.text = jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedCrDtTm")?.trim()
+                holder.textView1Name.text = jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedUserId")?.trim()
+                holder.textView1Mobile.text = jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedUserId")?.trim()
+                holder.textView1Date.text = jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedCrDtTm")?.trim()
+                holder.button1View.paintFlags = holder.button1View.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
-                if (!jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedIsRead")?.trim()?.toBoolean()!!) {
-                    holder.textViewSlNo.setTypeface(holder.textViewSlNo.typeface, Typeface.BOLD)
-                    holder.textViewName.setTypeface(holder.textViewName.typeface, Typeface.BOLD)
-                    holder.textViewDate.setTypeface(holder.textViewDate.typeface, Typeface.BOLD)
-                    holder.linearLayoutBack.setBackgroundColor(ContextCompat.getColor(this@ShowFeedbackListActivity, R.color.lighter_gray))
-                } else {
-                    holder.textViewSlNo.setTypeface(holder.textViewSlNo.typeface, Typeface.NORMAL)
-                    holder.textViewName.setTypeface(holder.textViewName.typeface, Typeface.NORMAL)
-                    holder.textViewDate.setTypeface(holder.textViewDate.typeface, Typeface.NORMAL)
-                    holder.linearLayoutBack.setBackgroundColor(Color.WHITE)
-                }
+                //if (jsonArrayFeedbackList?.getJSONObject(position)?.getString("uploadedDocs")?.trim()?.equals("nil", true)!! ||
+                //        jsonArrayFeedbackList?.getJSONObject(position)?.getString("uploadedDocs")?.trim().isNullOrEmpty()) {
+                //    holder.imageViewAttachment.visibility = View.INVISIBLE
+                //} else {
+                //    holder.imageViewAttachment.visibility = View.VISIBLE
+                //}
 
-                if (jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedDocs")?.trim()?.equals("nil", true)!! ||
-                        jsonArrayFeedbackList?.getJSONObject(position)?.getString("FeedDocs")?.trim().isNullOrEmpty()) {
-                    holder.imageViewAttachment.visibility = View.INVISIBLE
-                } else {
-                    holder.imageViewAttachment.visibility = View.VISIBLE
+                holder.button1View.setOnClickListener {
+                    val jsonObj = jsonArrayFeedbackList?.getJSONObject(position)
+
+                    FeedbackDetailActivity.readStatus = jsonObj?.getString("FeedIsRead")?.toBoolean()?:false
+                    FeedbackDetailActivity.isComplaint = isComplaint
+                    FeedbackDetailActivity.jsonObject = jsonObj
+
+                    val intent = Intent(this@ShowFeedbackListActivity, FeedbackDetailActivity::class.java)
+                    startActivity(intent)
+
+                    //jsonArrayFeedbackList?.getJSONObject(position)?.put("FeedIsRead", "true")
+                    //recyclerViewAdapterFeedbackList.notifyDataSetChanged()
                 }
 
             } catch (e: JSONException) {
                 e.printStackTrace()
-            }
-
-            holder.itemView.setOnClickListener {
-                val jsonObj = jsonArrayFeedbackList?.getJSONObject(position)
-
-                FeedbackDetailActivity.readStatus = jsonObj?.getString("FeedIsRead")?.trim()?.toBoolean()!!
-                FeedbackDetailActivity.isComplaint = isComplaint
-                FeedbackDetailActivity.jsonObject = jsonObj
-
-                val intent = Intent(this@ShowFeedbackListActivity, FeedbackDetailActivity::class.java)
-                startActivity(intent)
-
-                jsonArrayFeedbackList?.getJSONObject(position)?.put("FeedIsRead", "1")
-                recyclerViewAdapterFeedbackList.notifyDataSetChanged()
             }
         }
 

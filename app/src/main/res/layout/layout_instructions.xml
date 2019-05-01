@@ -25,7 +25,7 @@
                 android:background="@android:color/transparent"
                 android:layout_width="50dp"
                 android:textAlignment="center"
-                style="@style/FontSizeFourteen"
+                style="@style/FontSizeTwelve"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView_slNo" />
 
@@ -34,7 +34,7 @@
                 android:background="@android:color/transparent"
                 android:textColor="@color/blackColor"
                 android:textAlignment="center"
-                style="@style/FontSizeFourteen"
+                style="@style/FontSizeTwelve"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -44,10 +44,10 @@
                 android:id="@+id/button_view"
                 android:background="@android:color/transparent"
                 android:textColor="@color/edit_text_focused_color"
-                android:layout_width="55dp"
+                android:layout_width="70dp"
                 android:textAllCaps="false"
                 android:textAlignment="center"
-                style="@style/FontSizeFourteen"
+                style="@style/FontSizeTwelve"
                 android:text="@string/View"
                 android:layout_height="wrap_content" />
 

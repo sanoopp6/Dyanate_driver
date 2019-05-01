@@ -16,9 +16,9 @@
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/layout_transparent_squre_rounded"
+        android:background="@drawable/layout_rect_transparent_rounded"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/logo_1" />
+        app:srcCompat="@drawable/dynate_1" />
 
     <TextView
         android:textColor="@color/whiteColor"

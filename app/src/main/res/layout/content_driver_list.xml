@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:src="@drawable/logo_1" />
+            android:src="@drawable/dynate_1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                 android:id="@+id/linearLayout_top"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
-                android:background="@drawable/layout_border_orange_white_squre"
+                android:background="@drawable/layout_rect_orange_white_bottom_rounded"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
@@ -45,7 +45,7 @@
                     android:id="@+id/textView_all_drivers"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:background="@drawable/button_black_rounded"
+                    android:background="@drawable/layout_rect_black_rounded"
                     android:gravity="center"
                     style="@style/FontSizeFifteen"
                     android:textColor="@color/whiteColor" />
@@ -71,7 +71,7 @@
                     android:visibility="gone"
                     android:textColor="@color/whiteColor"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_green_rounded"
+                    android:background="@drawable/layout_rect_green_rounded"
                     android:layout_width="match_parent"
                     android:layout_height="30dp" />
 

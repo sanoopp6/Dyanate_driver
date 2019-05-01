@@ -2,97 +2,89 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:id="@+id/content_cart"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBG"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <View
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="3dp"-->
+        <!--android:background="@color/colorBorder" />-->
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1">-->
+
+        <!--<ImageView-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingRight="20dp"-->
+            <!--android:alpha="0.2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal|bottom"-->
+            <!--android:src="@drawable/dynate_1" />-->
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/top_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:orientation="vertical"-->
+                <!--android:background="@drawable/layout_rect_orange_white_bottom_rounded"-->
+                <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_height="250dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/enter_port_priority_text_view"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="33dp"-->
+                    <!--android:background="@drawable/layout_rect_black_rounded"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:text="@string/Order"-->
+                    <!--android:textColor="@color/whiteColor"-->
+                    <!--style="@style/FontSizeFifteen"-->
+                    <!--android:textAllCaps="true" />-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/orderListRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+                <!--<Button-->
+                    <!--android:id="@+id/all_orders_button"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="33dp"-->
+                    <!--android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+                    <!--android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:background="@drawable/layout_rect_orange_rounded"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:text="@string/ShowAll"-->
+                    <!--android:textAllCaps="true"-->
+                    <!--style="@style/FontSizeSixteen"-->
+                    <!--android:textColor="@color/whiteColor" />-->
 
-        <ImageView
-            android:scaleType="fitCenter"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:alpha="0.2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:src="@drawable/logo_1" />
+            <!--</LinearLayout>-->
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <!--</ScrollView>-->
 
-            <LinearLayout
-                android:id="@+id/top_layout"
-                android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:background="@drawable/layout_border_orange_white_squre"
-                android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="10dp"
-                android:layout_height="250dp">
+    <!--</FrameLayout>-->
 
-                <TextView
-                    android:id="@+id/enter_port_priority_text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="33dp"
-                    android:background="@drawable/button_black_rounded"
-                    android:textAlignment="center"
-                    android:text="@string/Order"
-                    android:textColor="@color/whiteColor"
-                    style="@style/FontSizeFifteen"
-                    android:textAllCaps="true" />
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_home"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="1dp"
-                    android:layout_marginEnd="1dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:scrollbars="vertical" />
-
-                <Button
-                    android:id="@+id/all_orders_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="33dp"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/button_orange_rounded"
-                    android:textAlignment="center"
-                    android:text="@string/ShowAll"
-                    android:textAllCaps="true"
-                    style="@style/FontBoldSixteen"
-                    android:textColor="@color/whiteColor" />
-
-            </LinearLayout>
-
-        </ScrollView>
-
-    </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/colorFooter" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="3dp"-->
+        <!--android:background="@color/colorBorder" />-->
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="35dp"-->
+        <!--android:background="@color/colorFooter" />-->
 
 </LinearLayout>

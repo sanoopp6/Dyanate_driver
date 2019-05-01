@@ -12,212 +12,286 @@
     tools:context=".views.ConfirmDetailsActivity"
     android:orientation="vertical">
 
-    <View
+    <LinearLayout
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <ImageView
-            android:scaleType="fitCenter"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:alpha="0.2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:src="@drawable/logo_1" />
-
-        <ScrollView
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/subjectTextView"
+            style="@style/FontSizeFifteen"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:text="@string/Subject"
+            android:layout_height="wrap_content" />
 
-            <LinearLayout
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
+        <TextView
+            android:textColor="@color/lightBlueColor"
+            android:id="@+id/shipmentTitleTextView"
+            android:layout_width="match_parent"
+            android:text="@string/Shipment"
+            style="@style/FontSizeFifteen"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:textAlignment="viewStart"
+            android:textColor="@color/darkest_gray"
+            android:id="@+id/shipmentTextView"
+            android:layout_width="match_parent"
+            style="@style/FontSizeFifteen"
+            android:layout_marginLeft="13dp"
+            android:layout_marginRight="13dp"
+            android:layout_height="wrap_content" />
+
+        <!--<TextView-->
+            <!--android:id="@+id/vehicleTextView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--style="@style/FontSizeFifteen"-->
+            <!--android:text="@string/Size"-->
+            <!--android:layout_height="wrap_content" />-->
+
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:background="@color/darkest_gray"
+            android:layout_height="1dp" />
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:textColor="@color/lightBlueColor"
+            android:layout_width="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            style="@style/FontSizeSixteen"
+            android:textStyle="bold"
+            android:text="@string/SenderDetails"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/lightBlueColor"
+                android:id="@+id/fromNameTitleTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="30dp"
+                android:text="@string/Name" />
+
+            <TextView
+                android:textColor="@color/lightBlueColor"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="30dp"
+                android:text="@string/Mobile"
+                android:id="@+id/fromMobTitleTextView" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textAlignment="viewStart"
+                android:textColor="@color/darkest_gray"
+                android:id="@+id/fromNameTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textColor="@color/darkest_gray"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:id="@+id/fromMobTextView" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    style="@style/FontBoldSixteen"
-                    android:text="@string/ShipmentTitle"
-                    android:layout_height="wrap_content" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/sub_title"
-                    style="@style/FontSizeFifteen"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/Subject"
-                    android:layout_height="25dp" />
+        <TextView
+            android:textColor="@color/lightBlueColor"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:text="@string/DateAndTime"
+            style="@style/FontSizeFifteen"
+            android:layout_height="30dp" />
 
-                <TextView
-                    android:id="@+id/ship_title"
-                    android:layout_width="match_parent"
-                    android:text="@string/Shipment"
-                    style="@style/FontSizeFifteen"
-                    android:gravity="center_vertical"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_height="25dp" />
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/model_title"
-                    android:layout_width="match_parent"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    style="@style/FontSizeFifteen"
-                    android:gravity="center_vertical"
-                    android:text="@string/Size"
-                    android:layout_height="25dp" />
+            <TextView
+                android:textColor="@color/lightBlueColor"
+                android:id="@+id/engDateTitleTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="30dp"
+                android:text="@string/Date" />
 
-                <View
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:background="@color/darkest_gray"
-                    android:layout_height="1dp" />
+            <TextView
+                android:textColor="@color/lightBlueColor"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="30dp"
+                android:text="@string/Date"
+                android:id="@+id/arDateTitleTextView" />
 
-                <TextView
-                    android:id="@+id/sender_det_title"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp"
-                    style="@style/FontBoldSixteen"
-                    android:text="@string/SenderDetails"
-                    android:layout_height="wrap_content" />
+        </LinearLayout>
 
-                <TextView
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/text_from_name"
-                    android:layout_width="match_parent"
-                    style="@style/FontSizeFifteen"
-                    android:layout_height="25dp"
-                    android:text="@string/Name"
-                    android:gravity="center_vertical" />
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    style="@style/FontSizeFifteen"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="15dp"
-                    android:text="@string/Mobile"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/text_from_mobile" />
+            <TextView
+                android:textColor="@color/darkest_gray"
+                android:id="@+id/engDateTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="wrap_content" />
 
-                <TextView
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/date_title"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/Date"
-                    style="@style/FontSizeFifteen"
-                    android:layout_height="25dp" />
+            <TextView
+                android:textColor="@color/darkest_gray"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="wrap_content"
+                android:id="@+id/arDateTextView" />
 
-                <TextView
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/time_title"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/Time"
-                    style="@style/FontSizeFifteen"
-                    android:layout_height="25dp" />
+        </LinearLayout>
 
-                <View
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:background="@color/darkest_gray"
-                    android:layout_height="1dp" />
+        <TextView
+            android:textAlignment="viewStart"
+            android:textColor="@color/lightBlueColor"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/timeTitleTextView"
+            android:layout_width="match_parent"
+            android:text="@string/Time"
+            style="@style/FontSizeFifteen"
+            android:layout_height="30dp" />
 
-                <TextView
-                    android:id="@+id/receiver_det_title"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="@string/ReceiverDetails"
-                    style="@style/FontBoldSixteen"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/darkest_gray"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/timeTextView"
+            android:layout_width="match_parent"
+            style="@style/FontSizeFifteen"
+            android:layout_height="wrap_content" />
 
-                <TextView
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/Name"
-                    style="@style/FontSizeFifteen"
-                    android:id="@+id/text_to_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"/>
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:background="@color/darkest_gray"
+            android:layout_height="1dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    style="@style/FontSizeFifteen"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="15dp"
-                    android:text="@string/Mobile"
-                    android:layout_marginRight="15dp"
-                    android:id="@+id/text_to_mobile" />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:textColor="@color/lightBlueColor"
+            android:layout_width="match_parent"
+            android:text="@string/ReceiverDetails"
+            style="@style/FontSizeSixteen"
+            android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:padding="15dp"
-                    android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                    <Button
-                        android:id="@+id/btn_confirm_route"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="33dp"
-                        android:background="@drawable/button_green_rounded"
-                        android:text="@string/ConfirmTrip"
-                        android:textColor="@color/whiteColor"
-                        style="@style/FontBoldSixteen" />
+            <TextView
+                android:textColor="@color/lightBlueColor"
+                android:id="@+id/toNameTitleTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="30dp"
+                android:text="@string/Name" />
 
-                    <View
-                        android:layout_width="5dp"
-                        android:layout_height="match_parent" />
+            <TextView
+                android:textColor="@color/lightBlueColor"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="30dp"
+                android:text="@string/Mobile"
+                android:id="@+id/toMobTitleTextView" />
 
-                    <Button
-                        android:id="@+id/btn_edit_details"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="33dp"
-                        android:background="@drawable/button_grey_rounded"
-                        android:text="@string/EditOrder"
-                        android:textColor="@color/whiteColor"
-                        style="@style/FontBoldSixteen" />
+        </LinearLayout>
 
-                </LinearLayout>
+        <LinearLayout
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            </LinearLayout>
+            <TextView
+                android:textAlignment="viewStart"
+                android:textColor="@color/darkest_gray"
+                android:id="@+id/toNameTextView"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="wrap_content" />
 
-        </ScrollView>
+            <TextView
+                android:textColor="@color/darkest_gray"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/FontSizeFifteen"
+                android:layout_height="wrap_content"
+                android:id="@+id/toMobTextView" />
 
-    </FrameLayout>
+        </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/colorFooter" />
+        <Button
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/confirmTripButton"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/blueColor"
+            android:text="@string/ConfirmTrip"
+            android:textColor="@color/whiteColor"
+            style="@style/FontSizeSixteen" />
+
+        <!--<Button-->
+        <!--android:id="@+id/btn_edit_details"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_height="33dp"-->
+        <!--android:background="@drawable/layout_rect_grey_rounded"-->
+        <!--android:text="@string/EditOrder"-->
+        <!--android:textColor="@color/whiteColor"-->
+        <!--style="@style/FontSizeSixteen" />-->
+
+    </LinearLayout>
 
 </LinearLayout>

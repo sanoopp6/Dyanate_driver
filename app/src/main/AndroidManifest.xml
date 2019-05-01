@@ -18,10 +18,13 @@
         android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:fullBackupContent="false"
-        android:icon="@drawable/logo_1"
+        android:icon="@drawable/dynate_1"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -52,10 +55,10 @@
             android:name=".views.ConfirmFromToActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.OrderDetailActivity"
+            android:name=".views.removed.OrderDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.ForgotPasswordActivity"
+            android:name=".views.removed.ForgotPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.HomeActivity"
@@ -88,7 +91,7 @@
             android:name=".views.ReplyActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.SenderReceiverActivity"
+            android:name=".views.removed.SenderReceiverActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.SenderLocationActivity"
@@ -97,7 +100,7 @@
             android:name=".views.ShipmentDetActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".views.DriverRepliesActivity"
+            android:name=".views.removed.DriverRepliesActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".views.SplashScreenActivity"
@@ -105,7 +108,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -151,7 +154,9 @@
         <activity
             android:name=".views.DriverDetailsActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".views.ShipmentDetailsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

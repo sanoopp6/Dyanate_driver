@@ -79,40 +79,4 @@ class SplashScreenActivity : AppCompatActivity() {
         }, SPLASH_TIME_OUT.toLong())
     }
 
-//    @SuppressLint("StaticFieldLeak")
-//    inner class IsAppLiveBackground : AsyncTask<Void, Void, JSONObject>() {
-//
-//        override fun doInBackground(vararg param: Void): JSONObject? {
-//            val jsonParser = JsonParser()
-//            val params = HashMap<String, String>()
-//
-//            params["ArgAppPackageName"] = Constants.APP_NAME
-//            params["ArgAppVersionNo"] = Constants.APP_VERSION
-//
-//            return jsonParser.makeHttpRequest(Constants.BASE_URL_EN + "IsAppLive", "POST", params)
-//        }
-//
-//        override fun onPostExecute(response: JSONObject?) {
-//            if (response != null) {
-//                try {
-//                    if (!response.getBoolean("status")) {
-//                        ActivityCompat.finishAffinity(this@SplashScreenActivity)
-//                        val intent = Intent(this@SplashScreenActivity, UpdateActivity::class.java)
-//                        intent.putExtra("message", response.getString("data"))
-//                        startActivity(intent)
-//                        finish()
-//
-//                    } else {
-//                        gotoNextActivity()
-//                    }
-//
-//                } catch (e: JSONException) { e.printStackTrace() }
-//            } else {
-//                UtilityFunctions.showAlertOnActivity(this@SplashScreenActivity,
-//                        resources.getString(R.string.UnableToConnect), resources.getString(R.string.Retry).toString(),
-//                        "", false, false,
-//                        { IsAppLiveBackground().execute() }, {})
-//            }
-//        }
-//    }
 }

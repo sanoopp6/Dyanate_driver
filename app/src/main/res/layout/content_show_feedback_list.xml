@@ -1,87 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/whiteColor"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".views.ShowFeedbackListActivity" >
 
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <ImageView
-            android:scaleType="fitEnd"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:alpha="0.5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:src="@drawable/logo_1" />
-
-        <LinearLayout
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout_feedback"
             android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:elevation="5dp"
+            android:minHeight="?attr/actionBarSize"
+            style="@style/FontSizeSixteen"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Complaints" />
+
+            <android.support.design.widget.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Suggections" />
+
+        </android.support.design.widget.TabLayout>
+
+        <FrameLayout
+            android:layout_marginTop="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" >
+
+            <TextView
+                android:visibility="gone"
+                style="@style/FontSizeFifteen"
+                android:gravity="center"
+                android:textColor="@color/blueColor"
+                android:id="@+id/textView_no_rows"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
             <LinearLayout
+                android:visibility="invisible"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:id="@+id/linearLayout_back"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-                <CheckBox
-                    android:checked="true"
-                    style="@style/FontSizeFourteen"
-                    android:text="@string/Complaints"
-                    android:textColor="@color/edit_text_focused_color"
-                    android:id="@+id/checkBox_complaints"
+                <TextView
+                    android:text="@string/Name"
+                    android:id="@+id/textView_name"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.70"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    style="@style/FontSizeTwelve"
+                    android:textColor="@color/blackColor" />
+
+                <TextView
+                    android:text="@string/Mobile"
+                    android:id="@+id/textView_mobile"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.70"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    style="@style/FontSizeTwelve"
+                    android:textColor="@color/blackColor" />
+
+                <!--<ImageView-->
+                <!--android:id="@+id/imageView_attachment"-->
+                <!--android:layout_width="30dp"-->
+                <!--android:visibility="invisible"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:scaleType="fitCenter"-->
+                <!--android:src="@drawable/ic_attachments" />-->
+
+                <TextView
+                    android:text="@string/Date"
+                    android:id="@+id/textView_date"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom" />
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    style="@style/FontSizeTwelve"
+                    android:textColor="@color/blackColor" />
 
-                <CheckBox
-                    style="@style/FontSizeFourteen"
-                    android:text="@string/Suggections"
-                    android:textColor="@color/edit_text_focused_color"
-                    android:id="@+id/checkBox_suggections"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom" />
+                <TextView
+                    android:text="@string/Details"
+                    android:id="@+id/textView_view"
+                    android:layout_width="50dp"
+                    android:background="@android:color/transparent"
+                    android:textAllCaps="false"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    style="@style/FontSizeTwelve"
+                    android:textColor="@color/blackColor" />
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView_feedbacks_list"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="2dp"
-                android:scrollbars="vertical" />
+        </FrameLayout>
 
-        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_feedbacks_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginTop="2dp"
+            android:scrollbars="vertical" />
 
-    </FrameLayout>
+    </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/colorFooter" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingactionbutton_add"
+        android:layout_gravity="start|bottom"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_pencil_edit"
+        android:tint="@color/whiteColor"
+        android:scaleType="fitCenter"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
-</LinearLayout>
+</FrameLayout>

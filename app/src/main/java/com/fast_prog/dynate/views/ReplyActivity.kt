@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -15,19 +13,18 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.Order
 import com.fast_prog.dynate.utilities.*
 import kotlinx.android.synthetic.main.activity_reply.*
 import kotlinx.android.synthetic.main.content_reply.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ReplyActivity : AppCompatActivity() {
@@ -53,19 +50,8 @@ class ReplyActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.ReplyOrder)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@ReplyActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.ReplyOrder))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -78,15 +64,11 @@ class ReplyActivity : AppCompatActivity() {
         if (fromTripAdd) {
             if (sharedPreferences.getBoolean(Constants.PREFS_IS_LOGIN, false)) {
                 UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                        resources.getText(R.string.NowOfflineChangeToOnline).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.NowOfflineChangeToOnline), resources.getString(R.string.Yes),
+                        resources.getString(R.string.No), true, false,
                         {
-                            val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH)
-                            val date = Date()
-
                             val editor = sharedPreferences.edit()
-                            editor.putString(Constants.PREFS_STATUS_TIME, simpleDateFormat.format(date))
-                            editor.putString(Constants.PREFS_ONLINE_STATUS, "online")
+                            editor.putString(Constants.PREFS_ONLINE_STATUS, Constants.STAT_CONST_ONLINE)
                             editor.commit()
                         },
                         {
@@ -96,7 +78,7 @@ class ReplyActivity : AppCompatActivity() {
             }
         } else {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
+            //supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
             toolbar.setNavigationOnClickListener { finish() }
         }
 
@@ -105,28 +87,57 @@ class ReplyActivity : AppCompatActivity() {
             alarmController!!.playSound("android.resource://" + packageName + "/" + R.raw.new_trip)
         }
 
-        sub_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Subject), order!!.tripSubject)
-        ship_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Shipment), order!!.tripNotes)
-        type_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Make), order!!.vehicleType)
-        model_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Model), order!!.vehicleModel)
-        text_from_name.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Name), order!!.tripFromName)
-        text_from_mobile.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Mobile), order!!.tripFromMob!!.trimStart{ it <= '+'})
-        date_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Date), order!!.scheduleDate)
-        time_title.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Time), order!!.scheduleTime)
-        text_to_name.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Name), order!!.tripToName)
-        text_to_mobile.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.Mobile), order!!.tripToMob!!.trimStart{ it <= '+'})
-        from_addr.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.From), order!!.tripFromAddress)
-        to_addr.text = String.format(Locale.getDefault(), "%s : %s", resources.getString(R.string.To), order!!.tripToAddress)
+        shipmentTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Shipment))
+        fromNameTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Name))
+        fromMobTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Mobile))
+        fromLocationTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Location))
+        engDateTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Date))
+        arDateTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Date))
+        timeTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Time))
+        toNameTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Name))
+        toMobTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Mobile))
+        toLocationTitleTextView.text = String.format(Locale.getDefault(), "%s :", resources.getString(R.string.Location))
 
-        from_loc.setOnClickListener {
-            val uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%s,%s(%s)&daddr=%s,%s(%s)", order!!.tripFromLat, order!!.tripFromLng, order!!.tripFromAddress, order!!.tripToLat, order!!.tripToLng, order!!.tripToAddress)
+        tripNoTextView.text = "#${order?.tripNo}"
+
+        val flag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        val colorSpan = ForegroundColorSpan(ContextCompat.getColor(this@ReplyActivity, R.color.lightBlueColor))
+        var builder = SpannableStringBuilder()
+
+        var spannableString = SpannableString(resources.getString(R.string.Subject) + " : ")
+        spannableString.setSpan(colorSpan, 0, spannableString.length, flag)
+        builder.append(spannableString)
+        builder.append(order?.tripSubject)
+        subjectTextView.text = builder
+
+        shipmentTextView.text = order?.tripNotes
+
+        builder = SpannableStringBuilder()
+        spannableString = SpannableString(resources.getString(R.string.Size) + " : ")
+        spannableString.setSpan(colorSpan, 0, spannableString.length, flag)
+        builder.append(spannableString)
+        builder.append(order?.vehicleModel)
+        vehicleTextView.text = builder
+
+        fromNameTextView.text = order?.tripFromName
+        fromMobTextView.text = order?.tripFromMob?.trimStart{ it <= '+'}
+        fromLocationTextView.text = order?.tripFromAddress
+        engDateTextView.text = order?.scheduleDate
+        arDateTextView.text = order?.scheduleDate
+        timeTextView.text = order?.scheduleTime
+        toNameTextView.text = order?.tripToName
+        toMobTextView.text = order?.tripToMob?.trimStart{ it <= '+'}
+        toLocationTextView.text = order?.tripToAddress
+
+        fromLocationImageView.setOnClickListener {
+            val uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%s,%s(%s)&daddr=%s,%s(%s)", order?.tripFromLat, order?.tripFromLng, order?.tripFromAddress, order?.tripToLat, order?.tripToLng, order?.tripToAddress)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.`package` = "com.google.android.apps.maps";
             startActivity(intent)
         }
 
-        to_loc.setOnClickListener {
-            val uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%s,%s(%s)&daddr=%s,%s(%s)", order!!.tripFromLat, order!!.tripFromLng, order!!.tripFromAddress, order!!.tripToLat, order!!.tripToLng, order!!.tripToAddress)
+        toLocationImageView.setOnClickListener {
+            val uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%s,%s(%s)&daddr=%s,%s(%s)", order?.tripFromLat, order?.tripFromLng, order?.tripFromAddress, order?.tripToLat, order?.tripToLng, order?.tripToAddress)
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.`package` = "com.google.android.apps.maps";
             startActivity(intent)
@@ -138,37 +149,37 @@ class ReplyActivity : AppCompatActivity() {
             ConnectionDetector.errorSnackbar(coordinator_layout)
         }
 
-        edit_price.addTextChangedListener(object : TextWatcher {
+        priceEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 isEditingStarted = true
                 if (s.toString().trim().equals("0", true)) {
-                    edit_price.setText("")
+                    priceEditText.setText("")
                 }
             }
 
             override fun afterTextChanged(s: Editable) {}
         })
 
-        btn_agree.setOnClickListener {
+        agreeButton.setOnClickListener {
             if (alarmOn && alarmController != null) { alarmController!!.stopSound() }
 
             try {
-                price = edit_price.text.toString().trim().toDouble()
+                price = priceEditText.text.toString().trim().toDouble()
 
                 if (rate != price) {
-                    negotiable = chk_negotiable.isChecked
+                    negotiable = negotiableCheckBox.isChecked
 
                     if (price <= 0) {
                         UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                                resources.getString(R.string.YouMustEnterPrice), resources.getString(R.string.Ok).toString(),
+                                resources.getString(R.string.YouMustEnterPrice), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
 
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                                resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                                resources.getString(R.string.No).toString(), true, false,
+                                resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                                resources.getString(R.string.No), true, false,
                                 {
                                     if (tripDId != null) TripDetailsUpdateBackground().execute()
                                 }, {})
@@ -177,17 +188,17 @@ class ReplyActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                        resources.getString(R.string.YouMustEnterPrice), resources.getString(R.string.Ok).toString(),
+                        resources.getString(R.string.YouMustEnterPrice), resources.getString(R.string.Ok),
                         "", false, false, {}, {})
             }
         }
 
-        btn_disagree!!.setOnClickListener {
+        notAgreeButton.setOnClickListener {
             if (alarmOn && alarmController != null) { alarmController!!.stopSound() }
 
             UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                    resources.getText(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     {
                         if (tripDId != null) TripDetailsStatusUpdateBackground(true).execute()
                     }, {})
@@ -204,7 +215,7 @@ class ReplyActivity : AppCompatActivity() {
             }, SPLASH_TIME_OUT.toLong())
         }
 
-        edit_price.filters += DecimalDigitsInputFilter(5,2)
+        priceEditText.filters += DecimalDigitsInputFilter(5,2)
     }
 
     override fun onBackPressed() {
@@ -233,24 +244,22 @@ class ReplyActivity : AppCompatActivity() {
             var params = HashMap<String, String>()
 
             params["ArgTripDID"] = "0"
-            params["ArgTripDMID"] = order!!.tripId!!
+            params["ArgTripDMID"] = order?.tripId.toString()
             params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
                 jsonObjectOne = jsonParserOne.makeHttpRequest(Constants.BASE_URL_AR + "TripDetailsList", "POST", params)
-
             } else {
                 jsonObjectOne = jsonParserOne.makeHttpRequest(Constants.BASE_URL_EN + "TripDetailsList", "POST", params)
             }
 
             params = HashMap()
 
-            params["ArgTripDId"] = order!!.tripDId!!
+            params["ArgTripDId"] = order?.tripDId.toString()
             params["ArgTripDIsNotified"] = "true"
 
             if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
                 jsonObjectTwo = jsonParserTwo.makeHttpRequest(Constants.BASE_URL_AR + "UpdateTripNotifiedStatus", "POST", params)
-
             } else {
                 jsonObjectTwo = jsonParserTwo.makeHttpRequest(Constants.BASE_URL_EN + "UpdateTripNotifiedStatus", "POST", params)
             }
@@ -274,13 +283,13 @@ class ReplyActivity : AppCompatActivity() {
                             }
 
                             if (rate == 0.0) {
-                                edit_price.setText("")
+                                priceEditText.setText("")
                             } else {
-                                edit_price.setText(rate.toString())
+                                priceEditText.setText(rate.toString())
                             }
 
                             try {
-                                chk_negotiable.isChecked = orderDetail.getJSONObject(0).getString("TripDIsNegotiable").trim().toBoolean()
+                                negotiableCheckBox.isChecked = orderDetail.getJSONObject(0).getString("TripDIsNegotiable").trim().toBoolean()
                             } catch (ignored: Exception) {
                             }
 
@@ -288,17 +297,16 @@ class ReplyActivity : AppCompatActivity() {
                             val status = orderDetail.getJSONObject(0).getString("TripDStatus")
 
                             if (!status.matches("1|7".toRegex())) {
-                                edit_price.isEnabled = false
-                                chk_negotiable.isEnabled = false
-                                btn_agree.visibility = View.GONE
-                                btn_disagree.visibility = View.GONE
+                                priceEditText.isEnabled = false
+                                negotiableCheckBox.isEnabled = false
+                                agreeButton.visibility = View.GONE
+                                notAgreeButton.visibility = View.GONE
                                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
                             } else {
-                                edit_price.isEnabled = true
-                                chk_negotiable.isEnabled = true
-                                btn_agree.visibility = View.VISIBLE
-                                btn_disagree.visibility = View.VISIBLE
+                                priceEditText.isEnabled = true
+                                negotiableCheckBox.isEnabled = true
+                                agreeButton.visibility = View.VISIBLE
+                                notAgreeButton.visibility = View.VISIBLE
                             }
                         }
                     }
@@ -339,7 +347,7 @@ class ReplyActivity : AppCompatActivity() {
                 try {
                     if (response.getBoolean("status")) {
                         UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                                resources.getString(R.string.YourReplyUpdated), resources.getString(R.string.Ok).toString(),
+                                resources.getString(R.string.YourReplyUpdated), resources.getString(R.string.Ok),
                                 "", false, false,
                                 {
                                     if (fromTripAdd) {
@@ -352,7 +360,7 @@ class ReplyActivity : AppCompatActivity() {
 
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 
@@ -399,7 +407,7 @@ class ReplyActivity : AppCompatActivity() {
                     if (response.getBoolean("status")) {
                         if (showDialog) {
                             UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                                    resources.getString(R.string.RejectiosSuccess), resources.getString(R.string.Ok).toString(),
+                                    resources.getString(R.string.RejectiosSuccess), resources.getString(R.string.Ok),
                                     "", false, false,
                                     {
                                         if (fromTripAdd) {
@@ -420,7 +428,7 @@ class ReplyActivity : AppCompatActivity() {
 
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@ReplyActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
                 } catch (e: JSONException) {

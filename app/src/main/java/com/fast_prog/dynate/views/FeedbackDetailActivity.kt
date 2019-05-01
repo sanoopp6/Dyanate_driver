@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -20,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
@@ -51,28 +49,17 @@ class FeedbackDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback_detail)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.ShowFeedbacks)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@FeedbackDetailActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.ShowFeedbacks))
 
         if (ConnectionDetector.isConnected(applicationContext)) {
             FeedbackUpdateIsReadBackground().execute()
@@ -117,11 +104,11 @@ class FeedbackDetailActivity : AppCompatActivity() {
 //                }
 //
 //            } else {
-                textView_admin_reply_title.visibility = View.GONE
-                editText_admin_reply.visibility = View.GONE
-                textView_admin_reply.visibility = View.GONE
-                button_submit.visibility = View.GONE
-                view_admin_reply.visibility = View.GONE
+        textView_admin_reply_title.visibility = View.GONE
+        editText_admin_reply.visibility = View.GONE
+        textView_admin_reply.visibility = View.GONE
+        button_submit.visibility = View.GONE
+        view_admin_reply.visibility = View.GONE
 //            }
 //        } else {
 //            textView_admin_reply_title.text = resources.getString(R.string.Reply)
@@ -184,14 +171,13 @@ class FeedbackDetailActivity : AppCompatActivity() {
 
             try {
                 holder.textViewSlNo.text = String.format("%s.",(position + 1).toString())
-                Picasso.with(this@FeedbackDetailActivity).load(Constants.IMG_URL + "/" + stringImagesList?.get(position)?.trim()).placeholder(R.drawable.image_progress_view).error(R.drawable.logo_1).into(holder.imageViewFile)
+                Picasso.get().load(Constants.IMG_URL + "/" + stringImagesList?.get(position)?.trim()).placeholder(R.drawable.progress_view).error(R.drawable.dynate_1).into(holder.imageViewFile)
                 holder.imageViewIdProofDelete.visibility = View.GONE
 
                 holder.imageViewFile.setOnClickListener {
                     ShowPDFImageActivity.imgURL = Constants.IMG_URL + "/" + stringImagesList?.get(position)?.trim()
                     ShowPDFImageActivity.docType = resources.getString(R.string.Attachment)
-                    val intent = Intent(this@FeedbackDetailActivity, ShowPDFImageActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this@FeedbackDetailActivity, ShowPDFImageActivity::class.java))
                 }
 
             } catch (e: JSONException) {

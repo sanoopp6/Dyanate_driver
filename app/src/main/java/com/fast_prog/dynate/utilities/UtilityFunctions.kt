@@ -2,10 +2,12 @@ package com.fast_prog.dynate.utilities
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
@@ -17,6 +19,7 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -26,6 +29,7 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.fast_prog.dynate.R
 import com.fast_prog.dynate.R.id.circular_progress_bar
@@ -206,6 +210,21 @@ class UtilityFunctions {
             view.isDrawingCacheEnabled = false
 
             return BitmapDrawable(mContext.resources, bitmap)
+        }
+
+        fun createDrawableFromView(context: Context, view: View): Bitmap {
+            val displayMetrics = DisplayMetrics()
+            (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+            view.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+            view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels)
+            view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels)
+            view.buildDrawingCache()
+            val bitmap = Bitmap.createBitmap(view.measuredWidth, view.measuredHeight, Bitmap.Config.ARGB_8888)
+
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+
+            return bitmap
         }
     }
 }

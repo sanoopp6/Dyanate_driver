@@ -3,9 +3,7 @@ package com.fast_prog.dynate.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -15,8 +13,10 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
 import com.fast_prog.dynate.utilities.JsonParser
@@ -42,28 +42,17 @@ class FaqListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_faq_list)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.FAQ)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@FaqListActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.FAQ))
 
         recyclerView_faq_list.setHasFixedSize(true)
         linearLayoutManagerFaqList = LinearLayoutManager(this@FaqListActivity)
@@ -147,11 +136,30 @@ class FaqListActivity : AppCompatActivity() {
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
+
+            var height = 0
+
+            holder.textViewQuestion.setOnClickListener {
+                if (holder.textViewAnswer.visibility != View.VISIBLE) {
+                    holder.textViewAnswer.visibility = View.VISIBLE
+                    val layoutParams = holder.textViewQuestion.layoutParams as LinearLayout.LayoutParams
+                    height = layoutParams.height
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    holder.textViewQuestion.layoutParams = layoutParams
+                    holder.textViewQuestion.background = ContextCompat.getDrawable(applicationContext, R.drawable.layout_rect_lightblue_blue)
+
+                } else {
+                    holder.textViewAnswer.visibility = View.GONE
+                    val layoutParams = holder.textViewQuestion.layoutParams as LinearLayout.LayoutParams
+                    layoutParams.height = height
+                    holder.textViewQuestion.layoutParams = layoutParams
+                    holder.textViewQuestion.setBackgroundColor(ContextCompat.getColor(this@FaqListActivity, R.color.whiteColor))
+                }
+            }
         }
 
-        // Return the size of your dataset (invoked by the layout manager)
         override fun getItemCount(): Int {
-            return if (jsonArrayFaqList != null) jsonArrayFaqList!!.length() else 0
+            return jsonArrayFaqList?.length()?:0
         }
     }
 }

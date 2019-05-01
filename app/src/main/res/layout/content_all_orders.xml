@@ -4,290 +4,308 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:id="@+id/content_cart"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBG"
-    android:gravity="center"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".views.AllOrdersActivity">
 
-    <View
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout_feedback"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="5dp"
+        android:minHeight="?attr/actionBarSize"
+        style="@style/FontSizeSixteen"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <ImageView
-            android:scaleType="fitCenter"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:alpha="0.2"
+        <android.support.design.widget.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:src="@drawable/logo_1" />
+            android:text="@string/New" />
 
-        <ScrollView
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Accepted" />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Rejected" />
+
+    </android.support.design.widget.TabLayout>
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/newTripFrameLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-            <LinearLayout
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_marginTop="10dp"
+            <Button
+                android:id="@+id/newTripButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/NewTripRequests"
+                android:background="@android:color/transparent"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:background="@drawable/button_lightblue_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:id="@+id/newTripTextView"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:textColor="@color/whiteColor"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/NewTripRequests"
-                        android:background="@android:color/transparent"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:id="@+id/new_trips_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:id="@+id/new_trips_count"
-                        android:gravity="center"
-                        style="@style/FontSizeTwelve"
-                        android:textColor="@color/blackColor"
-                        android:visibility="gone"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
+        <FrameLayout
+            android:id="@+id/rejectedByMeFrameLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-                </FrameLayout>
+            <Button
+                android:id="@+id/rejectedByMeButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/TripsRejectedByMe"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen"
+                android:background="@android:color/transparent" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/button_black_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:id="@+id/rejectedByMeTextView"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:textColor="@color/whiteColor"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/TripsRejectedByMe"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/rejected_by_me_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:id="@+id/rejected_by_me_count"
-                        android:gravity="center"
-                        style="@style/FontSizeTwelve"
-                        android:textColor="@color/blackColor"
-                        android:visibility="gone"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
+        <FrameLayout
+            android:id="@+id/acceptedByMeFrameLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-                </FrameLayout>
+            <Button
+                android:id="@+id/acceptedByMeButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/TripsAcceptedByMe"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen"
+                android:background="@android:color/transparent" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/button_grey_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:textColor="@color/whiteColor"
+                android:id="@+id/acceptedByMeTextView"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/TripsAcceptedByMe"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/accepted_by_me_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        style="@style/FontSizeTwelve"
-                        android:textColor="@color/blackColor"
-                        android:id="@+id/accepted_by_me_count"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
+        <FrameLayout
+            android:id="@+id/customerRejectedFrameLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-                </FrameLayout>
+            <Button
+                android:id="@+id/customerRejectedButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/RejectedByCustomer"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen"
+                android:background="@android:color/transparent" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/button_saddlebrown_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:textColor="@color/whiteColor"
+                android:id="@+id/customerRejectedTextView"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/RejectedByCustomer"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/customer_rejected_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        style="@style/FontSizeTwelve"
-                        android:textColor="@color/blackColor"
-                        android:id="@+id/customer_rejected_count"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
+        <FrameLayout
+            android:id="@+id/customerAcceptedFrameLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-                </FrameLayout>
+            <Button
+                android:id="@+id/customerAcceptedButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/AcceptedByCustomer"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen"
+                android:background="@android:color/transparent" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/button_orange_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:textColor="@color/whiteColor"
+                android:id="@+id/customerAcceptedTextView"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/AcceptedByCustomer"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/customer_accepted_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        style="@style/FontSizeTwelve"
-                        android:textColor="@color/blackColor"
-                        android:id="@+id/customer_accepted_count"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
+        <FrameLayout
+            android:id="@+id/customerCancelledFrameLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-                </FrameLayout>
+            <Button
+                android:id="@+id/customerCancelledButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/CancelledByCustomer"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen"
+                android:background="@android:color/transparent" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/button_red_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:id="@+id/customerCancelledTextView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:visibility="gone"
+                android:textColor="@color/whiteColor"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/CancelledByCustomer"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/customer_cancelled_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:id="@+id/customer_cancelled_count"
-                        android:gravity="center"
-                        style="@style/FontSizeTwelve"
-                        android:visibility="gone"
-                        android:textColor="@color/blackColor"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
+        <FrameLayout
+            android:id="@+id/completedFrameLayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/layout_rect_white_blue"
+            android:clipChildren="false">
 
-                </FrameLayout>
+            <Button
+                android:id="@+id/completedButton"
+                android:textAlignment="viewStart"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/blueColor"
+                android:text="@string/CompletedTrips"
+                android:textAllCaps="true"
+                style="@style/FontSizeSixteen"
+                android:background="@android:color/transparent" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@drawable/button_green_rounded"
-                    android:clipChildren="false">
+            <TextView
+                android:visibility="gone"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end|center_vertical"
+                android:id="@+id/completedTextView"
+                android:gravity="center"
+                style="@style/FontSizeTwelve"
+                android:textColor="@color/whiteColor"
+                android:background="@drawable/layout_round_marker_red"
+                android:layout_marginEnd="25dp"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/whiteColor"
-                        android:text="@string/CompletedTrips"
-                        android:textAllCaps="true"
-                        style="@style/FontBoldSixteen"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/completed_button"/>
+        </FrameLayout>
 
-                    <TextView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="end|center_vertical"
-                        android:id="@+id/completed_count"
-                        android:gravity="center"
-                        style="@style/FontSizeTwelve"
-                        android:visibility="gone"
-                        android:textColor="@color/blackColor"
-                        android:background="@drawable/layout_round_marker_white"
-                        android:layout_marginEnd="25dp"/>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-        </ScrollView>
-
-    </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorBorder" />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/colorFooter" />
+    </LinearLayout>
 
 </LinearLayout>

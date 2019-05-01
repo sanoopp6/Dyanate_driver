@@ -33,7 +33,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_my_orders" />
+        <include layout="@layout/content_all_orders_list" />
 
     </android.support.design.widget.CoordinatorLayout>
 

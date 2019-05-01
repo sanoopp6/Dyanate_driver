@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
-        card_view:cardBackgroundColor="@color/colorBG">
+        card_view:cardBackgroundColor="@color/whiteColor">
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -28,12 +28,12 @@
                 android:layout_weight="3"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:background="@color/colorBGMenu"
+                android:background="@color/blueColor"
                 android:padding="5dp">
 
                 <TextView
                     android:id="@+id/txt_order_no"
-                    style="@style/FontBoldSixteen"
+                    style="@style/FontSizeFourteen"
                     android:textColor="@color/whiteColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/txt_date"
-                    style="@style/FontSizeFourteen"
+                    style="@style/FontSizeTwelve"
                     android:textColor="@color/whiteColor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                             android:id="@+id/text_driver"
                             android:layout_width="match_parent"
                             android:layout_weight="1"
-                            android:textColor="@color/blackColor"
+                            android:textColor="@color/blueColor"
                             style="@style/FontSizeTwelve"
                             android:layout_height="0dp" />
 
@@ -90,7 +90,7 @@
                             android:layout_weight="1"
                             android:layout_height="0dp"
                             android:layout_marginTop="2dp"
-                            android:textColor="@color/blackColor"
+                            android:textColor="@color/blueColor"
                             style="@style/FontSizeTwelve" />
 
                     </LinearLayout>
@@ -114,7 +114,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/blackColor"
+                        android:textColor="@color/blueColor"
                         style="@style/FontSizeTwelve" />
 
                 </LinearLayout>
@@ -136,10 +136,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:enabled="false"
                         android:inputType="numberDecimal"
+                        android:enabled="false"
                         android:background="@android:color/transparent"
-                        android:textColor="@color/blackColor"
+                        android:textColor="@color/blueColor"
                         style="@style/FontSizeTwelve" />
 
                 </LinearLayout>
@@ -162,7 +162,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/blackColor"
+                        android:textColor="@color/blueColor"
                         style="@style/FontSizeTwelve" />
 
                 </LinearLayout>
@@ -185,7 +185,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/blackColor"
+                        android:textColor="@color/blueColor"
                         style="@style/FontSizeTwelve" />
 
                 </LinearLayout>
@@ -200,21 +200,20 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:text="@string/Approve"
-                        android:layout_height="33dp"
+                        android:layout_height="35dp"
                         android:layout_marginEnd="2dp"
-                        android:background="@drawable/button_green_rounded"
+                        android:background="@color/greenColor"
                         android:textColor="@color/whiteColor"
                         style="@style/FontSizeTwelve" />
 
                     <!--<Button-->
-                        <!--android:visibility="gone"-->
                         <!--android:id="@+id/btn_cancel"-->
                         <!--android:layout_width="0dp"-->
                         <!--android:layout_weight="1"-->
                         <!--android:text="@string/Cancel"-->
-                        <!--android:layout_height="33dp"-->
+                        <!--android:layout_height="35dp"-->
                         <!--android:layout_marginEnd="2dp"-->
-                        <!--android:background="@drawable/btn_red_rounded"-->
+                        <!--android:background="@color/redColor"-->
                         <!--android:textColor="@color/whiteColor"-->
                         <!--style="@style/FontSizeTwelve" />-->
 

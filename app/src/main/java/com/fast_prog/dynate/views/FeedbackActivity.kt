@@ -9,16 +9,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color
+import android.graphics.Typeface
 import android.os.AsyncTask
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -27,12 +25,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.Docs
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
@@ -63,41 +60,35 @@ class FeedbackActivity : AppCompatActivity() {
     private val RESULT_LOAD_IMAGE = 101
     private val TAKE_PHOTO_CODE = 102
 
-    private var isComplaintsClicked = false
-    private var type = ""
     private var feedbackMsg = ""
     private var uploadedDocs = ""
+
+    internal var typeface: Typeface? = null
+
     private var isCommon = false
 
     private var mCurrentPhotoPath: String? = null
 
     private val MY_PERMISSIONS_REQUEST_CAMERA = 99
 
+    companion object {
+        internal var type = "complaints"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feedback)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Feedback)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@FeedbackActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Feedback))
 
         recyclerView_feedbacks_images.setHasFixedSize(true)
         linearLayoutManagerImagesList = LinearLayoutManager(this@FeedbackActivity, LinearLayoutManager.HORIZONTAL, false)
@@ -107,7 +98,7 @@ class FeedbackActivity : AppCompatActivity() {
 
         button_attach_images.setOnClickListener {
             val builder = AlertDialog.Builder(this@FeedbackActivity)
-            val inflater = this@FeedbackActivity.getLayoutInflater()
+            val inflater = this@FeedbackActivity.layoutInflater
             val view = inflater.inflate(R.layout.alert_dialog_add_image, null)
             builder.setView(view)
             val alertDialog = builder.create()
@@ -124,7 +115,7 @@ class FeedbackActivity : AppCompatActivity() {
 
                 } else {
                     UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                            resources.getString(R.string.ShootClearly).toString(), resources.getString(R.string.Ok).toString(),
+                            resources.getString(R.string.ShootClearly), resources.getString(R.string.Ok),
                             "", false, false,
                             {
                                 val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -156,84 +147,6 @@ class FeedbackActivity : AppCompatActivity() {
         }
 
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
-
-        val scaleUpAnimation = AnimationUtils.loadAnimation(this@FeedbackActivity, R.anim.slide_down)
-        val scaleDownAnimation = AnimationUtils.loadAnimation(this@FeedbackActivity, R.anim.slide_up)
-        val scaleDownAnimationComplaints = AnimationUtils.loadAnimation(this@FeedbackActivity, R.anim.slide_up)
-
-        scaleUpAnimation!!.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {}
-
-            override fun onAnimationEnd(animation: Animation) {}
-
-            override fun onAnimationRepeat(animation: Animation) {}
-        })
-
-        scaleDownAnimationComplaints!!.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {}
-
-            override fun onAnimationEnd(animation: Animation) {
-                if (isComplaintsClicked) {
-                    editText_complaints!!.visibility = View.GONE
-                } else {
-                    editText_suggestions!!.visibility = View.GONE
-                }
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {}
-        })
-
-        scaleDownAnimation!!.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation) {}
-
-            override fun onAnimationEnd(animation: Animation) {
-                if (isComplaintsClicked) {
-                    editText_suggestions!!.visibility = View.GONE
-                } else {
-                    editText_complaints!!.visibility = View.GONE
-                }
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {}
-        })
-
-        button_complaints!!.setOnClickListener {
-            isComplaintsClicked = true
-            editText_suggestions!!.setText("")
-
-            if (editText_suggestions!!.visibility == View.VISIBLE) {
-                editText_suggestions!!.startAnimation(scaleDownAnimation)
-            }
-
-            if (editText_complaints!!.visibility == View.VISIBLE) {
-                editText_complaints!!.startAnimation(scaleDownAnimationComplaints)
-                type = ""
-
-            } else {
-                editText_complaints!!.visibility = View.VISIBLE
-                editText_complaints!!.startAnimation(scaleUpAnimation)
-                type = "complaints"
-            }
-        }
-
-        button_suggestions!!.setOnClickListener {
-            isComplaintsClicked = false
-            editText_complaints!!.setText("")
-
-            if (editText_complaints!!.visibility == View.VISIBLE) {
-                editText_complaints!!.startAnimation(scaleDownAnimation)
-            }
-
-            if (editText_suggestions!!.visibility == View.VISIBLE) {
-                editText_suggestions!!.startAnimation(scaleDownAnimationComplaints)
-                type = ""
-
-            } else {
-                editText_suggestions!!.visibility = View.VISIBLE
-                editText_suggestions!!.startAnimation(scaleUpAnimation)
-                type = "suggestions"
-            }
-        }
 
         button_submit.setOnClickListener {
             if (validate()) {
@@ -276,41 +189,24 @@ class FeedbackActivity : AppCompatActivity() {
                 return
             }
         }// other 'case' lines to check for other
-        // permissions this app might request
+        // permissions this add_trip might request
     }
 
     private fun validate(): Boolean {
-        val suggestionMsg = editText_suggestions.text.toString().trim()
-        val complaintMsg = editText_complaints.text.toString().trim()
-        feedbackMsg = ""
+        feedbackMsg = editText_feedback.text.toString().trim()
 
-        if ((suggestionMsg.isEmpty() && complaintMsg.isEmpty()) || type.isEmpty()) {
+        if (type == "complaints" && feedbackMsg.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                    resources.getString(R.string.SuggectionComplaintEmpty).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.ComplaintEmpty).toString(), resources.getString(R.string.Ok).toString(),
                     "", false, false, {}, {})
             return false
         }
 
-        if (isComplaintsClicked && type.equals("complaints", false)) {
-            if (complaintMsg.isEmpty()) {
-                UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                        resources.getString(R.string.ComplaintEmpty).toString(), resources.getString(R.string.Ok).toString(),
-                        "", false, false, {}, {})
-                return false
-            } else {
-                feedbackMsg = complaintMsg
-            }
-        }
-
-        if (!isComplaintsClicked && type.equals("suggestions", false)) {
-            if (suggestionMsg.isEmpty()) {
-                UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                        resources.getString(R.string.SuggectionEmpty).toString(), resources.getString(R.string.Ok).toString(),
-                        "", false, false, {}, {})
-                return false
-            } else {
-                feedbackMsg = suggestionMsg
-            }
+        if (type == "suggestions" && feedbackMsg.isEmpty()) {
+            UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
+                    resources.getString(R.string.SuggectionEmpty).toString(), resources.getString(R.string.Ok).toString(),
+                    "", false, false, {}, {})
+            return false
         }
 
         return true
@@ -338,11 +234,11 @@ class FeedbackActivity : AppCompatActivity() {
 
             holder.imageViewIdProofDelete.setOnClickListener {
                 UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                        resources.getString(R.string.AreYouSure).toString(), resources.getString(R.string.Yes).toString(),
-                        resources.getString(R.string.No).toString(), true, false,
+                        resources.getString(R.string.AreYouSure), resources.getString(R.string.Yes), resources.getString(R.string.No), true, false,
                         {
                             docsList.removeAt(position)
-                            recyclerViewAdapterImagesList.notifyDataSetChanged() }, {})
+                            recyclerViewAdapterImagesList.notifyDataSetChanged()
+                        }, {})
             }
         }
 
@@ -449,7 +345,7 @@ class FeedbackActivity : AppCompatActivity() {
                         UtilityFunctions.dismissProgressDialog()
 
                         UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 
@@ -500,12 +396,12 @@ class FeedbackActivity : AppCompatActivity() {
                 try {
                     if (response.getBoolean("status")) {
                         UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                                resources.getString(R.string.FeedbackUpdated).toString(), resources.getString(R.string.Ok).toString(),
+                                resources.getString(R.string.FeedbackUpdated), resources.getString(R.string.Ok),
                                 "", false, false, { finish() }, {})
 
                     } else {
                         UtilityFunctions.showAlertOnActivity(this@FeedbackActivity,
-                                response.getString("message"), resources.getString(R.string.Ok).toString(),
+                                response.getString("message"), resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
                     }
 

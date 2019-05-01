@@ -4,11 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,9 +13,10 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.Button
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.Order
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
@@ -38,7 +36,6 @@ class AllOrdersListActivity : AppCompatActivity() {
 
     internal lateinit var mHomeAdapter: RecyclerView.Adapter<*>
 
-    internal var glassExtra: String = ""
     internal var modeExtra: String = ""
     internal var modeTitle: String = ""
 
@@ -52,49 +49,29 @@ class AllOrdersListActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        glassExtra = intent.getStringExtra("glass")
         modeExtra = intent.getStringExtra("mode")
         modeTitle = intent.getStringExtra("modeStr")
 
-        val title: String
-        if (glassExtra.equals("true", true)) {
-            title = resources.getString(R.string.TripsFromGlass)
-        } else {
-            title = resources.getString(R.string.TripsFromOthers)
-        }
+        customTitle(modeTitle.toUpperCase())
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = title
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@AllOrdersListActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        //all_orders_button.setOnClickListener {
+        //    top_layout.layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT
+        //    all_orders_button.visibility = View.GONE
+        //}
+        //enter_port_priority_text_view.text = modeTitle.toUpperCase()
 
-        all_orders_button.setOnClickListener {
-            top_layout.layoutParams.height = LinearLayout.LayoutParams.MATCH_PARENT
-            all_orders_button.visibility = View.GONE
-        }
-
-        enter_port_priority_text_view.text = modeTitle.toUpperCase()
-
-        recycler_home.setHasFixedSize(true)
+        orderListRecyclerView.setHasFixedSize(true)
         homeLayoutManager = LinearLayoutManager(this@AllOrdersListActivity)
-        recycler_home.layoutManager = homeLayoutManager
+        orderListRecyclerView.layoutManager = homeLayoutManager
         mHomeAdapter = MyOrdersAdapter()
-        recycler_home.adapter = mHomeAdapter
+        orderListRecyclerView.adapter = mHomeAdapter
     }
 
     override fun onResume() {
@@ -119,15 +96,8 @@ class AllOrdersListActivity : AppCompatActivity() {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            if (glassExtra.equals("true", true)) {
-                params["ArgTripMCustId"] = "1"
-                params["ArgExcludeCustId"] = "0"
-
-            } else {
-                params["ArgTripMCustId"] = "0"
-                params["ArgExcludeCustId"] = "1"
-            }
-
+            params["ArgTripMCustId"] = "0"
+            params["ArgExcludeCustId"] = "0"
             params["ArgTripDDmId"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "0")
             params["ArgTripMID"] = "0"
             params["ArgTripDID"] = "0"
@@ -151,8 +121,6 @@ class AllOrdersListActivity : AppCompatActivity() {
 
             if (jsonObject != null) {
                 try {
-                    // Parsing json object response
-                    // response will be a json object
                     if (jsonObject.getBoolean("status")) {
                         val ordersJSONArray = jsonObject.getJSONArray("data")
                         ordersArrayList = ArrayList()
@@ -202,29 +170,28 @@ class AllOrdersListActivity : AppCompatActivity() {
                                 ordersArrayList!!.add(order)
                             }
                         }
-                        mHomeAdapter.notifyDataSetChanged()
-
                     } else {
                         ordersArrayList = ArrayList()
-                        mHomeAdapter.notifyDataSetChanged()
                     }
+
+                    mHomeAdapter.notifyDataSetChanged()
+
                 } catch (e: JSONException) {
                     e.printStackTrace()
                 }
-
             }
-            if (ordersArrayList == null || ordersArrayList!!.size <= 5) {
-                all_orders_button.visibility = View.GONE
-            }
+            //if (ordersArrayList == null || ordersArrayList!!.size <= 5) {
+            //    all_orders_button.visibility = View.GONE
+            //}
         }
     }
 
     internal inner class MyOrdersAdapter : RecyclerView.Adapter<MyOrdersAdapter.ViewHolder>() {
 
         internal inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-            var orderNo: TextView = v.findViewById(R.id.id_text_view) as TextView
-            var address: TextView = v.findViewById(R.id.id_text_from_to) as TextView
-            var view1: TextView = v.findViewById(R.id.show_details) as TextView
+            var priceTextView: TextView = v.findViewById(R.id.priceTextView) as TextView
+            var dateTextView: TextView = v.findViewById(R.id.dateTextView) as TextView
+            var detailsButton: Button = v.findViewById(R.id.detailsButton) as Button
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyOrdersAdapter.ViewHolder {
@@ -233,13 +200,12 @@ class AllOrdersListActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            //View view = holder.itemView;
             holder.setIsRecyclable(false)
 
-            holder.orderNo.text = ordersArrayList!![position].tripNo
-            holder.address.text = String.format("%s - %s", ordersArrayList!![position].tripFromAddress, ordersArrayList!![position].tripToAddress)
+            holder.priceTextView.text = "10"
+            holder.dateTextView.text = ordersArrayList!![position].scheduleDate
 
-            holder.view1.setOnClickListener {
+            holder.detailsButton.setOnClickListener {
                 val order = ordersArrayList!![position]
 
                 val intent = Intent(this@AllOrdersListActivity, ReplyActivity::class.java)
@@ -250,7 +216,7 @@ class AllOrdersListActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return if (ordersArrayList != null) ordersArrayList!!.size else 0
+            return ordersArrayList?.size?:0
         }
 
     }

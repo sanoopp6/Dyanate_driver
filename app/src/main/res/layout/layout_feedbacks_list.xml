@@ -6,58 +6,76 @@
     android:layout_centerInParent="true"
     android:orientation="vertical" >
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <!--<android.support.v7.widget.CardView-->
+    <!--xmlns:card_view="http://schemas.android.com/apk/res-auto"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginBottom="1dp"-->
+    <!--card_view:cardBackgroundColor="@color/whiteColor">-->
+
+    <LinearLayout
+        android:layout_marginTop="3dp"
+        android:background="@color/lightBlueColor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        card_view:cardBackgroundColor="@color/whiteColor">
+        android:layout_height="40dp"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/linearLayout_back"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/tableItemBackgroundColor"
-            android:orientation="horizontal">
+        <TextView
+            android:text="@string/Name"
+            android:id="@+id/textView1_name"
+            android:layout_width="0dp"
+            android:layout_weight="0.70"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            style="@style/FontSizeTen"
+            android:textColor="@color/whiteColor" />
 
-            <TextView
-                android:id="@+id/textView_slNo"
-                android:layout_width="40dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                style="@style/FontSizeFifteen"
-                android:textColor="@color/blackColor" />
+        <TextView
+            android:text="@string/Mobile"
+            android:id="@+id/textView1_mobile"
+            android:layout_width="0dp"
+            android:layout_weight="0.70"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            style="@style/FontSizeTen"
+            android:textColor="@color/whiteColor" />
 
-            <TextView
-                android:id="@+id/textView_name"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:maxLines="1"
-                style="@style/FontSizeFifteen"
-                android:textColor="@color/blackColor" />
+        <!--<ImageView-->
+        <!--android:id="@+id/imageView_attachment"-->
+        <!--android:layout_width="30dp"-->
+        <!--android:visibility="invisible"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/ic_attachments" />-->
 
-            <ImageView
-                android:id="@+id/imageView_attachment"
-                android:layout_width="30dp"
-                android:visibility="invisible"
-                android:layout_height="match_parent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_attachment" />
+        <TextView
+            android:text="@string/Date"
+            android:id="@+id/textView1_date"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            style="@style/FontSizeTen"
+            android:textColor="@color/whiteColor" />
 
-            <TextView
-                android:id="@+id/textView_date"
-                android:layout_width="0dp"
-                android:layout_weight="2"
-                android:maxLines="1"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                style="@style/FontSizeFifteen"
-                android:textColor="@color/blackColor" />
+        <Button
+            android:autoLink="all"
+            android:text="@string/Details"
+            android:id="@+id/button1_view"
+            android:layout_width="50dp"
+            android:background="@android:color/transparent"
+            android:textAllCaps="false"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:maxLines="1"
+            style="@style/FontSizeTen"
+            android:textColor="@color/whiteColor" />
 
-        </LinearLayout>
+    </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    <!--</android.support.v7.widget.CardView>-->
 
 </LinearLayout>

@@ -42,53 +42,15 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context=".views.FaqListActivity" >
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/colorBorder" />
-
-            <FrameLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_faq_list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:scaleType="fitEnd"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:alpha="0.5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center"
-                    android:src="@drawable/logo_1" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recyclerView_faq_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginTop="2dp"
-                        android:scrollbars="vertical" />
-
-                </LinearLayout>
-
-            </FrameLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/colorBorder" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:background="@color/colorFooter" />
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="2dp"
+                android:scrollbars="vertical" />
 
         </LinearLayout>
 

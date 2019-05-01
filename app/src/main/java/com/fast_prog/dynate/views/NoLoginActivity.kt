@@ -47,12 +47,18 @@ class NoLoginActivity : AppCompatActivity() {
             }
         }
 
-        loginButton.setOnClickListener {
+        layout_admin.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString(Constants.PREFS_USER_TYPE, Constants.USER_TYPE_CONST_ADMIN)
+            editor.commit()
             startActivity(Intent(this@NoLoginActivity, LoginActivity::class.java))
         }
 
-        registerButton.setOnClickListener {
-            startActivity(Intent(this@NoLoginActivity, RegisterActivity::class.java))
+        layout_driver.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString(Constants.PREFS_USER_TYPE, Constants.USER_TYPE_CONST_DRIVER)
+            editor.commit()
+            startActivity(Intent(this@NoLoginActivity, LoginActivity::class.java))
         }
 
         button_lang.setOnClickListener {

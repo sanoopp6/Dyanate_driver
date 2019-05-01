@@ -3,11 +3,8 @@ package com.fast_prog.dynate.views
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -18,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import com.fast_prog.dynate.models.NotnModel
 import com.fast_prog.dynate.utilities.ConnectionDetector
 import com.fast_prog.dynate.utilities.Constants
@@ -45,28 +43,17 @@ class NotificationsListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications_list)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         toolbar.setNavigationOnClickListener { finish() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Notifications)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@NotificationsListActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Notifications))
 
         loaded = intent.getBooleanExtra("loaded", false)
 
@@ -75,6 +62,10 @@ class NotificationsListActivity : AppCompatActivity() {
         recyclerView_notifications.layoutManager = linearLayoutManagerNotifications
         recyclerViewAdapterNotifications = NotificationsAdapter()
         recyclerView_notifications.adapter = recyclerViewAdapterNotifications
+
+        if (notnModels?.size?:0 <= 0) {
+            textView_count.visibility = View.VISIBLE
+        }
     }
 
     override fun onResume() {
@@ -135,15 +126,18 @@ class NotificationsListActivity : AppCompatActivity() {
 
                             (notnModels as ArrayList<NotnModel>).add(notnModel)
                         }
-
-                        recyclerViewAdapterNotifications.notifyDataSetChanged()
-
                     } else {
                         notnModels = ArrayList()
-                        recyclerViewAdapterNotifications.notifyDataSetChanged()
                     }
 
-                    if (notnModels?.isEmpty()!!) { finish() }
+                    if (notnModels?.size?:0 <= 0) {
+                        textView_count.visibility = View.VISIBLE
+                    } else {
+                        textView_count.visibility = View.GONE
+                    }
+
+                    recyclerViewAdapterNotifications.notifyDataSetChanged()
+
 
                 } catch (e: JSONException) {
                     e.printStackTrace()
@@ -186,21 +180,14 @@ class NotificationsListActivity : AppCompatActivity() {
             }
 
             holder.buttonShow.setOnClickListener {
-                val selectedItemAt = position
-                val tripID = notnModel.nfId!!
+                //val selectedItemAt = position
+                //val tripID = notnModel.nfId!!
             }
         }
 
         override fun getItemCount(): Int {
             loaded = true
-
-            return if (notnModels != null) {
-                textView_count.text = String.format(Locale.getDefault(), "%d %s", notnModels!!.size, resources.getString(R.string.Notifications))
-                notnModels!!.size
-            } else {
-                textView_count.text = "0"
-                0
-            }
+            return notnModels?.size?:0
         }
     }
 }

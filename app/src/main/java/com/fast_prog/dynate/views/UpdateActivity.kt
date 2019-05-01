@@ -1,15 +1,13 @@
 package com.fast_prog.dynate.views
 
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
-import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.TextView
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
 import kotlinx.android.synthetic.main.activity_update.*
 
 class UpdateActivity : AppCompatActivity() {
@@ -21,16 +19,7 @@ class UpdateActivity : AppCompatActivity() {
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.app_name)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@UpdateActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.app_name))
 
         textView_message.text = intent.getStringExtra("message")
 

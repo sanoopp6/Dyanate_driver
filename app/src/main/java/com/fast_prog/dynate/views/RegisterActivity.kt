@@ -6,7 +6,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -15,14 +14,14 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.method.PasswordTransformationMethod
 import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.fast_prog.dynate.R
+import com.fast_prog.dynate.extensions.customTitle
+import com.fast_prog.dynate.extensions.hideKeyboard
 import com.fast_prog.dynate.models.PlaceItem
 import com.fast_prog.dynate.models.RegisterUser
 import com.fast_prog.dynate.utilities.*
@@ -44,8 +43,8 @@ class RegisterActivity : AppCompatActivity() {
     internal var mobile: String? = null
     internal var mail: String? = null
     internal var address: String? = null
-    internal var username: String? = null
-    internal var password: String? = null
+    //internal var username: String? = null
+    //internal var password: String? = null
     internal var vSizeName: String? = null
     internal var vMakeName: String? = null
     internal var vModelName: String? = null
@@ -78,7 +77,7 @@ class RegisterActivity : AppCompatActivity() {
     internal var REQUEST_CODE = 1122
 
     internal var isFilled = false
-    private var passwordVisible = false
+    //private var passwordVisible = false
 
     internal lateinit var sharedPreferences: SharedPreferences
 
@@ -88,50 +87,39 @@ class RegisterActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        supportActionBar?.setDisplayShowCustomEnabled(true)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(applicationContext, R.drawable.home_up_icon))
 
         sharedPreferences = getSharedPreferences(Constants.PREFS_NAME, Context.MODE_PRIVATE)
 
         toolbar.setNavigationOnClickListener { backPressed() }
 
-        val titleTextView = TextView(applicationContext)
-        titleTextView.text = resources.getString(R.string.Register)
-        if (Build.VERSION.SDK_INT < 23) {
-            titleTextView.setTextAppearance(this@RegisterActivity, R.style.FontBoldSixteen)
-        } else {
-            titleTextView.setTextAppearance(R.style.FontBoldSixteen)
-        }
-        titleTextView.setAllCaps(true)
-        titleTextView.setTextColor(Color.WHITE)
-        supportActionBar?.customView = titleTextView
+        customTitle(resources.getString(R.string.Register))
 
-        textView_nameTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Name) + " <font color=#E81C4F>*</font>")
-        textView_usernameTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Username) + " <font color=#E81C4F>*</font>")
-        textView_mobileTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Mobile) + " <font color=#E81C4F>*</font>")
-        textView_passwordTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Password) + " <font color=#E81C4F>*</font>")
-        textView_addressTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Address) + " <font color=#E81C4F>* ${resources.getString(R.string.ChooseFromGoogleMap)}</font>")
-        textView_vehicleSizeTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Size) + " <font color=#E81C4F>*</font>")
-        textView_vehicleMakeTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Make) + " <font color=#E81C4F>*</font>")
-        textView_vehicleModelTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Model) + " <font color=#E81C4F>*</font>")
+        //textView_nameTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Name) + " <font color=#E81C4F>*</font>")
+        //textView_usernameTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Username) + " <font color=#E81C4F>*</font>")
+        //textView_mobileTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Mobile) + " <font color=#E81C4F>*</font>")
+        //textView_passwordTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Password) + " <font color=#E81C4F>*</font>")
+        //textView_addressTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Address) + " <font color=#E81C4F>* ${resources.getString(R.string.ChooseFromGoogleMap)}</font>")
+        //textView_vehicleSizeTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Size) + " <font color=#E81C4F>*</font>")
+        //textView_vehicleMakeTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Make) + " <font color=#E81C4F>*</font>")
+        //textView_vehicleModelTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Model) + " <font color=#E81C4F>*</font>")
 
         gpsTracker = GPSTracker(this@RegisterActivity)
         countryCodePicker.registerCarrierNumberEditText(editText_mobile)
 
-        button_password_visibility.setOnClickListener {
-            if (passwordVisible) {
-                editText_password.transformationMethod = null
-                button_password_visibility.setImageDrawable(resources.getDrawable(R.drawable.ic_visibility))
-            } else {
-                editText_password.transformationMethod = PasswordTransformationMethod()
-                button_password_visibility.setImageDrawable(resources.getDrawable(R.drawable.ic_visibility_off))
-            }
-
-            passwordVisible = !passwordVisible
-            editText_password.setSelection(editText_password.text.length)
-        }
+        //button_password_visibility.setOnClickListener {
+        //    if (passwordVisible) {
+        //        editText_password.transformationMethod = null
+        //        button_password_visibility.setImageDrawable(resources.getDrawable(R.drawable.ic_visibility))
+        //    } else {
+        //        editText_password.transformationMethod = PasswordTransformationMethod()
+        //        button_password_visibility.setImageDrawable(resources.getDrawable(R.drawable.ic_visibility_off))
+        //    }
+        //
+        //    passwordVisible = !passwordVisible
+        //    editText_password.setSelection(editText_password.text.length)
+        //}
 
         button_address.setOnClickListener {
             gpsTracker.getLocation()
@@ -167,8 +155,8 @@ class RegisterActivity : AppCompatActivity() {
             isFilled = true
             withCompany = true
 
-            layout_withCompany.visibility = View.VISIBLE
-            layout_withCompanyError.visibility = View.VISIBLE
+            spnr_withCompany.visibility = View.VISIBLE
+            textView_withCompanyError.visibility = View.VISIBLE
 
             radioButton_yes_company.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.whiteColor))
             radioButton_no_company.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.colorToggleGreen))
@@ -178,8 +166,8 @@ class RegisterActivity : AppCompatActivity() {
             isFilled = true
             withCompany = false
 
-            layout_withCompany.visibility = View.GONE
-            layout_withCompanyError.visibility = View.GONE
+            spnr_withCompany.visibility = View.GONE
+            textView_withCompanyError.visibility = View.GONE
 
             radioButton_no_company.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.whiteColor))
             radioButton_yes_company.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.colorToggleGreen))
@@ -217,7 +205,8 @@ class RegisterActivity : AppCompatActivity() {
             if (validate()) {
                 if (ConnectionDetector.isConnected(this@RegisterActivity)) {
                     UtilityFunctions.showProgressDialog (this@RegisterActivity)
-                    CheckUserIDOrMobileNoExistBackground(true).execute()
+                    CheckUserIDOrMobileNoExistBackground().execute()
+                    //CheckUserIDOrMobileNoExistBackground(true).execute()
                 } else {
                     ConnectionDetector.errorSnackbar(coordinator_layout)
                 }
@@ -225,13 +214,20 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         spnr_vehicleSize.setOnTouchListener { v, event ->
-            hideSoftKeyboard()
+            hideKeyboard()
             false
         }
 
         spnr_vehicleSize.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val index = parent.selectedItemPosition
+                val selectedText = parent.getChildAt(0) as TextView
+
+                if (index != 0) {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.blackColor))
+                } else {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.darkest_gray))
+                }
 
                 vSizeId = vehicleSizeIdList[index]
                 vSizeName = vehicleSizeDataList[index]
@@ -253,13 +249,20 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         spnr_vehicleMake.setOnTouchListener { v, event ->
-            hideSoftKeyboard()
+            hideKeyboard()
             false
         }
 
         spnr_vehicleMake.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val index = parent.selectedItemPosition
+                val selectedText = parent.getChildAt(0) as TextView
+
+                if (index != 0) {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.blackColor))
+                } else {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.darkest_gray))
+                }
 
                 vMakeId = vehicleMakeIdList[index]
                 vMakeName = vehicleMakeDataList[index]
@@ -281,13 +284,20 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         spnr_vehicleModel.setOnTouchListener { v, event ->
-            hideSoftKeyboard()
+            hideKeyboard()
             false
         }
 
         spnr_vehicleModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val index = parent.selectedItemPosition
+                val selectedText = parent.getChildAt(0) as TextView
+
+                if (index != 0) {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.blackColor))
+                } else {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.darkest_gray))
+                }
 
                 vModelId = vehicleModelIdList[index]
                 vModelName = vehicleModelDataList[index]
@@ -299,13 +309,20 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         spnr_withCompany.setOnTouchListener { v, event ->
-            hideSoftKeyboard()
+            hideKeyboard()
             false
         }
 
         spnr_withCompany.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val index = parent.selectedItemPosition
+                val selectedText = parent.getChildAt(0) as TextView
+
+                if (index != 0) {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.blackColor))
+                } else {
+                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.darkest_gray))
+                }
 
                 vCompId = vehicleCompanyIdList[index]
                 vCompName = vehicleCompanyDataList[index]
@@ -316,60 +333,60 @@ class RegisterActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        editText_username.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                val numericPattern = "^[0-9]*$"
-                val alphaPattern = "^[a-zA-Z0-9]*$"
-                val username = editText_username.text.toString().trim()
-
-                if (username.isEmpty()) {
-                    textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.InvalidUsername)
-
-                } else if (username.length < 4) {
-                    textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.Username4Char)
-
-                } else if (username.length > 10) {
-                    textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.Username10Char)
-
-                } else if (!username.matches(alphaPattern.toRegex())) {
-                    textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.OnlyEnglishCharacters)
-
-                } else if (username.matches(numericPattern.toRegex())) {
-                    textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.AlphanumericUsername)
-
-                } else {
-                    textView_usernameError.text = ""
-                    this.username = username
-
-                    if (ConnectionDetector.isConnected(this@RegisterActivity)) {
-                        //CheckUserIDOrMobileNoExistBackground(true).execute()
-                    }
-                }
-            }
-        }
-
-        editText_password.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                isFilled = true
-
-                val alphanumericPattern = "^[A-Za-z0-9_@./#&+-]*$"
-                val password = editText_password.text.toString().trim()
-
-                if (password.isEmpty()) {
-                    textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.InvalidPassword)
-
-                } else if (password.length < 6) {
-                    textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.PasswordMin6Char)
-
-                } else if (!password.matches(alphanumericPattern.toRegex())) {
-                    textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.PasswordInvalidChar)
-
-                } else {
-                    textView_passwordError.text = ""
-                    this.password = password
-                }
-            }
-        }
+        //editText_username.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        //    if (!hasFocus) {
+        //        val numericPattern = "^[0-9]*$"
+        //        val alphaPattern = "^[a-zA-Z0-9]*$"
+        //        val username = editText_username.text.toString().trim()
+        //
+        //        if (username.isEmpty()) {
+        //            textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.InvalidUsername)
+        //
+        //        } else if (username.length < 4) {
+        //            textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.Username4Char)
+        //
+        //        } else if (username.length > 10) {
+        //            textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.Username10Char)
+        //
+        //        } else if (!username.matches(alphaPattern.toRegex())) {
+        //            textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.OnlyEnglishCharacters)
+        //
+        //        } else if (username.matches(numericPattern.toRegex())) {
+        //            textView_usernameError.text = this@RegisterActivity.resources.getText(R.string.AlphanumericUsername)
+        //
+        //        } else {
+        //            textView_usernameError.text = ""
+        //            this.username = username
+        //
+        //            if (ConnectionDetector.isConnected(this@RegisterActivity)) {
+        //                //CheckUserIDOrMobileNoExistBackground(true).execute()
+        //            }
+        //        }
+        //    }
+        //}
+        //
+        //editText_password.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+        //    if (!hasFocus) {
+        //        isFilled = true
+        //
+        //        val alphanumericPattern = "^[A-Za-z0-9_@./#&+-]*$"
+        //        val password = editText_password.text.toString().trim()
+        //
+        //        if (password.isEmpty()) {
+        //            textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.InvalidPassword)
+        //
+        //        } else if (password.length < 6) {
+        //            textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.PasswordMin6Char)
+        //
+        //        } else if (!password.matches(alphanumericPattern.toRegex())) {
+        //            textView_passwordError.text = this@RegisterActivity.resources.getText(R.string.PasswordInvalidChar)
+        //
+        //        } else {
+        //            textView_passwordError.text = ""
+        //            this.password = password
+        //        }
+        //    }
+        //}
 
         editText_mobile.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
             if (!hasFocus) {
@@ -445,13 +462,6 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun hideSoftKeyboard() {
-        if (currentFocus != null) {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
-        }
-    }
-
     override fun onBackPressed() {
         backPressed()
     }
@@ -459,17 +469,17 @@ class RegisterActivity : AppCompatActivity() {
     private fun backPressed() {
         name = editText_name.text.toString().trim()
         mail = editText_email.text.toString().trim()
-        username = editText_username.text.toString().trim()
-        password = editText_password.text.toString().trim()
+        //username = editText_username.text.toString().trim()
+        //password = editText_password.text.toString().trim()
         mobile = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
 
         isFilled = isFilled || name!!.isNotEmpty() || mobile!!.isNotEmpty() || mail!!.isNotEmpty() ||
-                address!!.isNotEmpty() || username!!.length != 0 || password!!.isNotEmpty() || chk_i_agree.isChecked
+                address!!.isNotEmpty() || /*username!!.isNotEmpty() || password!!.isNotEmpty() ||*/ chk_i_agree.isChecked
 
         if (isFilled) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getString(R.string.FilledDataWillBeLost).toString(), resources.getString(R.string.Yes).toString(),
-                    resources.getString(R.string.No).toString(), true, false,
+                    resources.getString(R.string.FilledDataWillBeLost), resources.getString(R.string.Yes),
+                    resources.getString(R.string.No), true, false,
                     { finish() }, {})
 
         } else {
@@ -495,8 +505,8 @@ class RegisterActivity : AppCompatActivity() {
     private fun validate(): Boolean {
         name = editText_name.text.toString().trim()
         mail = editText_email.text.toString().trim()
-        username = editText_username.text.toString().trim()
-        password = editText_password.text.toString().trim()
+        //username = editText_username.text.toString().trim()
+        //password = editText_password.text.toString().trim()
         mobile = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
 
         val numericPattern = "^[0-9]*$"
@@ -505,51 +515,51 @@ class RegisterActivity : AppCompatActivity() {
 
         if (name!!.isEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.InvalidName).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidName), resources.getString(R.string.Ok),
                     "", false, false,
                     { editText_name.requestFocus() }, {})
             return false
         }
 
-        if (username!!.isEmpty()) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.InvalidUsername).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_username.requestFocus() }, {})
-            return false
-
-        } else if (username!!.length < 4) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.Username4Char).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_username.requestFocus() }, {})
-            return false
-
-        } else if (username!!.length > 10) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.Username10Char).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_username.requestFocus() }, {})
-            return false
-
-        } else if (!username!!.matches(alphaPattern.toRegex())) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.OnlyEnglishCharacters).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_username.requestFocus() }, {})
-            return false
-
-        } else if (username!!.matches(numericPattern.toRegex())) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.AlphanumericUsername).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_username.requestFocus() }, {})
-            return false
-        }
+        //if (username!!.isEmpty()) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.InvalidUsername), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_username.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (username!!.length < 4) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.Username4Char), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_username.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (username!!.length > 10) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.Username10Char), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_username.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (!username!!.matches(alphaPattern.toRegex())) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.OnlyEnglishCharacters), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_username.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (username!!.matches(numericPattern.toRegex())) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.AlphanumericUsername), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_username.requestFocus() }, {})
+        //    return false
+        //}
 
         if (!countryCodePicker.isValidFullNumber) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.InvalidMobileNumber).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidMobileNumber), resources.getString(R.string.Ok),
                     "", false, false,
                     { editText_mobile.requestFocus() }, {})
             return false
@@ -557,44 +567,44 @@ class RegisterActivity : AppCompatActivity() {
 
         if (!mail!!.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.InvalidEmail).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidEmail), resources.getString(R.string.Ok),
                     "", false, false,
                     { editText_email.requestFocus() }, {})
             return false
         }
 
-        if (password!!.isEmpty()) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.InvalidPassword).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_password.requestFocus() }, {})
-            return false
-
-        } else if (password!!.length < 6) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.PasswordMin6Char).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_password.requestFocus() }, {})
-            return false
-
-        } else if (!password!!.matches(alphanumericPattern.toRegex())) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.PasswordInvalidChar).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_password.requestFocus() }, {})
-            return false
-
-        } else if (password == username) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.UsernameAndPasswordSame).toString(), resources.getString(R.string.Ok).toString(),
-                    "", false, false,
-                    { editText_password.requestFocus() }, {})
-            return false
-        }
+        //if (password!!.isEmpty()) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.InvalidPassword), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_password.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (password!!.length < 6) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.PasswordMin6Char), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_password.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (!password!!.matches(alphanumericPattern.toRegex())) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.PasswordInvalidChar), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_password.requestFocus() }, {})
+        //    return false
+        //
+        //} else if (password == username) {
+        //    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+        //            resources.getString(R.string.UsernameAndPasswordSame), resources.getString(R.string.Ok),
+        //            "", false, false,
+        //            { editText_password.requestFocus() }, {})
+        //    return false
+        //}
 
         if (address?.trim().isNullOrEmpty() || latitude == null || longitude == null) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.InvalidAddress).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.InvalidAddress), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
@@ -602,7 +612,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (vSizeId == null || vSizeId == 0) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.VehicleSizeNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.VehicleSizeNotSelected), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
@@ -610,7 +620,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (vMakeId == null || vMakeId == 0) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.VehicleMakeNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.VehicleMakeNotSelected), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
@@ -618,7 +628,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (vModelId == null || vModelId == 0) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.VehicleModelNotSelected).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.VehicleModelNotSelected), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
@@ -626,7 +636,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (withCompany && (vCompId == null || vModelId == 0)) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.YouMustSelectCompany).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.YouMustSelectCompany), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
@@ -634,7 +644,7 @@ class RegisterActivity : AppCompatActivity() {
 
         if (!chk_i_agree.isChecked) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getText(R.string.YouMustAgreeToTermsAndConditions).toString(), resources.getString(R.string.Ok).toString(),
+                    resources.getString(R.string.YouMustAgreeToTermsAndConditions), resources.getString(R.string.Ok),
                     "", false, false,
                     { chk_i_agree.requestFocus() }, {})
             return false
@@ -830,17 +840,17 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private inner class CheckUserIDOrMobileNoExistBackground internal constructor(internal var isUsername: Boolean?) : AsyncTask<Void, Void, JSONObject>() {
+    private inner class CheckUserIDOrMobileNoExistBackground /*internal constructor(internal var isUsername: Boolean?)*/ : AsyncTask<Void, Void, JSONObject>() {
 
         override fun doInBackground(vararg param: Void): JSONObject? {
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
 
-            if (isUsername!!) {
-                params["ArgUserName"] = username!!
-            } else {
-                params["ArgUserName"] = mobile!!
-            }
+            //if (isUsername!!) {
+            //    params["ArgUserName"] = username!!
+            //} else {
+            //}
+            params["ArgUserName"] = mobile!!
 
             var BASE_URL = Constants.BASE_URL_EN + "CheckUserIDOrMobileNoExist"
 
@@ -855,13 +865,13 @@ class RegisterActivity : AppCompatActivity() {
 
             editText_mobile.isEnabled = true
             countryCodePicker.isEnabled = true
-            editText_password.isEnabled = true
+            //editText_password.isEnabled = true
             editText_name.isEnabled = true
             editText_email.isEnabled = true
             chk_i_agree.isEnabled = true
             btn_register.isEnabled = true
             button_address.isEnabled = true
-            editText_username.isEnabled = true
+            //editText_username.isEnabled = true
 
             if (response != null) {
                 try {
@@ -869,39 +879,38 @@ class RegisterActivity : AppCompatActivity() {
                         UtilityFunctions.dismissProgressDialog()
                         var msg = ""
 
-                        if (isUsername!!) {
-                            editText_mobile.isEnabled = false
-                            countryCodePicker.isEnabled = false
-                            editText_password.isEnabled = false
-                            editText_name.isEnabled = false
-                            editText_email.isEnabled = false
-                            chk_i_agree.isEnabled = false
-                            btn_register.isEnabled = false
-                            button_address.isEnabled = false
+                        //if (isUsername!!) {
+                        //    editText_mobile.isEnabled = false
+                        //    countryCodePicker.isEnabled = false
+                        //    editText_password.isEnabled = false
+                        //    editText_name.isEnabled = false
+                        //    editText_email.isEnabled = false
+                        //    chk_i_agree.isEnabled = false
+                        //    btn_register.isEnabled = false
+                        //    button_address.isEnabled = false
+                        //
+                        //    msg = resources.getString(R.string.DuplicateUsername)
+                        //
+                        //} else {
+                        //    editText_password.isEnabled = false
+                        //    editText_username.isEnabled = false
+                        editText_name.isEnabled = false
+                        editText_email.isEnabled = false
+                        chk_i_agree.isEnabled = false
+                        btn_register.isEnabled = false
+                        button_address.isEnabled = false
 
-                            msg = resources.getString(R.string.DuplicateUsername)
-
-                        } else {
-                            editText_password.isEnabled = false
-                            editText_name.isEnabled = false
-                            editText_email.isEnabled = false
-                            chk_i_agree.isEnabled = false
-                            btn_register.isEnabled = false
-                            button_address.isEnabled = false
-                            editText_username.isEnabled = false
-
-                            resources.getString(R.string.DuplicateMobile)
-                        }
+                        msg = resources.getString(R.string.DuplicateMobile)
+                        //}
 
                         UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                                msg, resources.getString(R.string.Ok).toString(),
+                                msg, resources.getString(R.string.Ok),
                                 "", false, false, {}, {})
 
                     } else {
-                        if (isUsername!!) {
-                            CheckUserIDOrMobileNoExistBackground(false).execute()
-
-                        } else {
+                        //if (isUsername!!) {
+                        //    CheckUserIDOrMobileNoExistBackground(false).execute()
+                        //} else {
                             UtilityFunctions.dismissProgressDialog()
 
                             val intent = Intent(this@RegisterActivity, UploadDocsActivity::class.java)
@@ -911,8 +920,8 @@ class RegisterActivity : AppCompatActivity() {
                             registerUser.mobile = mobile
                             registerUser.mail = mail
                             registerUser.address = address
-                            registerUser.username = username
-                            registerUser.password = password
+                            //registerUser.username = username
+                            //registerUser.password = password
                             registerUser.latitude = latitude.toString()
                             registerUser.longitude = longitude.toString()
                             registerUser.loginMethod = Constants.LOG_CONST_NORMAL
@@ -933,7 +942,7 @@ class RegisterActivity : AppCompatActivity() {
 
                             intent.putExtra("registerUser", registerUser)
                             startActivity(intent)
-                        }
+                        //}
                     }
                 } catch (e: JSONException) {
                     UtilityFunctions.dismissProgressDialog()
