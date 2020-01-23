@@ -78,8 +78,8 @@ class NoLoginActivity : AppCompatActivity() {
         super.onResume()
 
         if (ConnectionDetector.isConnectedOrConnecting(applicationContext)) {
-            AppInstructionsCountBackground().execute()
-            IsAppLiveBackground().execute()
+//            AppInstructionsCountBackground().execute()
+//            IsAppLiveBackground().execute()
         } else {
             ConnectionDetector.errorSnackbar(coordinator_layout)
         }

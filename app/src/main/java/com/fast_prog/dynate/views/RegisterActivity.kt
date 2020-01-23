@@ -9,7 +9,6 @@ import android.content.SharedPreferences
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
@@ -25,6 +24,7 @@ import com.fast_prog.dynate.extensions.hideKeyboard
 import com.fast_prog.dynate.models.PlaceItem
 import com.fast_prog.dynate.models.RegisterUser
 import com.fast_prog.dynate.utilities.*
+import com.fast_prog.dynate.utilities.Constants.PREFS_REGSTD_STATUS
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.content_register.*
 import org.json.JSONException
@@ -40,14 +40,14 @@ class RegisterActivity : AppCompatActivity() {
     internal lateinit var registerUser: RegisterUser
 
     internal var name: String? = null
-    internal var mobile: String? = null
+    //    internal var mobile: String? = null
     internal var mail: String? = null
     internal var address: String? = null
     //internal var username: String? = null
     //internal var password: String? = null
     internal var vSizeName: String? = null
     internal var vMakeName: String? = null
-    internal var vModelName: String? = null
+    //    internal var vModelName: String? = null
     internal var vCompName: String? = null
     internal var withGlass: Boolean = false
     internal var withCompany: Boolean = false
@@ -55,8 +55,10 @@ class RegisterActivity : AppCompatActivity() {
     internal var latitude: Double? = null
     internal var vSizeId: Int? = null
     internal var vMakeId: Int? = null
-    internal var vModelId: Int? = null
+    //    internal var vModelId: Int? = null
     internal var vCompId: Int? = null
+    internal var companyName: String? = null
+    internal var vehicleNumber: String? = null
 
     internal lateinit var vehicleSizeDataList: MutableList<String>
     internal lateinit var vehicleSizeIdList: MutableList<Int>
@@ -106,7 +108,7 @@ class RegisterActivity : AppCompatActivity() {
         //textView_vehicleModelTitle.text = UtilityFunctions.fromHtml(resources.getString(R.string.Model) + " <font color=#E81C4F>*</font>")
 
         gpsTracker = GPSTracker(this@RegisterActivity)
-        countryCodePicker.registerCarrierNumberEditText(editText_mobile)
+//        countryCodePicker.registerCarrierNumberEditText(editText_mobile)
 
         //button_password_visibility.setOnClickListener {
         //    if (passwordVisible) {
@@ -155,7 +157,7 @@ class RegisterActivity : AppCompatActivity() {
             isFilled = true
             withCompany = true
 
-            spnr_withCompany.visibility = View.VISIBLE
+            editText_company_name.visibility = View.VISIBLE
             textView_withCompanyError.visibility = View.VISIBLE
 
             radioButton_yes_company.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.whiteColor))
@@ -166,7 +168,7 @@ class RegisterActivity : AppCompatActivity() {
             isFilled = true
             withCompany = false
 
-            spnr_withCompany.visibility = View.GONE
+            editText_company_name.visibility = View.GONE
             textView_withCompanyError.visibility = View.GONE
 
             radioButton_no_company.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.whiteColor))
@@ -204,9 +206,7 @@ class RegisterActivity : AppCompatActivity() {
         btn_register.setOnClickListener {
             if (validate()) {
                 if (ConnectionDetector.isConnected(this@RegisterActivity)) {
-                    UtilityFunctions.showProgressDialog (this@RegisterActivity)
-                    CheckUserIDOrMobileNoExistBackground().execute()
-                    //CheckUserIDOrMobileNoExistBackground(true).execute()
+                    InsertDriverData().execute()
                 } else {
                     ConnectionDetector.errorSnackbar(coordinator_layout)
                 }
@@ -234,14 +234,14 @@ class RegisterActivity : AppCompatActivity() {
 
                 if (vSizeId!! > 0) {
                     isFilled = true
-                    ListVehicleModelBackground().execute()
+//                    ListVehicleModelBackground().execute()
                 } else {
-                    vehicleModelIdList = ArrayList()
-                    vehicleModelDataList = ArrayList()
-                    vehicleModelIdList.add(0)
-                    vehicleModelDataList.add(resources.getString(R.string.SelectModel))
-                    vehicleModelAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleModelDataList)
-                    spnr_vehicleModel.adapter = vehicleModelAdapter
+//                    vehicleModelIdList = ArrayList()
+//                    vehicleModelDataList = ArrayList()
+//                    vehicleModelIdList.add(0)
+//                    vehicleModelDataList.add(resources.getString(R.string.SelectModel))
+//                    vehicleModelAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleModelDataList)
+//                    spnr_vehicleModel.adapter = vehicleModelAdapter
                 }
             }
 
@@ -269,44 +269,44 @@ class RegisterActivity : AppCompatActivity() {
 
                 if (vMakeId!! > 0) {
                     isFilled = true
-                    ListVehicleModelBackground().execute()
+//                    ListVehicleModelBackground().execute()
                 } else {
-                    vehicleModelIdList = ArrayList()
-                    vehicleModelDataList = ArrayList()
-                    vehicleModelIdList.add(0)
-                    vehicleModelDataList.add(resources.getString(R.string.SelectModel))
-                    vehicleModelAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleModelDataList)
-                    spnr_vehicleModel.adapter = vehicleModelAdapter
+//                    vehicleModelIdList = ArrayList()
+//                    vehicleModelDataList = ArrayList()
+//                    vehicleModelIdList.add(0)
+//                    vehicleModelDataList.add(resources.getString(R.string.SelectModel))
+//                    vehicleModelAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleModelDataList)
+//                    spnr_vehicleModel.adapter = vehicleModelAdapter
                 }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        spnr_vehicleModel.setOnTouchListener { v, event ->
-            hideKeyboard()
-            false
-        }
-
-        spnr_vehicleModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val index = parent.selectedItemPosition
-                val selectedText = parent.getChildAt(0) as TextView
-
-                if (index != 0) {
-                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.blackColor))
-                } else {
-                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.darkest_gray))
-                }
-
-                vModelId = vehicleModelIdList[index]
-                vModelName = vehicleModelDataList[index]
-
-                if (vModelId!! > 0) { isFilled = true }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
+//        spnr_vehicleModel.setOnTouchListener { v, event ->
+//            hideKeyboard()
+//            false
+//        }
+//
+//        spnr_vehicleModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+//                val index = parent.selectedItemPosition
+//                val selectedText = parent.getChildAt(0) as TextView
+//
+//                if (index != 0) {
+//                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.blackColor))
+//                } else {
+//                    selectedText.setTextColor(ContextCompat.getColor(this@RegisterActivity, R.color.darkest_gray))
+//                }
+//
+//                vModelId = vehicleModelIdList[index]
+//                vModelName = vehicleModelDataList[index]
+//
+//                if (vModelId!! > 0) { isFilled = true }
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
 
         spnr_withCompany.setOnTouchListener { v, event ->
             hideKeyboard()
@@ -327,7 +327,9 @@ class RegisterActivity : AppCompatActivity() {
                 vCompId = vehicleCompanyIdList[index]
                 vCompName = vehicleCompanyDataList[index]
 
-                if (vCompId!! > 0) { isFilled = true }
+                if (vCompId!! > 0) {
+                    isFilled = true
+                }
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -388,25 +390,25 @@ class RegisterActivity : AppCompatActivity() {
         //    }
         //}
 
-        editText_mobile.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                isFilled = true
-
-                val mobileNo = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
-
-                if (!countryCodePicker.isValidFullNumber) {
-                    textView_mobileError.text = this@RegisterActivity.resources.getText(R.string.InvalidMobileNumber)
-
-                } else {
-                    textView_mobileError.text = ""
-                    this.mobile = mobileNo
-
-                    if (ConnectionDetector.isConnected(this@RegisterActivity)) {
-                        //CheckUserIDOrMobileNoExistBackground(false).execute()
-                    }
-                }
-            }
-        }
+//        editText_mobile.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+//            if (!hasFocus) {
+//                isFilled = true
+//
+//                val mobileNo = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
+//
+//                if (!countryCodePicker.isValidFullNumber) {
+//                    textView_mobileError.text = this@RegisterActivity.resources.getText(R.string.InvalidMobileNumber)
+//
+//                } else {
+//                    textView_mobileError.text = ""
+//                    this.mobile = mobileNo
+//
+//                    if (ConnectionDetector.isConnected(this@RegisterActivity)) {
+//                        //CheckUserIDOrMobileNoExistBackground(false).execute()
+//                    }
+//                }
+//            }
+//        }
 
         if (ConnectionDetector.isConnected(applicationContext)) {
             ListVehicleMakeListVehicleCompanyBackground().execute()
@@ -471,9 +473,9 @@ class RegisterActivity : AppCompatActivity() {
         mail = editText_email.text.toString().trim()
         //username = editText_username.text.toString().trim()
         //password = editText_password.text.toString().trim()
-        mobile = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
+//        mobile = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
 
-        isFilled = isFilled || name!!.isNotEmpty() || mobile!!.isNotEmpty() || mail!!.isNotEmpty() ||
+        isFilled = isFilled || name!!.isNotEmpty() || /*mobile!!.isNotEmpty() || */ mail!!.isNotEmpty() ||
                 address!!.isNotEmpty() || /*username!!.isNotEmpty() || password!!.isNotEmpty() ||*/ chk_i_agree.isChecked
 
         if (isFilled) {
@@ -505,9 +507,12 @@ class RegisterActivity : AppCompatActivity() {
     private fun validate(): Boolean {
         name = editText_name.text.toString().trim()
         mail = editText_email.text.toString().trim()
+        vehicleNumber = editText_vehicle_number.text.toString().trim()
+        companyName = editText_company_name.text.toString().trim()
+
         //username = editText_username.text.toString().trim()
         //password = editText_password.text.toString().trim()
-        mobile = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
+//        mobile = countryCodePicker.selectedCountryCodeWithPlus + editText_mobile.text.removePrefix("0")
 
         val numericPattern = "^[0-9]*$"
         val alphaPattern = "^[a-zA-Z0-9]*$"
@@ -557,13 +562,13 @@ class RegisterActivity : AppCompatActivity() {
         //    return false
         //}
 
-        if (!countryCodePicker.isValidFullNumber) {
-            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getString(R.string.InvalidMobileNumber), resources.getString(R.string.Ok),
-                    "", false, false,
-                    { editText_mobile.requestFocus() }, {})
-            return false
-        }
+//        if (!countryCodePicker.isValidFullNumber) {
+//            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+//                    resources.getString(R.string.InvalidMobileNumber), resources.getString(R.string.Ok),
+//                    "", false, false,
+//                    { editText_mobile.requestFocus() }, {})
+//            return false
+//        }
 
         if (!mail!!.isEmpty() && !android.util.Patterns.EMAIL_ADDRESS.matcher(mail).matches()) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
@@ -626,17 +631,25 @@ class RegisterActivity : AppCompatActivity() {
             return false
         }
 
-        if (vModelId == null || vModelId == 0) {
+        if (vCompId == null || vCompId == 0) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getString(R.string.VehicleModelNotSelected), resources.getString(R.string.Ok),
+                    resources.getString(R.string.YouMustSelectCompany), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
         }
 
-        if (withCompany && (vCompId == null || vModelId == 0)) {
+//        if (withCompany && (vCompId == null || vModelId == 0)) {
+//            UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+//                    resources.getString(R.string.YouMustSelectCompany), resources.getString(R.string.Ok),
+//                    "", false, false,
+//                    {}, {})
+//            return false
+//        }
+
+        if (withCompany && companyName.isNullOrEmpty()) {
             UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                    resources.getString(R.string.YouMustSelectCompany), resources.getString(R.string.Ok),
+                    getString(R.string.pls_extract_company_name), resources.getString(R.string.Ok),
                     "", false, false,
                     {}, {})
             return false
@@ -661,7 +674,7 @@ class RegisterActivity : AppCompatActivity() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            UtilityFunctions.showProgressDialog (this@RegisterActivity)
+            UtilityFunctions.showProgressDialog(this@RegisterActivity)
         }
 
         override fun doInBackground(vararg param: Void): JSONObject? {
@@ -670,17 +683,11 @@ class RegisterActivity : AppCompatActivity() {
             val jsonParserVehicleCompany = JsonParser()
 
             val params = HashMap<String, String>()
+            params["lang"] = sharedPreferences.getString(Constants.PREFS_LANG, "en")!!
 
-            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                jsonObjectVehicleSize = jsonParserVehicleSize.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleSize", "POST", params)
-                jsonObjectVehicleMake = jsonParserVehicleMake.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleMake", "POST", params)
-                jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL_AR + "ListVehicleCompany", "POST", params)
-
-            } else {
-                jsonObjectVehicleSize = jsonParserVehicleSize.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleSize", "POST", params)
-                jsonObjectVehicleMake = jsonParserVehicleMake.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleMake", "POST", params)
-                jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL_EN + "ListVehicleCompany", "POST", params)
-            }
+            jsonObjectVehicleSize = jsonParserVehicleSize.makeHttpRequest(Constants.BASE_URL + "driver/get_vehicle_size", "POST", params)
+            jsonObjectVehicleMake = jsonParserVehicleMake.makeHttpRequest(Constants.BASE_URL + "driver/get_vehicle_model", "POST", params)
+            jsonObjectVehicleCompany = jsonParserVehicleCompany.makeHttpRequest(Constants.BASE_URL + "driver/get_vehicle_company", "POST", params)
 
             return jsonObjectVehicleCompany
         }
@@ -700,16 +707,18 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleSizeDataList.add(resources.getString(R.string.SelectSize))
 
                             for (i in 0 until vehicleSizeArray.length()) {
-                                if (Integer.parseInt(vehicleSizeArray.getJSONObject(i).getString("VsId").trim()) > 0) {
-                                    vehicleSizeIdList.add(vehicleSizeArray.getJSONObject(i).getString("VsId").toInt())
-                                    vehicleSizeDataList.add(vehicleSizeArray.getJSONObject(i).getString("VsName").trim())
+                                if (Integer.parseInt(vehicleSizeArray.getJSONObject(i).getString("id").trim()) > 0) {
+                                    vehicleSizeIdList.add(vehicleSizeArray.getJSONObject(i).getString("id").toInt())
+                                    vehicleSizeDataList.add(vehicleSizeArray.getJSONObject(i).getString("size").trim())
                                 }
                             }
                             vehicleSizeAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleSizeDataList)
                             spnr_vehicleSize.adapter = vehicleSizeAdapter
                         }
                     }
-                } catch (e: JSONException) { e.printStackTrace() }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
             }
 
             if (jsonObjectVehicleMake != null) {
@@ -724,16 +733,18 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleMakeDataList.add(resources.getString(R.string.SelectMake))
 
                             for (i in 0 until vehicleMakeArray.length()) {
-                                if (Integer.parseInt(vehicleMakeArray.getJSONObject(i).getString("VMId").trim()) > 0) {
-                                    vehicleMakeIdList.add(vehicleMakeArray.getJSONObject(i).getString("VMId").toInt())
-                                    vehicleMakeDataList.add(vehicleMakeArray.getJSONObject(i).getString("VMName").trim())
+                                if (Integer.parseInt(vehicleMakeArray.getJSONObject(i).getString("id").trim()) > 0) {
+                                    vehicleMakeIdList.add(vehicleMakeArray.getJSONObject(i).getString("id").toInt())
+                                    vehicleMakeDataList.add(vehicleMakeArray.getJSONObject(i).getString("model").trim())
                                 }
                             }
                             vehicleMakeAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleMakeDataList)
                             spnr_vehicleMake.adapter = vehicleMakeAdapter
                         }
                     }
-                } catch (e: JSONException) { e.printStackTrace() }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
             }
 
             if (jsonObjectVehicleCompany != null) {
@@ -748,16 +759,18 @@ class RegisterActivity : AppCompatActivity() {
                             vehicleCompanyDataList.add(resources.getString(R.string.SelectCompany))
 
                             for (i in 0 until vehicleCompanyArray.length()) {
-                                if (Integer.parseInt(vehicleCompanyArray.getJSONObject(i).getString("VcId").trim()) > 0) {
-                                    vehicleCompanyIdList.add(vehicleCompanyArray.getJSONObject(i).getString("VcId").toInt())
-                                    vehicleCompanyDataList.add(vehicleCompanyArray.getJSONObject(i).getString("VcName").trim())
+                                if (Integer.parseInt(vehicleCompanyArray.getJSONObject(i).getString("id").trim()) > 0) {
+                                    vehicleCompanyIdList.add(vehicleCompanyArray.getJSONObject(i).getString("id").toInt())
+                                    vehicleCompanyDataList.add(vehicleCompanyArray.getJSONObject(i).getString("company_name").trim())
                                 }
                             }
                             vehicleCompanyAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleCompanyDataList)
                             spnr_withCompany.adapter = vehicleCompanyAdapter
                         }
                     }
-                } catch (e: JSONException) { e.printStackTrace() }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -786,173 +799,233 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private inner class ListVehicleModelBackground : AsyncTask<Void, Void, JSONObject>() {
+    //Vehicle model spinner hidden
+
+//    @SuppressLint("StaticFieldLeak")
+//    private inner class ListVehicleModelBackground : AsyncTask<Void, Void, JSONObject>() {
+//
+//        override fun onPreExecute() {
+//            super.onPreExecute()
+//            UtilityFunctions.showProgressDialog (this@RegisterActivity)
+//        }
+//
+//        override fun doInBackground(vararg param: Void): JSONObject? {
+//            val jsonParser = JsonParser()
+//            val params = HashMap<String, String>()
+//
+//            params["ArgVmoVMId"] = vMakeId.toString() + ""
+//            params["ArgVmoVsId"] = vSizeId.toString() + ""
+//
+//            var BASE_URL = Constants.BASE_URL_EN + "ListVehicleModel"
+//
+//            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
+//                BASE_URL = Constants.BASE_URL_AR + "ListVehicleModel"
+//            }
+//
+//            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+//        }
+//
+//        override fun onPostExecute(response: JSONObject?) {
+//            UtilityFunctions.dismissProgressDialog()
+//
+//            if (response != null) {
+//                try {
+//                    if (response.getBoolean("status")) {
+//                        val vehicleModelArray = response.getJSONArray("data")
+//
+//                        if (vehicleModelArray.length() > 0) {
+//                            vehicleModelIdList = ArrayList()
+//                            vehicleModelDataList = ArrayList()
+//                            vehicleModelIdList.add(0)
+//                            vehicleModelDataList.add(resources.getString(R.string.SelectModel))
+//
+//                            for (i in 0 until vehicleModelArray.length()) {
+//                                if (Integer.parseInt(vehicleModelArray.getJSONObject(i).getString("VmoId").trim()) > 0) {
+//                                    vehicleModelIdList.add(vehicleModelArray.getJSONObject(i).getString("VmoId").toInt())
+//                                    vehicleModelDataList.add(vehicleModelArray.getJSONObject(i).getString("VmoName").trim())
+//                                }
+//                            }
+//                            vehicleModelAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleModelDataList)
+//                            spnr_vehicleModel.adapter = vehicleModelAdapter
+//                        }
+//                    }
+//                } catch (e: JSONException) { e.printStackTrace() }
+//            }
+//        }
+//    }
+
+//    @SuppressLint("StaticFieldLeak")
+//    private inner class CheckUserIDOrMobileNoExistBackground /*internal constructor(internal var isUsername: Boolean?)*/ : AsyncTask<Void, Void, JSONObject>() {
+//
+//        override fun doInBackground(vararg param: Void): JSONObject? {
+//            val jsonParser = JsonParser()
+//            val params = HashMap<String, String>()
+//
+//            //if (isUsername!!) {
+//            //    params["ArgUserName"] = username!!
+//            //} else {
+//            //}
+//            params["ArgUserName"] = mobile!!
+//
+//            var BASE_URL = Constants.BASE_URL_EN + "CheckUserIDOrMobileNoExist"
+//
+//            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
+//                BASE_URL = Constants.BASE_URL_AR + "CheckUserIDOrMobileNoExist"
+//            }
+//
+//            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+//        }
+//
+//        override fun onPostExecute(response: JSONObject?) {
+//
+//            editText_mobile.isEnabled = true
+//            countryCodePicker.isEnabled = true
+//            //editText_password.isEnabled = true
+//            editText_name.isEnabled = true
+//            editText_email.isEnabled = true
+//            chk_i_agree.isEnabled = true
+//            btn_register.isEnabled = true
+//            button_address.isEnabled = true
+//            //editText_username.isEnabled = true
+//
+//            if (response != null) {
+//                try {
+//                    if (response.getBoolean("status")) {
+//                        UtilityFunctions.dismissProgressDialog()
+//                        var msg = ""
+//
+//                        //if (isUsername!!) {
+//                        //    editText_mobile.isEnabled = false
+//                        //    countryCodePicker.isEnabled = false
+//                        //    editText_password.isEnabled = false
+//                        //    editText_name.isEnabled = false
+//                        //    editText_email.isEnabled = false
+//                        //    chk_i_agree.isEnabled = false
+//                        //    btn_register.isEnabled = false
+//                        //    button_address.isEnabled = false
+//                        //
+//                        //    msg = resources.getString(R.string.DuplicateUsername)
+//                        //
+//                        //} else {
+//                        //    editText_password.isEnabled = false
+//                        //    editText_username.isEnabled = false
+//                        editText_name.isEnabled = false
+//                        editText_email.isEnabled = false
+//                        chk_i_agree.isEnabled = false
+//                        btn_register.isEnabled = false
+//                        button_address.isEnabled = false
+//
+//                        msg = resources.getString(R.string.DuplicateMobile)
+//                        //}
+//
+//                        UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+//                                msg, resources.getString(R.string.Ok),
+//                                "", false, false, {}, {})
+//
+//                    } else {
+//                        //if (isUsername!!) {
+//                        //    CheckUserIDOrMobileNoExistBackground(false).execute()
+//                        //} else {
+//                            UtilityFunctions.dismissProgressDialog()
+//
+//                            val intent = Intent(this@RegisterActivity, UploadDocsActivity::class.java)
+//                            registerUser = RegisterUser()
+//                            registerUser.name = name
+//                            registerUser.nameArabic = name
+//                            registerUser.mobile = mobile
+//                            registerUser.mail = mail
+//                            registerUser.address = address
+//                            //registerUser.username = username
+//                            //registerUser.password = password
+//                            registerUser.latitude = latitude.toString()
+//                            registerUser.longitude = longitude.toString()
+//                            registerUser.loginMethod = Constants.LOG_CONST_NORMAL
+//                            registerUser.vModelId = vModelId.toString()
+//                            registerUser.vModelName = vModelName
+//
+//                            if (withCompany) {
+//                                registerUser.vCompId = vCompId.toString()
+//                                registerUser.vCompName = vCompName
+//                            } else {
+//                                registerUser.vCompId = "1"
+//                                registerUser.vCompName = resources.getString(R.string.SelectCompany)
+//                            }
+//
+//                            registerUser.licenseNo = ""
+//                            registerUser.licenseNoArabic = ""
+//                            registerUser.withGlass = withGlass
+//
+//                            intent.putExtra("registerUser", registerUser)
+//                            startActivity(intent)
+//                        //}
+//                    }
+//                } catch (e: JSONException) {
+//                    UtilityFunctions.dismissProgressDialog()
+//                    e.printStackTrace()
+//                }
+//
+//            } else {
+//                UtilityFunctions.dismissProgressDialog()
+//                val snackbar = Snackbar.make(coordinator_layout, R.string.UnableToConnect, Snackbar.LENGTH_LONG).setAction(R.string.Ok) { }
+//                snackbar.show()
+//            }
+//        }
+//    }
+
+    private inner class InsertDriverData : AsyncTask<Void, Void, JSONObject?>() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            UtilityFunctions.showProgressDialog (this@RegisterActivity)
+            UtilityFunctions.showProgressDialog(this@RegisterActivity)
         }
 
-        override fun doInBackground(vararg param: Void): JSONObject? {
+        override fun doInBackground(vararg p0: Void?): JSONObject? {
+
             val jsonParser = JsonParser()
             val params = HashMap<String, String>()
-
-            params["ArgVmoVMId"] = vMakeId.toString() + ""
-            params["ArgVmoVsId"] = vSizeId.toString() + ""
-
-            var BASE_URL = Constants.BASE_URL_EN + "ListVehicleModel"
-
-            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                BASE_URL = Constants.BASE_URL_AR + "ListVehicleModel"
+            params["lang"] = sharedPreferences.getString(Constants.PREFS_LANG, "en")!!
+            params["user_id"] = sharedPreferences.getString(Constants.PREFS_USER_ID, "")!!
+            params["name"] = name!!
+            params["email"] = mail!!
+            params["address"] = address!!
+            params["size_id"] = vSizeId!!.toString()
+            params["type_id"] = vMakeId!!.toString()
+            params["company_id"] = vCompId!!.toString()
+            params["vehicle_number"] = vehicleNumber!!
+            if (withCompany) {
+                params["is_under_company"] = "1"
+            } else {
+                params["is_under_company"] = "0"
+            }
+            params["company_name"] = companyName!!
+            if (withGlass) {
+                params["is_work_with_glass_factory"] = "1"
+            } else {
+                params["is_work_with_glass_factory"] = "0"
             }
 
-            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
+            return jsonParser.makeHttpRequest(Constants.BASE_URL + "driver/insert_driver_data", "POST", params)
         }
 
-        override fun onPostExecute(response: JSONObject?) {
+        override fun onPostExecute(result: JSONObject?) {
             UtilityFunctions.dismissProgressDialog()
+            if (result != null) {
+                if (result.getBoolean("status")) {
 
-            if (response != null) {
-                try {
-                    if (response.getBoolean("status")) {
-                        val vehicleModelArray = response.getJSONArray("data")
+                    sharedPreferences!!.edit().putString(PREFS_REGSTD_STATUS, "2").commit()
+                    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+                            getString(R.string.data_inserted_will_get_notification), resources.getString(R.string.Ok).toString(),
+                            resources.getString(R.string.Cancel).toString(), true, setCancelable = false, actionOk = {
+                        finish()
+                    }, actionCancel = {})
 
-                        if (vehicleModelArray.length() > 0) {
-                            vehicleModelIdList = ArrayList()
-                            vehicleModelDataList = ArrayList()
-                            vehicleModelIdList.add(0)
-                            vehicleModelDataList.add(resources.getString(R.string.SelectModel))
 
-                            for (i in 0 until vehicleModelArray.length()) {
-                                if (Integer.parseInt(vehicleModelArray.getJSONObject(i).getString("VmoId").trim()) > 0) {
-                                    vehicleModelIdList.add(vehicleModelArray.getJSONObject(i).getString("VmoId").toInt())
-                                    vehicleModelDataList.add(vehicleModelArray.getJSONObject(i).getString("VmoName").trim())
-                                }
-                            }
-                            vehicleModelAdapter = MySpinnerAdapter(this@RegisterActivity, android.R.layout.select_dialog_item, vehicleModelDataList)
-                            spnr_vehicleModel.adapter = vehicleModelAdapter
-                        }
-                    }
-                } catch (e: JSONException) { e.printStackTrace() }
-            }
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private inner class CheckUserIDOrMobileNoExistBackground /*internal constructor(internal var isUsername: Boolean?)*/ : AsyncTask<Void, Void, JSONObject>() {
-
-        override fun doInBackground(vararg param: Void): JSONObject? {
-            val jsonParser = JsonParser()
-            val params = HashMap<String, String>()
-
-            //if (isUsername!!) {
-            //    params["ArgUserName"] = username!!
-            //} else {
-            //}
-            params["ArgUserName"] = mobile!!
-
-            var BASE_URL = Constants.BASE_URL_EN + "CheckUserIDOrMobileNoExist"
-
-            if (sharedPreferences.getString(Constants.PREFS_LANG, "en")!!.equals("ar", ignoreCase = true)) {
-                BASE_URL = Constants.BASE_URL_AR + "CheckUserIDOrMobileNoExist"
-            }
-
-            return jsonParser.makeHttpRequest(BASE_URL, "POST", params)
-        }
-
-        override fun onPostExecute(response: JSONObject?) {
-
-            editText_mobile.isEnabled = true
-            countryCodePicker.isEnabled = true
-            //editText_password.isEnabled = true
-            editText_name.isEnabled = true
-            editText_email.isEnabled = true
-            chk_i_agree.isEnabled = true
-            btn_register.isEnabled = true
-            button_address.isEnabled = true
-            //editText_username.isEnabled = true
-
-            if (response != null) {
-                try {
-                    if (response.getBoolean("status")) {
-                        UtilityFunctions.dismissProgressDialog()
-                        var msg = ""
-
-                        //if (isUsername!!) {
-                        //    editText_mobile.isEnabled = false
-                        //    countryCodePicker.isEnabled = false
-                        //    editText_password.isEnabled = false
-                        //    editText_name.isEnabled = false
-                        //    editText_email.isEnabled = false
-                        //    chk_i_agree.isEnabled = false
-                        //    btn_register.isEnabled = false
-                        //    button_address.isEnabled = false
-                        //
-                        //    msg = resources.getString(R.string.DuplicateUsername)
-                        //
-                        //} else {
-                        //    editText_password.isEnabled = false
-                        //    editText_username.isEnabled = false
-                        editText_name.isEnabled = false
-                        editText_email.isEnabled = false
-                        chk_i_agree.isEnabled = false
-                        btn_register.isEnabled = false
-                        button_address.isEnabled = false
-
-                        msg = resources.getString(R.string.DuplicateMobile)
-                        //}
-
-                        UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
-                                msg, resources.getString(R.string.Ok),
-                                "", false, false, {}, {})
-
-                    } else {
-                        //if (isUsername!!) {
-                        //    CheckUserIDOrMobileNoExistBackground(false).execute()
-                        //} else {
-                            UtilityFunctions.dismissProgressDialog()
-
-                            val intent = Intent(this@RegisterActivity, UploadDocsActivity::class.java)
-                            registerUser = RegisterUser()
-                            registerUser.name = name
-                            registerUser.nameArabic = name
-                            registerUser.mobile = mobile
-                            registerUser.mail = mail
-                            registerUser.address = address
-                            //registerUser.username = username
-                            //registerUser.password = password
-                            registerUser.latitude = latitude.toString()
-                            registerUser.longitude = longitude.toString()
-                            registerUser.loginMethod = Constants.LOG_CONST_NORMAL
-                            registerUser.vModelId = vModelId.toString()
-                            registerUser.vModelName = vModelName
-
-                            if (withCompany) {
-                                registerUser.vCompId = vCompId.toString()
-                                registerUser.vCompName = vCompName
-                            } else {
-                                registerUser.vCompId = "1"
-                                registerUser.vCompName = resources.getString(R.string.SelectCompany)
-                            }
-
-                            registerUser.licenseNo = ""
-                            registerUser.licenseNoArabic = ""
-                            registerUser.withGlass = withGlass
-
-                            intent.putExtra("registerUser", registerUser)
-                            startActivity(intent)
-                        //}
-                    }
-                } catch (e: JSONException) {
-                    UtilityFunctions.dismissProgressDialog()
-                    e.printStackTrace()
+                } else {
+                    UtilityFunctions.showAlertOnActivity(this@RegisterActivity,
+                            result.getString("message"), resources.getString(R.string.Ok).toString(),
+                            "", false, true, {}, {})
                 }
 
-            } else {
-                UtilityFunctions.dismissProgressDialog()
-                val snackbar = Snackbar.make(coordinator_layout, R.string.UnableToConnect, Snackbar.LENGTH_LONG).setAction(R.string.Ok) { }
-                snackbar.show()
             }
         }
     }

@@ -27,7 +27,7 @@ class JsonParser {
                         params: HashMap<String, String>): JSONObject? {
         var url = url
 
-        Log.e("url", url)
+        Log.d("url_", url)
         val sbParams = StringBuilder()
         var i = 0
         val charset = "UTF-8"
@@ -45,7 +45,7 @@ class JsonParser {
 
             i++
         }
-        Log.e("params", sbParams.toString())
+        Log.d("url_", sbParams.toString())
         val urlObj: URL
         if (method == "POST") {
             //Log.d("request method is POST", "PSPRT");
@@ -113,7 +113,7 @@ class JsonParser {
                 result.append(line)
             }
 
-            Log.e("JSON_Parser", "result: " + result.toString())
+            Log.d("url_", "result: " + result.toString())
         } catch (e: IOException) {
             e.printStackTrace()
         }

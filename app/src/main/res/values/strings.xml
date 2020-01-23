@@ -333,5 +333,10 @@
     <string name="Rejected">Rejected</string>
     <string name="Location">Location</string>
     <string name="RejectionSuccess">Rejected successfully.</string>
+    <string name="vehicle_number">Vehicle Number</string>
+    <string name="pls_extract_company_name">Please enter company name</string>
+    <string name="company_name">Company name</string>
+    <string name="data_inserted_will_get_notification">Data inserted successfully, you will get notification after administrator approval</string>
+    <string name="waiting_for_administrator_approval">Waiting for administrator approval</string>
 
 </resources>

@@ -25,6 +25,11 @@ object Constants {
     //val PREFS_STATUS_TIME = "dynate_status_time"
     //val PREFS_IS_FACTORY = "dynate_is_factory"
     //val PREFS_SAVED_USERNAME = "dyna_saved_username"
+    val PREFS_USER_MOBILE_WITHOUT_COUNTRY    = "dyna_user_mobile_without_country"
+    val PREFS_COUNTRY_CODE              = "dyna_user_country_code"
+    val PREFS_USER_TOKEN                  = "dyna_user_token"
+    val PREFS_USER_FULL_MOBILE                  = "dyna_user_full_mobile"
+
 
     val PREFS_USER_TYPE = "dyna_user_type"
     val USER_TYPE_CONST_ADMIN = "admin"
@@ -36,8 +41,11 @@ object Constants {
     val BASE_URL_AR = "https://dyanate.fast-prog.com/ServiceAr.asmx/"
     val IMG_URL = "https://dyanate.fast-prog.com/"
 
-    val APP_NAME = "dynadriver"
-    val APP_VERSION = "1.4"
+    val BASE_URL                        = "http://10.0.2.2/dyanate/api/"
+    //    val BASE_URL                        = "http://dyanate.eu-central-1.elasticbeanstalk.com/api/"
+
+    val APP_NAME = "dyanate_driver"
+    val APP_VERSION = "AND_01"
 
     val SMS_ORIGIN = "DyanateApp"
     val OTP_DELIMITER = ":"
